@@ -9,9 +9,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function () {
-  'use strict';
-
+(function wapoBetterColorsUserScript() {
   const bodyElement = [...document.getElementsByTagName('body')][0];
 
   bodyElement.style.setProperty('text-shadow', 'rgb(127 204 102) 1px 1px 1px, rgb(204 102 127) -1px -1px 1px');
@@ -22,22 +20,22 @@
   const commentsWrapperObserver = new MutationObserver((mutationsList, observer) => {
     const commentsIframe = commentsWrapper.querySelector('iframe');
     if (commentsIframe) {
-      const commentsIframeObserver = new MutationObserver((commentsIframeMutationsList, ciObserver) => {
+      const mutationHandler = (commentsIframeMutationsList, ciObserver) => {
         const commentsDocument = commentsIframe.contentDocument;
         if (commentsDocument) {
-
           const commentsBodyElement = commentsDocument.querySelector('body');
 
           commentsBodyElement.style.setProperty('text-shadow', 'rgb(127 204 102) 1px 1px 1px, rgb(204 102 127) -1px -1px 1px');
           commentsBodyElement.style.setProperty('background-image', 'linear-gradient(45deg, #33ccff, #cc33ff)');
           ciObserver.disconnect();
         }
-      });
+      };
 
+      const commentsIframeObserver = new MutationObserver(mutationHandler);
       commentsIframeObserver.observe(commentsIframe, { attributes: true });
       observer.disconnect();
     }
   });
 
   commentsWrapperObserver.observe(commentsWrapper, { childList: true });
-})();
+}());

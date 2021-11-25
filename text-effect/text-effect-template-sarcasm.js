@@ -12,7 +12,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function userScript() {
+(function sarcastifyUserScript() {
   /* This section is unique to the sarcastic effect */
   const buttonText = 'sarcastify';
   const effectClassName = 'sarcastic-text';

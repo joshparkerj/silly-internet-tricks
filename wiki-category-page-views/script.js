@@ -9,9 +9,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function () {
-  'use strict';
-
+(function wikiPageViewsUserScript() {
   const sortByPageViewsThisMonthButton = document.createElement('button');
   sortByPageViewsThisMonthButton.innerText = 'sort by page views this month';
 
@@ -35,16 +33,16 @@
 
     const lastMonthDate = `${thisYear}${lastMonth.toString().padStart(2, '0')}01`;
 
-    const pageViewUrls = [...categoryLinks].map(a => `${apiUrl}${a.href.match(/wiki\/(.*)$/)[1].replaceAll('/', '%2F')}/monthly/${lastMonthDate}/${today}`);
+    const pageViewUrls = [...categoryLinks].map((a) => `${apiUrl}${a.href.match(/wiki\/(.*)$/)[1].replaceAll('/', '%2F')}/monthly/${lastMonthDate}/${today}`);
 
-    Promise.all(pageViewUrls.map(url => fetch(url).then(r => r.json()).then(json => {
+    Promise.all(pageViewUrls.map((url) => fetch(url).then((r) => r.json()).then((json) => {
       if (json.items) {
         return json.items[0].views;
-      } else {
-        return json.title;
       }
+
+      return json.title;
     })))
-      .then(results => {
+      .then((results) => {
         document.querySelector('#mw-pages > h2').appendChild(sortByPageViewsThisMonthButton);
         results.forEach((views, i) => {
           if (typeof views === 'number') {
@@ -60,13 +58,12 @@
 
   const sortByPageViewsThisMonth = function sortByPageViewsThisMonth() {
     const categoryLinks = document.querySelectorAll('#mw-pages li > a');
-    const linkSorter = ab => {
+    const linkSorter = (ab) => {
       const viewMatch = ab.innerText.match(/\((\d+) page views this month\)/);
       if (viewMatch) {
         return +(viewMatch[1]);
-      } else {
-        return -1;
       }
+      return -1;
     };
 
     const sortedLinks = [...categoryLinks].sort((a, b) => linkSorter(b) - linkSorter(a));
@@ -82,7 +79,7 @@
     };
 
     document.styleSheets[0].insertRule('#mw-pages .mw-category a { display: block; }');
-    sortedLinks.forEach(link => categorySection.appendChild(link));
+    sortedLinks.forEach((link) => categorySection.appendChild(link));
     sortByPageViewsThisMonthButton.removeEventListener('click', sortByPageViewsThisMonth);
     sortByPageViewsThisMonthButton.addEventListener('click', undoSort);
     sortByPageViewsThisMonthButton.innerText = 'undo sort';
@@ -91,4 +88,4 @@
   sortByPageViewsThisMonthButton.addEventListener('click', sortByPageViewsThisMonth);
 
   document.querySelector('#mw-pages > h2').appendChild(getPageViewsThisMonthButton);
-})();
+}());

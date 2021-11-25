@@ -31,38 +31,40 @@
   };
 
   const zalgoify = function zalgoify({ target }) {
+    const e = target;
     body.removeEventListener('mousedown', zalgoify);
 
-    const singleLetterSpans = target.textContent.split('').map((c) => {
+    const singleLetterSpans = e.textContent.split('').map((c) => {
       const singleLetterSpan = document.createElement('span');
       singleLetterSpan.textContent = c;
       return singleLetterSpan;
     });
 
-    target.textContent = '';
-    singleLetterSpans.forEach((span) => target.appendChild(span));
+    e.textContent = '';
+    singleLetterSpans.forEach((span) => e.appendChild(span));
 
     const zalgoifyMouseover = ({ target: mouseoverTarget }) => {
-      if (mouseoverTarget.tagName === 'SPAN') {
-        mouseoverTarget.className = 'selected';
+      const f = mouseoverTarget;
+      if (f.tagName === 'SPAN') {
+        f.className = 'selected';
       }
     };
 
-    target.addEventListener('mouseover', zalgoifyMouseover);
+    e.addEventListener('mouseover', zalgoifyMouseover);
 
     const zalgoifyMouseup = () => {
-      target.removeEventListener('mouseup', zalgoifyMouseup);
-      target.removeEventListener('mouseover', zalgoifyMouseover);
-      const text = target.textContent;
-      const classNames = [...target.childNodes].map((node) => node.className);
+      e.removeEventListener('mouseup', zalgoifyMouseup);
+      e.removeEventListener('mouseover', zalgoifyMouseover);
+      const text = e.textContent;
+      const classNames = [...e.childNodes].map((node) => node.className);
       const selectionStart = classNames.indexOf('selected');
       const selectionEnd = classNames.lastIndexOf('selected') + 1;
-      target.innerHTML = `${text.slice(0, selectionStart)}<span class='zalgo-text'>${text.slice(selectionStart, selectionEnd)}</span>${text.slice(selectionEnd)}`;
-      changeTextToZalgoText(target.querySelector('span.zalgo-text'));
+      e.innerHTML = `${text.slice(0, selectionStart)}<span class='zalgo-text'>${text.slice(selectionStart, selectionEnd)}</span>${text.slice(selectionEnd)}`;
+      changeTextToZalgoText(e.querySelector('span.zalgo-text'));
       zalgoifyButton.removeAttribute('disabled');
     };
 
-    target.addEventListener('mouseup', zalgoifyMouseup);
+    e.addEventListener('mouseup', zalgoifyMouseup);
   };
 
   zalgoifyButton.addEventListener('click', () => {

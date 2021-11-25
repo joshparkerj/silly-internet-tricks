@@ -9,10 +9,9 @@
 // @grant        none
 // ==/UserScript==
 
-(function () {
-  console.log('tampering');
-  for (let i = 1; i <= 10; i++) {
-    setTimeout(() => [...document.querySelectorAll('.game-card')].filter(card => {
+(function robloxGamesFilterUserScript() {
+  for (let i = 1; i <= 10; i += 1) {
+    setTimeout(() => [...document.querySelectorAll('.game-card')].filter((card) => {
       const noVote = card.querySelector('.no-vote');
 
       if (noVote) {
@@ -25,11 +24,10 @@
         return true;
       }
 
-      const votePercentageLabel = card.querySelector('.vote-percentage-label').textContent.slice(0, -1)
+      const votePercentageLabel = card.querySelector('.vote-percentage-label').textContent.slice(0, -1);
       const playingCountsLabel = card.querySelector('.playing-counts-label').title;
       const remove = votePercentageLabel < 76 || playingCountsLabel < 30;
-      console.log(`Vote percentage label: ${votePercentageLabel}. Playing counts label: ${playingCountsLabel}. Remove: ${remove}.`);
       return remove;
-    }).forEach(function (card) { card.style = "display: none"; }), 2000 * i);
+    }).forEach((card) => { const c = card; c.style = 'display: none'; }), 2000 * i);
   }
-})();
+}());
