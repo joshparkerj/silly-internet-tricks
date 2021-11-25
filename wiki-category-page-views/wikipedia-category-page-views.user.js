@@ -10,101 +10,139 @@
 // @grant        none
 // ==/UserScript==
 
-(function () {
-  'use strict';
+(function wikCategoryPageViewsUserScript() {
+  let period = 'week';
+  const sortByPageViewsButton = document.createElement('button');
+  const sortButtonInnerText = () => `sort by page views from the past ${period}`;
+  sortByPageViewsButton.innerText = sortButtonInnerText();
 
-  const sortByPageViewsThisMonthButton = document.createElement('button');
-  sortByPageViewsThisMonthButton.innerText = 'sort by page views this month';
+  const getPageViewsButton = document.createElement('button');
+  const getButtonInnerText = () => `get page views from the past ${period}`;
+  getPageViewsButton.innerText = getButtonInnerText();
 
-  const getPageViewsThisMonthButton = document.createElement('button');
-  getPageViewsThisMonthButton.innerText = 'get page views this month';
+  const periodSelect = document.createElement('select');
 
-  const getPageViewsThisMonth = function getPageViewsThisMonth() {
-    getPageViewsThisMonthButton.setAttribute('disabled', true);
+  // the api is documented at https://wikimedia.org/api/rest_v1/#/Pageviews%20data/get_metrics_pageviews_per_article__project___access___agent___article___granularity___start___end_
+  // IMPORTANT: The rate limit is 100 requests per second.
+  const apiUrl = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/';
+
+  const yyyymmdd = function yyyymmdd(date) {
+    const isoString = date.toISOString();
+    const isoMatch = isoString.match(/(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})T\d\d:\d\d:\d\d.\d{3}Z/);
+    const { year, month, day } = isoMatch.groups;
+    return `${year}${month}${day}`;
+  };
+
+  const addDays = function addDays(date, days) {
+    const calculatedDate = new Date(date);
+    calculatedDate.setDate(date.getDate() + days);
+    return calculatedDate;
+  };
+
+  const addMonths = function addMonths(date, months) {
+    const calculatedDate = new Date(date);
+    calculatedDate.setMonth(date.getMonth() + months);
+    return calculatedDate;
+  };
+
+  const thisDate = new Date();
+
+  const today = yyyymmdd(thisDate);
+
+  const startDates = {
+    week: { startDate: yyyymmdd(addDays(thisDate, -7)), granularity: 'daily' },
+    month: { startDate: yyyymmdd(addMonths(thisDate, -1)), granularity: 'monthly' },
+    'three months': { startDate: yyyymmdd(addMonths(thisDate, -3)), granularity: 'monthly' },
+    year: { startDate: yyyymmdd(addMonths(thisDate, -12)), granularity: 'monthly' },
+    'three years': { startDate: yyyymmdd(addMonths(thisDate, -36)), granularity: 'monthly' },
+  };
+
+  const getPageViewUrls = (categoryLinks, startDate, granularity) => [...categoryLinks].map((a) => `${apiUrl}${a.href.match(/wiki\/(.*)$/)[1].replaceAll('/', '%2F')}/${granularity}/${startDate}/${today}`);
+
+  const REQUESTS_PER_SECOND = 100;
+  const getPageViews = function getPageViews(timePeriod) {
+    getPageViewsButton.setAttribute('disabled', true);
+    periodSelect.setAttribute('disabled', true);
     const categoryLinks = document.querySelectorAll('#mw-pages li > a');
 
-    // the api is documented at https://wikimedia.org/api/rest_v1/#/Pageviews%20data/get_metrics_pageviews_per_article__project___access___agent___article___granularity___start___end_
-    // IMPORTANT: The rate limit is 100 requests per second.
-    const apiUrl = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/';
-    const thisDate = new Date();
-    const thisYear = thisDate.getFullYear();
-    const thisMonth = thisDate.getMonth() + 1;
-    const thisDay = thisDate.getDate();
-
-    const today = `${thisYear}${thisMonth.toString().padStart(2, '0')}${thisDay.toString().padStart(2, '0')}`;
-
-    const lastMonth = thisMonth === 1 ? 12 : thisMonth - 1;
-
-    const lastMonthDate = `${thisYear}${lastMonth.toString().padStart(2, '0')}01`;
-
-    const pageViewUrls = [...categoryLinks].map(a => `${apiUrl}${a.href.match(/wiki\/(.*)$/)[1].replaceAll('/', '%2F')}/monthly/${lastMonthDate}/${today}`);
-
-    const REQUESTS_PER_SECOND = 100;
-
+    const { startDate, granularity } = startDates[timePeriod];
+    const pageViewUrls = getPageViewUrls(categoryLinks, startDate, granularity);
     for (let i = 0; i < pageViewUrls.length; i += REQUESTS_PER_SECOND) {
       const pageViewUrlsSlice = pageViewUrls.slice(i, i + REQUESTS_PER_SECOND);
-      const timeoutDelayInMilliseconds = i * 1000 / REQUESTS_PER_SECOND;
-      console.log(timeoutDelayInMilliseconds);
+      const timeoutDelayInMilliseconds = (i * 1000) / REQUESTS_PER_SECOND;
       setTimeout(() => {
-        Promise.all(pageViewUrlsSlice.map(url => fetch(url).then(r => r.json()).then(json => {
+        Promise.all(pageViewUrlsSlice.map((url) => fetch(url).then((r) => r.json()).then((json) => {
           if (json.items) {
-            return json.items[0].views;
-          } else {
-            return json.title;
+            return json.items.reduce((sum, item) => sum + item.views, 0);
           }
+          return json.title;
         })))
-          .then(results => {
-            document.querySelector('#mw-pages > h2').appendChild(sortByPageViewsThisMonthButton);
+          .then((results) => {
+            document.querySelector('#mw-pages > h2').appendChild(sortByPageViewsButton);
             results.forEach((views, index) => {
               if (typeof views === 'number') {
-                categoryLinks[index + i].innerText += ` (${views} page views this month)`;
+                categoryLinks[index + i].innerText += ` (${views} page views in the past ${timePeriod})`;
               } else {
                 categoryLinks[index + i].innerText += ` (page views ${views})`;
               }
             });
-          })
+          });
       }, timeoutDelayInMilliseconds);
     }
-
-
   };
 
-  getPageViewsThisMonthButton.addEventListener('click', getPageViewsThisMonth);
+  getPageViewsButton.addEventListener('click', () => getPageViews(period));
 
-  const sortByPageViewsThisMonth = function sortByPageViewsThisMonth() {
+  const sortByPageViews = function sortByPageViews() {
     const categoryLinks = document.querySelectorAll('#mw-pages li > a');
-    const linkSorter = ab => {
-      const viewMatch = ab.innerText.match(/\((\d+) page views this month\)/);
+    const linkSorter = (ab) => {
+      const viewMatch = ab.innerText.match(/\((\d+) page views in the past .{4,12}\)/);
       if (viewMatch) {
         return +(viewMatch[1]);
-      } else {
-        return -1;
       }
+      return -1;
     };
 
     const sortedLinks = [...categoryLinks].sort((a, b) => linkSorter(b) - linkSorter(a));
-    const categorySection = document.querySelector('#mw-pages .mw-category');
+    const categorySection = document.querySelector('#mw-pages .mw-category') || document.querySelector('#mw-pages .mw-content-ltr');
     const allCategorySections = document.querySelectorAll('#mw-pages .mw-category');
-    const unsorted = [...allCategorySections].map(section => section.innerHTML);
+    const unsorted = [...allCategorySections].map((section) => section.innerHTML);
     categorySection.innerHTML = '';
     const undoSort = function undoSort() {
       document.styleSheets[0].deleteRule(0);
       document.styleSheets[0].deleteRule(0);
-      allCategorySections.forEach((section, i) => { section.innerHTML = unsorted[i] });
-      sortByPageViewsThisMonthButton.removeEventListener('click', undoSort);
-      sortByPageViewsThisMonthButton.addEventListener('click', sortByPageViewsThisMonth);
-      sortByPageViewsThisMonthButton.innerText = 'sort by page views this month';
+      allCategorySections.forEach((section, i) => {
+        const s = section; s.innerHTML = unsorted[i];
+      });
+
+      sortByPageViewsButton.removeEventListener('click', undoSort);
+      sortByPageViewsButton.addEventListener('click', sortByPageViews);
+      sortByPageViewsButton.innerText = sortButtonInnerText();
     };
 
     document.styleSheets[0].insertRule('#mw-pages .mw-category a { display: block; }');
     document.styleSheets[0].insertRule('#mw-pages .mw-category ~ .mw-category { display: none; }');
-    sortedLinks.forEach(link => categorySection.appendChild(link));
-    sortByPageViewsThisMonthButton.removeEventListener('click', sortByPageViewsThisMonth);
-    sortByPageViewsThisMonthButton.addEventListener('click', undoSort);
-    sortByPageViewsThisMonthButton.innerText = 'undo sort';
+    sortedLinks.forEach((link) => categorySection.appendChild(link));
+    sortByPageViewsButton.removeEventListener('click', sortByPageViews);
+    sortByPageViewsButton.addEventListener('click', undoSort);
+    sortByPageViewsButton.innerText = 'undo sort';
   };
 
-  sortByPageViewsThisMonthButton.addEventListener('click', sortByPageViewsThisMonth);
+  sortByPageViewsButton.addEventListener('click', sortByPageViews);
 
-  document.querySelector('#mw-pages > h2').appendChild(getPageViewsThisMonthButton);
-})();
+  document.querySelector('#mw-pages > h2').appendChild(getPageViewsButton);
+  Object.keys(startDates).forEach((periodValue) => {
+    const periodOption = document.createElement('option');
+    periodOption.innerText = periodValue;
+    periodOption.value = periodValue;
+    periodSelect.appendChild(periodOption);
+  });
+
+  periodSelect.querySelector('option').setAttribute('selected', true);
+  periodSelect.addEventListener('change', ({ target }) => {
+    period = target.value;
+    sortByPageViewsButton.innerText = sortButtonInnerText();
+    getPageViewsButton.innerText = getButtonInnerText();
+  });
+  document.querySelector('#mw-pages > h2').appendChild(periodSelect);
+}());
