@@ -50,11 +50,11 @@ div {
 
 @keyframes wave {
   from {
-    transform: translateY(0);
+    transform: rotate(0);
   }
 
   25% {
-    transform: translateY(-100%);
+    transform: rotate(360deg);
   }
 
   50% {

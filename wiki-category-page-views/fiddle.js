@@ -18,11 +18,15 @@ const getPageViewsThisMonth = function getPageViewsThisMonth() {
 
   const lastMonthDate = `${thisYear}${lastMonth.toString().padStart(2, '0')}01`;
 
-  const pageViewUrls = [...categoryLinks].map(a => `${apiUrl}${a.href.match(/[^\/]*$/)[0]}/monthly/${lastMonthDate}/${today}`);
+  const pageViewUrls = [...categoryLinks].map((a) => `${apiUrl}${a.href.match(/[^/]*$/)[0]}/monthly/${lastMonthDate}/${today}`);
 
-  Promise.all(pageViewUrls.map(url => fetch(url).then(r.json()).then(json => json.items[0].views)))
-    .then(results => results.forEach((views, i) => categoryLinks[i].innerText += ` (${views} page views this month)`));
-}
+  Promise.all(pageViewUrls.map((url) => (
+    fetch(url)
+      .then((r) => r.json())
+      .then((json) => json.items[0].views)
+  )))
+    .then((results) => results.forEach((views, i) => { categoryLinks[i].innerText += ` (${views} page views this month)`; }));
+};
 
 getPageViewsThisMonthButton.addEventListener('click', getPageViewsThisMonth);
 

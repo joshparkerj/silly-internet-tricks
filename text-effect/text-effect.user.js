@@ -10,7 +10,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function userScript() {
+(function textEffectUserScript() {
   const effectify = function effectify(buttonText, effectClassName, applyTextEffect) {
     const textEffectButton = document.createElement('button');
     textEffectButton.innerText = buttonText;
@@ -146,6 +146,9 @@
   joshTextManips.appendChild(zanyifyButton);
 
   // const fidgetifyButton = effectify('fidgetify', 'fidget-text', )
+  const blinkifyButton = effectify('blinkify', 'blink-text', (element) => {
+    
+  })
 
   addCSSRule('body > div#josh-text-manips { position: fixed; background-color: lightgrey; padding: 5px 10px; top: 62px; right: 10px; border-radius: 16px; box-shadow: 2px 2px 1px black; z-index: 2; display: grid; grid-template-columns: 1fr 1fr 1fr; }');
   addCSSRule('body > div#josh-text-manips > button { grid-column: span 1; }');
