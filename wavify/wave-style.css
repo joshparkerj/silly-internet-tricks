@@ -1,0 +1,67 @@
+div {
+  animation-duration: 3s;
+  animation-name: wave;
+  animation-iteration-count: infinite;
+  background-color: black;
+  padding: 50px 5px;
+  display: inline-block;
+  margin: 250px 5px;
+}
+
+#zero {
+  animation-delay: 0ms;
+}
+
+#one {
+  animation-delay: 300ms;
+}
+
+#two {
+  animation-delay: 600ms;
+}
+
+#three {
+  animation-delay: 900ms;
+}
+
+#four {
+  animation-delay: 1200ms;
+}
+
+#five {
+  animation-delay: 1500ms;
+}
+
+#six {
+  animation-delay: 1800ms;
+}
+
+#seven {
+  animation-delay: 2100ms;
+}
+
+#eight {
+  animation-delay: 2400ms;
+}
+
+#nine {
+  animation-delay: 2700ms;
+}
+
+@keyframes wave {
+  from {
+    transform: translateY(0);
+  }
+
+  25% {
+    transform: translateY(-100%);
+  }
+
+  50% {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
