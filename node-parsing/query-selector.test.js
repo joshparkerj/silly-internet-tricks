@@ -4,6 +4,7 @@ const querySelector = require('./query-selector');
 const html = '<!DOCTYPE html>'
   + '<html><head><title>THIS IS THE TITLE</title></head>'
   + '<body><main>THIS IS THE MAIN</main>'
+  + '<div><div><div><div><div class="depth">this is the deep div early in the document</div></div></div></div></div>'
   + '<div><a>this a is in the div</a>'
   + '<p><a>this a is in the p in the div</a></p></div>'
   + '<p><span class="a">apple</span><span class="b">banana</span><span class="c">carrot</span></p>'
@@ -12,13 +13,17 @@ const html = '<!DOCTYPE html>'
   + '<p class="good"><span class="bad">GOODBAD</a></p>'
   + '<p class="bad"><span class="good">BADGOOD</a></p>'
   + '<p class="bad"><span class="bad">BADBAD</a></p>'
+  + '<p id="bad"><span class="bad">id BADBAD</a><a href="google.com">a with an href</a></p>'
   + '<div class="cool-class">THIS IS THE COOL CLASS</div>'
-  + '<div id="an-id">I have an id.</div></body></html>';
+  + '<ol><li>one</li><li>two</li><li>three</li><li>four</li><li>five</li><li>six</li><li>seven</li></ol>'
+  + '<div id="an-id">I have an id.</div>'
+  + '<div class="depth">this is the shallow div late in the document</div></body></html>';
 const doc = parse(html);
 const text = (element) => element.childNodes.find((childNode) => childNode.nodeName === '#text')?.value;
+const queryText = (query, innerText) => expect(text(querySelector(doc, query))).toBe(innerText);
 
 test('finds main tag', () => {
-  expect(text(querySelector(doc, 'main'))).toBe('THIS IS THE MAIN');
+  queryText('main', 'THIS IS THE MAIN');
 });
 
 test('error on empty query', () => {
@@ -34,32 +39,48 @@ test('error on combinator suffix', () => {
 });
 
 test('finds child of p', () => {
-  expect(text(querySelector(doc, 'p a'))).toBe('this a is in the p in the div');
+  queryText('p a', 'this a is in the p in the div');
 });
 
 test('finds child of p which is child of div', () => {
-  expect(text(querySelector(doc, 'div p a'))).toBe('this a is in the p in the div');
+  queryText('div p a', 'this a is in the p in the div');
 });
 
 test('finds element with class cool-class', () => {
-  expect(text(querySelector(doc, '.cool-class'))).toBe('THIS IS THE COOL CLASS');
+  queryText('.cool-class', 'THIS IS THE COOL CLASS');
 });
 
 test('finds span with correct class', () => {
-  expect(text(querySelector(doc, 'span.b'))).toBe('banana');
+  queryText('span.b', 'banana');
 });
 
 test('finds class d with correct tag name', () => {
-  expect(text(querySelector(doc, 'strong.d'))).toBe('d mighty');
+  queryText('strong.d', 'd mighty');
 });
 
 test('correctly navigates relationships between class parents and children ', () => {
-  expect(text(querySelector(doc, '.good .good'))).toBe('GOODGOOD');
-  expect(text(querySelector(doc, '.good .bad'))).toBe('GOODBAD');
-  expect(text(querySelector(doc, '.bad .good'))).toBe('BADGOOD');
-  expect(text(querySelector(doc, '.bad .bad'))).toBe('BADBAD');
+  queryText('.good .good', 'GOODGOOD');
+  queryText('.good .bad', 'GOODBAD');
+  queryText('.bad .good', 'BADGOOD');
+  queryText('.bad .bad', 'BADBAD');
 });
 
 test('finds the element with an id', () => {
-  expect(text(querySelector(doc, '#an-id'))).toBe('I have an id.');
+  queryText('#an-id', 'I have an id.');
+});
+
+test('finds the element with a class and a parent with an id', () => {
+  queryText('#bad .bad', 'id BADBAD');
+});
+
+test('finds the link with the href attribute', () => {
+  queryText('a[href]', 'a with an href');
+});
+
+test('finds the first matching element', () => {
+  queryText('ol li', 'one');
+});
+
+test('finds the earlier element, not the shallower one', () => {
+  queryText('.depth', 'this is the deep div early in the document');
 });

@@ -40,16 +40,19 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
     const selector = selectorList[i];
     const { elementSelector, rest } = selector.toLocaleLowerCase().trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>[^\s+>~]+)(?<rest>[\s+>~].*)?$/).groups;
 
-    const matchingTags = childNodes.filter(getElementMatcher(elementSelector));
-    for (let j = 0; j < matchingTags.length; j += 1) {
-      const result = querySelectorHelper(matchingTags[j], rest);
-      if (result) {
-        return result;
-      }
-    }
-
+    // const matchingTags = childNodes.filter(getElementMatcher(elementSelector));
+    const elementMatcher = getElementMatcher(elementSelector);
     for (let j = 0; j < childNodes.length; j += 1) {
-      const result = querySelectorHelper(childNodes[j], query);
+      const childNode = childNodes[j];
+
+      if (elementMatcher(childNode)) {
+        const result = querySelectorHelper(childNode, rest);
+        if (result) {
+          return result;
+        }
+      }
+
+      const result = querySelectorHelper(childNode, query);
       if (result) {
         return result;
       }
