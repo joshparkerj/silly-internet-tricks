@@ -1,19 +1,15 @@
 const getElementMatcher = function getElementMatcher(elementSelector) {
   const filters = [];
-  const tagMatch = elementSelector.match(/^[^.#[]+/);
-  const tag = tagMatch && tagMatch[0];
-  if (tag && tag !== '*') {
-    filters.push((childNode) => childNode.tagName === tag);
+  const tag = elementSelector.match(/^[^.#[]+/);
+  if (tag && tag[0] !== '*') {
+    filters.push((childNode) => childNode.tagName === tag[0]);
   }
 
   const classes = elementSelector.match(/\.[^.#[]+/g);
   if (classes) {
     filters.push((childNode) => (classes.every((className) => {
-      console.log(className);
       const { attrs } = childNode;
-      console.log(attrs);
       const classList = attrs?.find(({ name }) => name === 'class')?.value.split(' ');
-      console.log(classList);
       return classList?.includes(className.replace('.', ''));
     })));
   }
