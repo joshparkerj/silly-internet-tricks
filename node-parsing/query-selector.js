@@ -21,7 +21,6 @@ const getElementMatcher = function getElementMatcher(elementSelector) {
 
   const attributes = elementSelector.match(/\[[^\]]+\]/g);
   if (attributes) {
-    console.log(attributes);
     filters.push((childNode) => (attributes.every((attribute) => (
       childNode.attrs?.some(({ name }) => name === attribute.replace(/(\[|\])/g, ''))
     ))));
@@ -47,8 +46,6 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
   for (let i = 0; i < selectorList.length; i += 1) {
     const selector = selectorList[i];
     const { elementSelector, rest } = selector.toLocaleLowerCase().trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>[^\s+>~]+)(?<rest>[\s+>~].*)?$/).groups;
-
-    // const matchingTags = childNodes.filter(getElementMatcher(elementSelector));
     const elementMatcher = getElementMatcher(elementSelector);
     for (let j = 0; j < childNodes.length; j += 1) {
       const childNode = childNodes[j];
@@ -81,6 +78,5 @@ module.exports = function querySelector(node, query) {
   }
 
   const result = querySelectorHelper(node, query);
-  // console.log(result);
   return result;
 };
