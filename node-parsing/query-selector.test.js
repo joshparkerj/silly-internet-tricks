@@ -8,7 +8,7 @@ const html = '<!DOCTYPE html>'
   + '<p><a>this a is in the p in the div</a></p></div>'
   + '<div class="cool-class">THIS IS THE COOL CLASS</div></body></html>';
 const doc = parse(html);
-const text = (element) => element.childNodes.find((childNode) => childNode.nodeName === '#text').value;
+const text = (element) => element.childNodes.find((childNode) => childNode.nodeName === '#text')?.value;
 
 test('finds main tag', () => {
   expect(text(querySelector(doc, 'main'))).toBe('THIS IS THE MAIN');

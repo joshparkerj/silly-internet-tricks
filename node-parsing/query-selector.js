@@ -1,3 +1,28 @@
+const getElementMatcher = function getElementMatcher(elementSelector) {
+  const filters = [];
+  const tagMatch = elementSelector.match(/^[^.#[]+/);
+  const tag = tagMatch && tagMatch[0];
+  if (tag && tag !== '*') {
+    filters.push((childNode) => childNode.tagName === tag);
+  }
+
+  const classes = elementSelector.match(/\.[^.#[]+/g);
+  if (classes) {
+    filters.push((childNode) => (classes.every((className) => {
+      console.log(className);
+      const { attrs } = childNode;
+      console.log(attrs);
+      const classList = attrs?.find(({ name }) => name === 'class')?.value.split(' ');
+      console.log(classList);
+      return classList?.includes(className.replace('.', ''));
+    })));
+  }
+
+  return function elementMatcher(childNode) {
+    return filters.every((filter) => filter(childNode));
+  };
+};
+
 const querySelectorHelper = function querySelectorHelper(node, query) {
   if (!query) {
     return node;
@@ -14,21 +39,11 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
     const selector = selectorList[i];
     const { elementSelector, rest } = selector.toLocaleLowerCase().trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>[^\s+>~]+)(?<rest>[\s+>~].*)?$/).groups;
 
-    const tagMatch = elementSelector.match(/^[^.#[]+/);
-    const tag = tagMatch && tagMatch[0];
-
-    if (!tag || tag === '*') {
-      const result = querySelectorHelper(childNodes[0], rest);
+    const matchingTags = childNodes.filter(getElementMatcher(elementSelector));
+    for (let j = 0; j < matchingTags.length; j += 1) {
+      const result = querySelectorHelper(matchingTags[j], rest);
       if (result) {
         return result;
-      }
-    } else {
-      const matchingTags = childNodes.filter((childNode) => childNode.tagName === tag);
-      for (let j = 0; j < matchingTags.length; j += 1) {
-        const result = querySelectorHelper(matchingTags[j], rest);
-        if (result) {
-          return result;
-        }
       }
     }
 
