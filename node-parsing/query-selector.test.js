@@ -17,6 +17,11 @@ const html = '<!DOCTYPE html>'
   + '<div class="cool-class">THIS IS THE COOL CLASS</div>'
   + '<ol><li>one</li><li>two</li><li>three</li><li>four</li><li>five</li><li>six</li><li>seven</li></ol>'
   + '<div id="an-id">I have an id.</div>'
+  + '<input name="one">input name one</input>'
+  + '<input name="two">input name two</input>'
+  + '<input name="three">input name three</input>'
+  + '<input name="four">input name four</input>'
+  + '<input name="five">input name five</input>'
   + '<div class="depth">this is the shallow div late in the document</div></body></html>';
 const doc = parse(html);
 const text = (element) => element.childNodes.find((childNode) => childNode.nodeName === '#text')?.value;
@@ -83,4 +88,12 @@ test('finds the first matching element', () => {
 
 test('finds the earlier element, not the shallower one', () => {
   queryText('.depth', 'this is the deep div early in the document');
+});
+
+test('null on element without child', () => {
+  expect(querySelector(doc, '#an-id div')).toBe(null);
+});
+
+test('finds element with attribute exact match', () => {
+  queryText('input[name=three]', 'input name three');
 });
