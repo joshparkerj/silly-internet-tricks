@@ -1,5 +1,4 @@
 const { parse } = require('parse5');
-// const { test, expect } = require('jest');
 const querySelector = require('./query-selector');
 
 test('finds body tag', () => {
