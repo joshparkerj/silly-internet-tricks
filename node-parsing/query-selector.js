@@ -19,6 +19,14 @@ const getElementMatcher = function getElementMatcher(elementSelector) {
     filters.push((childNode) => childNode.attrs?.find(({ name, value }) => name === 'id' && value === id[0].replace('#', '')));
   }
 
+  const attributes = elementSelector.match(/\[[^\]]+\]/g);
+  if (attributes) {
+    console.log(attributes);
+    filters.push((childNode) => (attributes.every((attribute) => (
+      childNode.attrs?.some(({ name }) => name === attribute.replace(/(\[|\])/g, ''))
+    ))));
+  }
+
   return function elementMatcher(childNode) {
     return filters.every((filter) => filter(childNode));
   };
@@ -73,5 +81,6 @@ module.exports = function querySelector(node, query) {
   }
 
   const result = querySelectorHelper(node, query);
+  // console.log(result);
   return result;
 };
