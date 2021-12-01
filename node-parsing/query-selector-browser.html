@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>THIS IS THE TITLE</title>
+</head>
+
+<body>
+  <main>THIS IS THE MAIN</main>
+  <div><a>this a is in the div</a>
+    <p><a>this a is in the p in the div</a></p>
+  </div>
+  <p><span class="a">apple</span><span class="b">banana</span><span class="c">carrot</span></p>
+  <p><span class="d">d span</span><strong class="d">d mighty</strong><em class="d">d em</em></p>
+  <p class="good"><span class="good">GOODGOOD</a></p>
+  <p class="good"><span class="bad">GOODBAD</a></p>
+  <p class="bad"><span class="good">BADGOOD</a></p>
+  <p class="bad"><span class="bad">BADBAD</a></p>
+  <div class="cool-class">THIS IS THE COOL CLASS</div>
+  <script>
+    const tests = [
+      { query: 'main', text: 'THIS IS THE MAIN' },
+      // expect(() => querySelector(doc, '')).toThrow();
+      // expect(() => querySelector(doc, '> body')).toThrow();
+      // expect(() => querySelector(doc, '> body')).toThrow();
+      { query: 'p a', text: 'this a is in the p in the div' },
+      { query: 'div p a', text: 'this a is in the p in the div' },
+      { query: '.cool-class', text: 'THIS IS THE COOL CLASS' },
+      { query: 'span.b', text: 'banana' },
+      { query: 'strong.d', text: 'd mighty' },
+      { query: '.good .good', text: 'GOODGOOD' },
+      { query: '.good .bad', text: 'GOODBAD' },
+      { query: '.bad .good', text: 'BADGOOD' },
+      { query: '.bad .bad', text: 'BADBAD' },
+    ];
+
+    tests.forEach((test) => console.log(document.querySelector(test.query).textContent === test.text, test));
+
+    
+  </script>
+</body>
+
+</html>
