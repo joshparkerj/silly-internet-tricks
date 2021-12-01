@@ -14,6 +14,11 @@ const getElementMatcher = function getElementMatcher(elementSelector) {
     })));
   }
 
+  const id = elementSelector.match(/#[^.#[]+/);
+  if (id) {
+    filters.push((childNode) => childNode.attrs?.find(({ name, value }) => name === 'id' && value === id[0].replace('#', '')));
+  }
+
   return function elementMatcher(childNode) {
     return filters.every((filter) => filter(childNode));
   };
