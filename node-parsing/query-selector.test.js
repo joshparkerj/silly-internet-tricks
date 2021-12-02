@@ -123,3 +123,15 @@ test('finds element with attribute contains match', () => {
 test('works with shouty tag names', () => {
   expect(text(querySelector(doc, 'DIV P ABBR[title^=Fed]'))).toBe('FBI');
 });
+
+test('can match child attribute without tagname', () => {
+  expect(text(querySelector(doc, 'DIV P [title^=Fed]'))).toBe('FBI');
+});
+
+test('can match descendant attribute without tagname', () => {
+  expect(text(querySelector(doc, 'DIV [title^=Fed]'))).toBe('FBI');
+});
+
+test('does not match descendent when using child combinator', () => {
+  expect(querySelector(doc, 'DIV > [title^=Fed]')).toBe(null);
+});

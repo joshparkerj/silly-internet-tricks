@@ -6,6 +6,8 @@ const attributeMatcher = function attributeMatcher(actualValues, operator, targe
       const re = new RegExp(`\\b${targetValue}\\b`);
       return actualValues.some((actualValue) => actualValue.match(re));
     }
+    case '|=':
+      throw new Error('not implemented');
     case '^=':
       return actualValues.some((actualValue) => actualValue.startsWith(targetValue));
     case '$=':
@@ -13,7 +15,7 @@ const attributeMatcher = function attributeMatcher(actualValues, operator, targe
     case '*=':
       return actualValues.some((actualValue) => actualValue.includes(targetValue));
     default:
-      throw new Error('not implemented');
+      throw new Error('not a valid selector');
   }
 };
 
