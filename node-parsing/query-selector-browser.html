@@ -37,6 +37,16 @@
     <li>seven</li>
   </ol>
   <div id="an-id">I have an id.</div>
+  <label name="one">label name one</label>
+  <label name="two">label name two</label>
+  <label name="three">label name three</label>
+  <label name="four">label name four</label>
+  <label name="five">label name five</label>
+  <div>
+    <p>I am going to report this to the <abbr title="Federal Bureau of Investigation">FBI</abbr>
+      and the <abbr title="Cental Intelligence Agency">CIA</abbr>!</p>
+  </div>
+
   <div class="depth">this is the shallow div late in the document</div>
   <script>
     const tests = [
@@ -56,6 +66,14 @@
       { query: 'a[href]', text: 'a with an href' },
       { query: 'ol li', text: 'one' },
       { query: '.depth', text: 'this is the deep div early in the document' },
+      // expect(querySelector(doc, '#an-id div')).toBe(null);
+      { query: 'label[name=three]', text: 'label name three' },
+      { query: 'abbr[title~=Federal]', text: 'FBI' },
+      { query: 'abbr[title~=Federal', text: 'FBI' },
+      { query: 'abbr[title^=Fed]', text: 'FBI' },
+      { query: 'abbr[title$=cy]', text: 'CIA' },
+      { query: 'abbr[title*=lig]', text: 'CIA' },
+
     ];
 
     tests.forEach((test) => console.log(document.querySelector(test.query).textContent === test.text, test));

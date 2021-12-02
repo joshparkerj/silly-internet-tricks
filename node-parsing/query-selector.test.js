@@ -119,3 +119,7 @@ test('finds element with attribute suffix match', () => {
 test('finds element with attribute contains match', () => {
   expect(text(querySelector(doc, 'abbr[title*=lig]'))).toBe('CIA');
 });
+
+test('works with shouty tag names', () => {
+  expect(text(querySelector(doc, 'DIV P ABBR[title^=Fed]'))).toBe('FBI');
+});

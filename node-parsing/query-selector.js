@@ -21,7 +21,8 @@ const getElementMatcher = function getElementMatcher(elementSelector) {
   const filters = [];
   const tag = elementSelector.match(/^[^.#[]+/);
   if (tag && tag[0] !== '*') {
-    filters.push((childNode) => childNode.tagName === tag[0]);
+    const lowerTag = tag[0].toLocaleLowerCase();
+    filters.push((childNode) => childNode.tagName === lowerTag);
   }
 
   const classes = elementSelector.match(/\.[^.#[]+/g);
