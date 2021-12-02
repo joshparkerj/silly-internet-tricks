@@ -91,7 +91,8 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
     } else if (combinator === '~') {
       searchNodes = followingSiblings(node);
     } else if (combinator === '+') {
-      searchNodes = [followingSiblings(node)[0]];
+      const adjacentSibling = followingSiblings(node)[0];
+      searchNodes = adjacentSibling ? [adjacentSibling] : [];
     } else {
       throw new Error('unknown combinator');
     }

@@ -24,7 +24,8 @@ const html = '<!DOCTYPE html>'
   + '<label name="five">label name five</label>'
   + '<div><p>I am going to report this to the <abbr title="Federal Bureau of Investigation">FBI</abbr>'
   + ' and the <abbr title="Cental Intelligence Agency">CIA</abbr>!</p></div>'
-  + '<div class="depth">this is the shallow div late in the document</div></body></html>';
+  + '<div class="depth">this is the shallow div late in the document</div>'
+  + '<footer class="end"><div><p><span class="end-inline">footer text</span</p></div></footer</body></html>';
 const doc = parse(html);
 const text = (element) => element.childNodes.find((childNode) => childNode.nodeName === '#text')?.value;
 
@@ -62,6 +63,14 @@ test('finds span with correct class', () => {
 
 test('finds class d with correct tag name', () => {
   expect(text(querySelector(doc, 'strong.d'))).toBe('d mighty');
+});
+
+test('finds descendant', () => {
+  expect(text(querySelector(doc, 'footer span'))).toBe('footer text');
+});
+
+test('finds descendant with class names specified', () => {
+  expect(text(querySelector(doc, 'footer.end span.end-inline'))).toBe('footer text');
 });
 
 test('correctly navigates relationships between class parents and children', () => {
@@ -152,6 +161,29 @@ test('matches child when using child combinator', () => {
   expect(text(querySelector(doc, 'DIV > P > [title^=Fed]'))).toBe('FBI');
 });
 
-test('matches sibling when using sibling combinator', () => {
+test('matches sibling when using general sibling combinator', () => {
   expect(text(querySelector(doc, '[title^=Fed] ~ *'))).toBe('CIA');
+});
+
+test('matches immediate sibling when using adjacent sibling combinator', () => {
+  expect(text(querySelector(doc, '[name=three] + *'))).toBe('label name four');
+});
+
+test('matches immediate sibling by attribute when using adjacent sibling combinator', () => {
+  expect(text(querySelector(doc, '[name=three] + [name=four]'))).toBe('label name four');
+});
+
+test('does not match non-immediate sibling when using adjacent sibling combinator', () => {
+  expect(querySelector(doc, '[name=three] + [name=five]')).toBe(null);
+});
+
+test('matches non-immediate sibling when using general sibling combinator', () => {
+  expect(text(querySelector(doc, '[name=three] ~ [name=five]'))).toBe('label name five');
+});
+
+test('does not match child or descendent when using sibling combinators', () => {
+  expect(querySelector(doc, 'p.good + span.good')).toBe(null);
+  expect(querySelector(doc, 'p.good ~ span.good')).toBe(null);
+  expect(querySelector(doc, 'footer.end + span.end-inline')).toBe(null);
+  expect(querySelector(doc, 'footer.end ~ span.end-inline')).toBe(null);
 });
