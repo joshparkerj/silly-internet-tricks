@@ -22,13 +22,13 @@ const html = '<!DOCTYPE html>'
   + '<label name="three">label name three</label>'
   + '<label name="four">label name four</label>'
   + '<label name="five">label name five</label>'
+  + '<div><p>I am going to report this to the <abbr title="Federal Bureau of Investigation">FBI</abbr> and the <abbr title="Cental Intelligence Agency">CIA</abbr>!</p></div>'
   + '<div class="depth">this is the shallow div late in the document</div></body></html>';
 const doc = parse(html);
 const text = (element) => element.childNodes.find((childNode) => childNode.nodeName === '#text')?.value;
-const queryText = (query, innerText) => expect(text(querySelector(doc, query))).toBe(innerText);
 
 test('finds main tag', () => {
-  queryText('main', 'THIS IS THE MAIN');
+  expect(text(querySelector(doc, 'main',))).toBe('THIS IS THE MAIN');
 });
 
 test('error on empty query', () => {
@@ -44,50 +44,50 @@ test('error on combinator suffix', () => {
 });
 
 test('finds child of p', () => {
-  queryText('p a', 'this a is in the p in the div');
+  expect(text(querySelector(doc, 'p a'))).toBe('this a is in the p in the div');
 });
 
 test('finds child of p which is child of div', () => {
-  queryText('div p a', 'this a is in the p in the div');
+  expect(text(querySelector(doc, 'div p a'))).toBe('this a is in the p in the div');
 });
 
 test('finds element with class cool-class', () => {
-  queryText('.cool-class', 'THIS IS THE COOL CLASS');
+  expect(text(querySelector(doc, '.cool-class'))).toBe('THIS IS THE COOL CLASS');
 });
 
 test('finds span with correct class', () => {
-  queryText('span.b', 'banana');
+  expect(text(querySelector(doc, 'span.b'))).toBe('banana');
 });
 
 test('finds class d with correct tag name', () => {
-  queryText('strong.d', 'd mighty');
+  expect(text(querySelector(doc, 'strong.d'))).toBe('d mighty');
 });
 
-test('correctly navigates relationships between class parents and children ', () => {
-  queryText('.good .good', 'GOODGOOD');
-  queryText('.good .bad', 'GOODBAD');
-  queryText('.bad .good', 'BADGOOD');
-  queryText('.bad .bad', 'BADBAD');
+test('correctly navigates relationships between class parents and children', () => {
+  expect(text(querySelector(doc, '.good .good'))).toBe('GOODGOOD');
+  expect(text(querySelector(doc, '.good .bad'))).toBe('GOODBAD');
+  expect(text(querySelector(doc, '.bad .good'))).toBe('BADGOOD');
+  expect(text(querySelector(doc, '.bad .bad'))).toBe('BADBAD');
 });
 
 test('finds the element with an id', () => {
-  queryText('#an-id', 'I have an id.');
+  expect(text(querySelector(doc, '#an-id'))).toBe('I have an id.');
 });
 
 test('finds the element with a class and a parent with an id', () => {
-  queryText('#bad .bad', 'id BADBAD');
+  expect(text(querySelector(doc, '#bad .bad'))).toBe('id BADBAD');
 });
 
 test('finds the link with the href attribute', () => {
-  queryText('a[href]', 'a with an href');
+  expect(text(querySelector(doc, 'a[href]'))).toBe('a with an href');
 });
 
 test('finds the first matching element', () => {
-  queryText('ol li', 'one');
+  expect(text(querySelector(doc, 'ol li'))).toBe('one');
 });
 
 test('finds the earlier element, not the shallower one', () => {
-  queryText('.depth', 'this is the deep div early in the document');
+  expect(text(querySelector(doc, '.depth'))).toBe('this is the deep div early in the document');
 });
 
 test('null on element without child', () => {
@@ -95,5 +95,9 @@ test('null on element without child', () => {
 });
 
 test('finds element with attribute exact match', () => {
-  queryText('label[name=three]', 'label name three');
+  expect(text(querySelector(doc, 'label[name=three]'))).toBe('label name three');
+});
+
+test('finds element with attribute word match', () => {
+  expect(text(querySelector(doc, 'label[name~=Federal]'))).toBe('FBI');
 });
