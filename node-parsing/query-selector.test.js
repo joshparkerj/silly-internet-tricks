@@ -111,3 +111,7 @@ test('finds element with attribute word match even without closing square bracke
 test('finds element with attribute prefix match', () => {
   expect(text(querySelector(doc, 'abbr[title^=Fed]'))).toBe('FBI');
 });
+
+test('finds element with attribute suffix match', () => {
+  expect(text(querySelector(doc, 'abbr[title$=cy]'))).toBe('CIA');
+});
