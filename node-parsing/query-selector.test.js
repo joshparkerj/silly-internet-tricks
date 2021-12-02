@@ -128,6 +128,14 @@ test('can match attribute without tagname', () => {
   expect(text(querySelector(doc, '[title^=Fed]'))).toBe('FBI');
 });
 
+test('can match attribute with universal selector', () => {
+  expect(text(querySelector(doc, '*[title^=Fed]'))).toBe('FBI');
+});
+
+test('can match descendant with universal selector', () => {
+  expect(text(querySelector(doc, 'head *'))).toBe('THIS IS THE TITLE');
+});
+
 test('can match child attribute without tagname', () => {
   expect(text(querySelector(doc, 'DIV P [title^=Fed]'))).toBe('FBI');
 });

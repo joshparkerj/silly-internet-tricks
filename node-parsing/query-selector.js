@@ -19,6 +19,13 @@ const attributeMatcher = function attributeMatcher(actualValues, operator, targe
   }
 };
 
+const followingSiblings = function followingSiblings(node) {
+  const allSiblings = node.parentNode.childNodes;
+  const elementSiblings = allSiblings.filter((siblingNode) => siblingNode.nodeName.match(/^[^#]/));
+  const nodeIndex = elementSiblings.findIndex((elementSibling) => elementSibling === node);
+  return elementSiblings.slice(nodeIndex + 1);
+};
+
 const getElementMatcher = function getElementMatcher(elementSelector) {
   const filters = [];
   const tag = elementSelector.match(/^[^.#[]+/);
@@ -74,28 +81,34 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
   }
 
   const selectorList = query.trim().split(',');
-  const childNodes = node.childNodes.filter((childNode) => childNode.nodeName.match(/^[^#]/));
-
-  if (childNodes.length === 0) {
-    return null;
-  }
 
   for (let i = 0; i < selectorList.length; i += 1) {
     const selector = selectorList[i];
     const { combinator, elementSelector, rest } = selector.trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>(\[[^\]]+\]?|[^\s+>~])+)(?<rest>[\s+>~].*)?$/).groups;
-    const elementMatcher = getElementMatcher(elementSelector);
-    for (let j = 0; j < childNodes.length; j += 1) {
-      const childNode = childNodes[j];
+    let searchNodes;
+    if (!combinator || combinator === '>') {
+      searchNodes = node.childNodes.filter((childNode) => childNode.nodeName.match(/^[^#]/));
+    } else if (combinator === '~') {
+      searchNodes = followingSiblings(node);
+    } else if (combinator === '+') {
+      searchNodes = [followingSiblings(node)[0]];
+    } else {
+      throw new Error('unknown combinator');
+    }
 
-      if (elementMatcher(childNode)) {
-        const result = querySelectorHelper(childNode, rest);
+    const elementMatcher = getElementMatcher(elementSelector);
+    for (let j = 0; j < searchNodes.length; j += 1) {
+      const searchNode = searchNodes[j];
+
+      if (elementMatcher(searchNode)) {
+        const result = querySelectorHelper(searchNode, rest);
         if (result) {
           return result;
         }
       }
 
       if (!combinator) {
-        const result = querySelectorHelper(childNode, query);
+        const result = querySelectorHelper(searchNode, query);
         if (result) {
           return result;
         }
