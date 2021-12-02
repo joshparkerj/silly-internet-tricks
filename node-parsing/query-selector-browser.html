@@ -74,7 +74,7 @@
       { query: 'abbr[title$=cy]', text: 'CIA' },
       { query: 'abbr[title*=lig]', text: 'CIA' },
       { query: 'DIV P ABBR[title^=Fed]', text: 'FBI' },
-
+      { query: '[title^=Fed] ~ *', text: 'CIA' },
     ];
 
     tests.forEach((test) => console.log(document.querySelector(test.query).textContent === test.text, test));

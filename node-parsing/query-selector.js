@@ -94,7 +94,7 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
         }
       }
 
-      if (combinator !== '>') {
+      if (!combinator) {
         const result = querySelectorHelper(childNode, query);
         if (result) {
           return result;

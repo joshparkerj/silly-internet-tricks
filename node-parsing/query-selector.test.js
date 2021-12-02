@@ -124,6 +124,10 @@ test('works with shouty tag names', () => {
   expect(text(querySelector(doc, 'DIV P ABBR[title^=Fed]'))).toBe('FBI');
 });
 
+test('can match attribute without tagname', () => {
+  expect(text(querySelector(doc, '[title^=Fed]'))).toBe('FBI');
+});
+
 test('can match child attribute without tagname', () => {
   expect(text(querySelector(doc, 'DIV P [title^=Fed]'))).toBe('FBI');
 });
@@ -134,4 +138,12 @@ test('can match descendant attribute without tagname', () => {
 
 test('does not match descendent when using child combinator', () => {
   expect(querySelector(doc, 'DIV > [title^=Fed]')).toBe(null);
+});
+
+test('matches child when using child combinator', () => {
+  expect(text(querySelector(doc, 'DIV > P > [title^=Fed]'))).toBe('FBI');
+});
+
+test('matches sibling when using sibling combinator', () => {
+  expect(text(querySelector(doc, '[title^=Fed] ~ *'))).toBe('CIA');
 });
