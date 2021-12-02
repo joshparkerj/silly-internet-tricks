@@ -6,6 +6,8 @@ const attributeMatcher = function attributeMatcher(actualValues, operator, targe
       const re = new RegExp(`\\b${targetValue}\\b`);
       return actualValues.some((actualValue) => actualValue.match(re));
     }
+    case '^=':
+      return actualValues.some((actualValue) => actualValue.startsWith(targetValue));
     default:
       throw new Error('not implemented');
   }
