@@ -1,7 +1,11 @@
-const attributeMatcher = function attributeMatcher(actualValue, operator, targetValue) {
+const attributeMatcher = function attributeMatcher(actualValues, operator, targetValue) {
   switch (operator) {
     case '=':
-      return actualValue === targetValue;
+      return actualValues.some((actualValue) => actualValue === targetValue);
+    case '~=': {
+      const re = new RegExp(`\\b${targetValue}\\b`);
+      return actualValues.some((actualValue) => actualValue.match(re));
+    }
     default:
       throw new Error('not implemented');
   }
@@ -32,20 +36,18 @@ const getElementMatcher = function getElementMatcher(elementSelector) {
   if (attributeSelectors) {
     filters.push((childNode) => (attributeSelectors.every((attributeSelector) => {
       const attributeContent = attributeSelector.replace(/(\[|\])/g, '');
-      const attributeMatch = attributeContent.match(/^(?<attr>[\w-]+)\s*(?<operator>[~|^$*]?=)?\s*(?<value>"[^"]*"|'[^']*'|[\w-]+)?$/);
-      const { attr, operator, value } = attributeMatch.groups;
-      if (!operator && !value) {
+      const attributeMatch = attributeContent.match(/^(?<attr>[\w-]+)\s*(?<operator>[~|^$*]?=)?\s*(?<attrValue>"[^"]*"|'[^']*'|[\w-]+)?$/);
+      const { attr, operator, attrValue } = attributeMatch.groups;
+      if (!operator && !attrValue) {
         return childNode.attrs?.some(({ name }) => name === attr);
       }
 
-      if (operator && value) {
-        const someAttributeMatches = childNode.attrs
+      if (operator && attrValue) {
+        const attributeValues = childNode.attrs
           ?.filter(({ name }) => name === attr)
-          .some((attribute) => (
-            attributeMatcher(attribute.value, operator, value)
-          ));
+          .map(({ value }) => value);
 
-        return someAttributeMatches;
+        return attributeMatcher(attributeValues, operator, attrValue);
       }
 
       throw new Error(`${attributeSelector} is not a valid attribute selector.`);
@@ -71,7 +73,7 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
 
   for (let i = 0; i < selectorList.length; i += 1) {
     const selector = selectorList[i];
-    const { elementSelector, rest } = selector.toLocaleLowerCase().trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>[^\s+>~]+)(?<rest>[\s+>~].*)?$/).groups;
+    const { elementSelector, rest } = selector.trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>(\[[^\]]+\]|[^\s+>~])+)(?<rest>[\s+>~].*)?$/).groups;
     const elementMatcher = getElementMatcher(elementSelector);
     for (let j = 0; j < childNodes.length; j += 1) {
       const childNode = childNodes[j];

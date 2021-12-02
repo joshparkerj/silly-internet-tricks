@@ -28,7 +28,7 @@ const doc = parse(html);
 const text = (element) => element.childNodes.find((childNode) => childNode.nodeName === '#text')?.value;
 
 test('finds main tag', () => {
-  expect(text(querySelector(doc, 'main',))).toBe('THIS IS THE MAIN');
+  expect(text(querySelector(doc, 'main'))).toBe('THIS IS THE MAIN');
 });
 
 test('error on empty query', () => {
@@ -99,5 +99,7 @@ test('finds element with attribute exact match', () => {
 });
 
 test('finds element with attribute word match', () => {
-  expect(text(querySelector(doc, 'label[name~=Federal]'))).toBe('FBI');
+  expect(text(querySelector(doc, 'abbr[title~=Federal]'))).toBe('FBI');
 });
+
+// test for mismatched/incomplete attribute selectors
