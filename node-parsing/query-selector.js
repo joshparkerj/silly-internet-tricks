@@ -32,7 +32,7 @@ const getElementMatcher = function getElementMatcher(elementSelector) {
     filters.push((childNode) => childNode.attrs?.find(({ name, value }) => name === 'id' && value === id[0].replace('#', '')));
   }
 
-  const attributeSelectors = elementSelector.match(/\[[^\]]+\]/g);
+  const attributeSelectors = elementSelector.match(/\[[^\]]+\]?/g);
   if (attributeSelectors) {
     filters.push((childNode) => (attributeSelectors.every((attributeSelector) => {
       const attributeContent = attributeSelector.replace(/(\[|\])/g, '');
@@ -73,7 +73,7 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
 
   for (let i = 0; i < selectorList.length; i += 1) {
     const selector = selectorList[i];
-    const { elementSelector, rest } = selector.trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>(\[[^\]]+\]|[^\s+>~])+)(?<rest>[\s+>~].*)?$/).groups;
+    const { elementSelector, rest } = selector.trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>(\[[^\]]+\]?|[^\s+>~])+)(?<rest>[\s+>~].*)?$/).groups;
     const elementMatcher = getElementMatcher(elementSelector);
     for (let j = 0; j < childNodes.length; j += 1) {
       const childNode = childNodes[j];

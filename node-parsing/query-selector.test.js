@@ -22,7 +22,8 @@ const html = '<!DOCTYPE html>'
   + '<label name="three">label name three</label>'
   + '<label name="four">label name four</label>'
   + '<label name="five">label name five</label>'
-  + '<div><p>I am going to report this to the <abbr title="Federal Bureau of Investigation">FBI</abbr> and the <abbr title="Cental Intelligence Agency">CIA</abbr>!</p></div>'
+  + '<div><p>I am going to report this to the <abbr title="Federal Bureau of Investigation">FBI</abbr>'
+  + ' and the <abbr title="Cental Intelligence Agency">CIA</abbr>!</p></div>'
   + '<div class="depth">this is the shallow div late in the document</div></body></html>';
 const doc = parse(html);
 const text = (element) => element.childNodes.find((childNode) => childNode.nodeName === '#text')?.value;
@@ -102,4 +103,11 @@ test('finds element with attribute word match', () => {
   expect(text(querySelector(doc, 'abbr[title~=Federal]'))).toBe('FBI');
 });
 
-// test for mismatched/incomplete attribute selectors
+test('finds element with attribute word match even without closing square bracket', () => {
+  // in Chrome, the document.querySelector works the same without the closing square bracket
+  expect(text(querySelector(doc, 'abbr[title~=Federal'))).toBe('FBI');
+});
+
+test('finds element with attribute prefix match', () => {
+  expect(text(querySelector(doc, 'abbr[title^=Fed]'))).toBe('FBI');
+});
