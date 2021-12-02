@@ -82,7 +82,7 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
 
   for (let i = 0; i < selectorList.length; i += 1) {
     const selector = selectorList[i];
-    const { elementSelector, rest } = selector.trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>(\[[^\]]+\]?|[^\s+>~])+)(?<rest>[\s+>~].*)?$/).groups;
+    const { combinator, elementSelector, rest } = selector.trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>(\[[^\]]+\]?|[^\s+>~])+)(?<rest>[\s+>~].*)?$/).groups;
     const elementMatcher = getElementMatcher(elementSelector);
     for (let j = 0; j < childNodes.length; j += 1) {
       const childNode = childNodes[j];
@@ -94,9 +94,11 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
         }
       }
 
-      const result = querySelectorHelper(childNode, query);
-      if (result) {
-        return result;
+      if (combinator !== '>') {
+        const result = querySelectorHelper(childNode, query);
+        if (result) {
+          return result;
+        }
       }
     }
   }
