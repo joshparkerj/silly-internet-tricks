@@ -1,3 +1,12 @@
+const attributeMatcher = function attributeMatcher(actualValue, operator, targetValue) {
+  switch (operator) {
+    case '=':
+      return actualValue === targetValue;
+    default:
+      throw new Error('not implemented');
+  }
+};
+
 const getElementMatcher = function getElementMatcher(elementSelector) {
   const filters = [];
   const tag = elementSelector.match(/^[^.#[]+/);
@@ -19,11 +28,28 @@ const getElementMatcher = function getElementMatcher(elementSelector) {
     filters.push((childNode) => childNode.attrs?.find(({ name, value }) => name === 'id' && value === id[0].replace('#', '')));
   }
 
-  const attributes = elementSelector.match(/\[[^\]]+\]/g);
-  if (attributes) {
-    filters.push((childNode) => (attributes.every((attribute) => (
-      childNode.attrs?.some(({ name }) => name === attribute.replace(/(\[|\])/g, ''))
-    ))));
+  const attributeSelectors = elementSelector.match(/\[[^\]]+\]/g);
+  if (attributeSelectors) {
+    filters.push((childNode) => (attributeSelectors.every((attributeSelector) => {
+      const attributeContent = attributeSelector.replace(/(\[|\])/g, '');
+      const attributeMatch = attributeContent.match(/^(?<attr>[\w-]+)\s*(?<operator>[~|^$*]?=)?\s*(?<value>"[^"]*"|'[^']*'|[\w-]+)?$/);
+      const { attr, operator, value } = attributeMatch.groups;
+      if (!operator && !value) {
+        return childNode.attrs?.some(({ name }) => name === attr);
+      }
+
+      if (operator && value) {
+        const someAttributeMatches = childNode.attrs
+          ?.filter(({ name }) => name === attr)
+          .some((attribute) => (
+            attributeMatcher(attribute.value, operator, value)
+          ));
+
+        return someAttributeMatches;
+      }
+
+      throw new Error(`${attributeSelector} is not a valid attribute selector.`);
+    })));
   }
 
   return function elementMatcher(childNode) {
