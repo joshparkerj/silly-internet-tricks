@@ -115,3 +115,7 @@ test('finds element with attribute prefix match', () => {
 test('finds element with attribute suffix match', () => {
   expect(text(querySelector(doc, 'abbr[title$=cy]'))).toBe('CIA');
 });
+
+test('finds element with attribute contains match', () => {
+  expect(text(querySelector(doc, 'abbr[title*=lig]'))).toBe('CIA');
+});

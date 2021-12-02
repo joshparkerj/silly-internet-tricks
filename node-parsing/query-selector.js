@@ -10,6 +10,8 @@ const attributeMatcher = function attributeMatcher(actualValues, operator, targe
       return actualValues.some((actualValue) => actualValue.startsWith(targetValue));
     case '$=':
       return actualValues.some((actualValue) => actualValue.endsWith(targetValue));
+    case '*=':
+      return actualValues.some((actualValue) => actualValue.includes(targetValue));
     default:
       throw new Error('not implemented');
   }
