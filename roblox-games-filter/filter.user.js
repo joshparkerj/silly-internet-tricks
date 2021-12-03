@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 (function robloxGamesFilterUserScript() {
-  for (let i = 1; i <= 10; i += 1) {
+  for (let i = 1; i <= 10; i++) {
     setTimeout(() => [...document.querySelectorAll('.game-card')].filter((card) => {
       const noVote = card.querySelector('.no-vote');
 

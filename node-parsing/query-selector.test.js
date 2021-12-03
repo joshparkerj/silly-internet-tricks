@@ -9,11 +9,11 @@ const html = '<!DOCTYPE html>'
   + '<p><a>this a is in the p in the div</a></p></div>'
   + '<p><span class="a">apple</span><span class="b">banana</span><span class="c">carrot</span></p>'
   + '<p><span class="d">d span</span><strong class="d">d mighty</strong><em class="d">d em</em></p>'
-  + '<p class="good"><span class="good">GOODGOOD</a></p>'
-  + '<p class="good"><span class="bad">GOODBAD</a></p>'
-  + '<p class="bad"><span class="good">BADGOOD</a></p>'
-  + '<p class="bad"><span class="bad">BADBAD</a></p>'
-  + '<p id="bad"><span class="bad">id BADBAD</a><a href="google.com">a with an href</a></p>'
+  + '<p class="good"><span class="good">GOODGOOD</span></p>'
+  + '<p class="good"><span class="bad">GOODBAD</span></p>'
+  + '<p class="bad"><span class="good">BADGOOD</span></p>'
+  + '<p class="bad"><span class="bad">BADBAD</span></p>'
+  + '<p id="bad"><span class="bad">id BADBAD</span><a href="google.com">a with an href</a></p>'
   + '<div class="cool-class">THIS IS THE COOL CLASS</div>'
   + '<ol><li>one</li><li>two</li><li>three</li><li>four</li><li>five</li><li>six</li><li>seven</li></ol>'
   + '<div id="an-id">I have an id.</div>'
@@ -25,7 +25,7 @@ const html = '<!DOCTYPE html>'
   + '<div><p>I am going to report this to the <abbr title="Federal Bureau of Investigation">FBI</abbr>'
   + ' and the <abbr title="Cental Intelligence Agency">CIA</abbr>!</p></div>'
   + '<div class="depth">this is the shallow div late in the document</div>'
-  + '<footer class="end"><div><p><span class="end-inline">footer text</span</p></div></footer</body></html>';
+  + '<footer class="end"><div><p><span class="end-inline">footer text</span></p></div></footer></body></html>';
 const doc = parse(html);
 const text = (element) => element.childNodes.find((childNode) => childNode.nodeName === '#text')?.value;
 
@@ -42,7 +42,7 @@ test('error on combinator prefix', () => {
 });
 
 test('error on combinator suffix', () => {
-  expect(() => querySelector(doc, '> body')).toThrow();
+  expect(() => querySelector(doc, 'body >')).toThrow();
 });
 
 test('finds child of p', () => {
@@ -186,4 +186,9 @@ test('does not match child or descendent when using sibling combinators', () => 
   expect(querySelector(doc, 'p.good ~ span.good')).toBe(null);
   expect(querySelector(doc, 'footer.end + span.end-inline')).toBe(null);
   expect(querySelector(doc, 'footer.end ~ span.end-inline')).toBe(null);
+});
+
+test('can use selector list', () => {
+  expect(text(querySelector(doc, 'p span    ,  p a'))).toBe('this a is in the p in the div');
+  expect(text(querySelector(doc, 'p a    ,  p span'))).toBe('this a is in the p in the div');
 });

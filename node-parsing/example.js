@@ -37,7 +37,7 @@ const callback = (r) => {
     console.log(developers.parentNode === footerPlaces);
     // console.log(developersLink.parentNode.childNodes);
     // console.log(developersLink.parentNode.childNodes.length);
-    for (let i = 0; i < developers.parentNode.childNodes.length; i += 1) {
+    for (let i = 0; i < developers.parentNode.childNodes.length; i++) {
       const siblingNode = developers.parentNode.childNodes[i];
       if (siblingNode.nodeName !== '#text') {
         console.log(siblingNode.nodeName, siblingNode.attrs);
@@ -50,7 +50,7 @@ const callback = (r) => {
     console.log('let\'s see the following siblings');
 
     const fs = followingSiblings(developers);
-    for (let i = 0; i < fs.length; i += 1) {
+    for (let i = 0; i < fs.length; i++) {
       console.log(fs[i].nodeName, fs[i].attrs);
     }
   });

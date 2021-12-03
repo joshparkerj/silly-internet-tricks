@@ -21,11 +21,11 @@
   </div>
   <p><span class="a">apple</span><span class="b">banana</span><span class="c">carrot</span></p>
   <p><span class="d">d span</span><strong class="d">d mighty</strong><em class="d">d em</em></p>
-  <p class="good"><span class="good">GOODGOOD</a></p>
-  <p class="good"><span class="bad">GOODBAD</a></p>
-  <p class="bad"><span class="good">BADGOOD</a></p>
-  <p class="bad"><span class="bad">BADBAD</a></p>
-  <p id="bad"><span class="bad">id BADBAD</a><a href="google.com">a with an href</a></p>
+  <p class="good"><span class="good">GOODGOOD</span></p>
+  <p class="good"><span class="bad">GOODBAD</span></p>
+  <p class="bad"><span class="good">BADGOOD</span></p>
+  <p class="bad"><span class="bad">BADBAD</span></p>
+  <p id="bad"><span class="bad">id BADBAD</span><a href="google.com">a with an href</a></p>
   <div class="cool-class">THIS IS THE COOL CLASS</div>
   <ol>
     <li>one</li>
@@ -46,38 +46,87 @@
     <p>I am going to report this to the <abbr title="Federal Bureau of Investigation">FBI</abbr>
       and the <abbr title="Cental Intelligence Agency">CIA</abbr>!</p>
   </div>
-
   <div class="depth">this is the shallow div late in the document</div>
+  <footer class="end">
+    <div>
+      <p><span class="end-inline">footer text</span></p>
+    </div>
+  </footer>
   <script>
     const tests = [
-      { query: 'main', text: 'THIS IS THE MAIN' },
-      // expect(() => querySelector(doc, '')).toThrow();
-      // expect(() => querySelector(doc, '> body')).toThrow();
-      // expect(() => querySelector(doc, '> body')).toThrow();
-      { query: 'p a', text: 'this a is in the p in the div' },
-      { query: 'div p a', text: 'this a is in the p in the div' },
-      { query: '.cool-class', text: 'THIS IS THE COOL CLASS' },
-      { query: 'span.b', text: 'banana' },
-      { query: 'strong.d', text: 'd mighty' },
-      { query: '.good .good', text: 'GOODGOOD' },
-      { query: '.good .bad', text: 'GOODBAD' },
-      { query: '.bad .good', text: 'BADGOOD' },
-      { query: '.bad .bad', text: 'BADBAD' },
-      { query: 'a[href]', text: 'a with an href' },
-      { query: 'ol li', text: 'one' },
-      { query: '.depth', text: 'this is the deep div early in the document' },
-      // expect(querySelector(doc, '#an-id div')).toBe(null);
-      { query: 'label[name=three]', text: 'label name three' },
-      { query: 'abbr[title~=Federal]', text: 'FBI' },
-      { query: 'abbr[title~=Federal', text: 'FBI' },
-      { query: 'abbr[title^=Fed]', text: 'FBI' },
-      { query: 'abbr[title$=cy]', text: 'CIA' },
-      { query: 'abbr[title*=lig]', text: 'CIA' },
-      { query: 'DIV P ABBR[title^=Fed]', text: 'FBI' },
-      { query: '[title^=Fed] ~ *', text: 'CIA' },
+      { query: 'main', result: 'THIS IS THE MAIN' },
+      { query: '' },
+      { query: '> body' },
+      { query: 'body >' },
+      { query: 'p a', result: 'this a is in the p in the div' },
+      { query: 'div p a', result: 'this a is in the p in the div' },
+      { query: '.cool-class', result: 'THIS IS THE COOL CLASS' },
+      { query: 'span.b', result: 'banana' },
+      { query: 'strong.d', result: 'd mighty' },
+      { query: 'footer span', result: 'footer text' },
+      { query: 'footer.end span.end-inline', result: 'footer text' },
+      { query: '.good .good', result: 'GOODGOOD' },
+      { query: '.good .bad', result: 'GOODBAD' },
+      { query: '.bad .good', result: 'BADGOOD' },
+      { query: '.bad .bad', result: 'BADBAD' },
+      { query: '#an-id', result: 'I have an id.' },
+      { query: '#bad .bad', result: 'id BADBAD' },
+      { query: 'a[href]', result: 'a with an href' },
+      { query: 'ol li', result: 'one' },
+      { query: '.depth', result: 'this is the deep div early in the document' },
+      { query: '#an-id div', result: null },
+      { query: 'label[name=three]', result: 'label name three' },
+      { query: 'abbr[title~=Federal]', result: 'FBI' },
+      { query: 'abbr[title~=Federal', result: 'FBI' },
+      { query: 'abbr[title^=Fed]', result: 'FBI' },
+      { query: 'abbr[title$=cy]', result: 'CIA' },
+      { query: 'abbr[title*=lig]', result: 'CIA' },
+      { query: 'DIV P ABBR[title^=Fed]', result: 'FBI' },
+      { query: '[title^=Fed]', result: 'FBI' },
+      { query: '*[title^=Fed]', result: 'FBI' },
+      { query: 'head *', result: 'THIS IS THE TITLE' },
+      { query: 'DIV P [title^=Fed]', result: 'FBI' },
+      { query: 'DIV [title^=Fed]', result: 'FBI' },
+      { query: 'DIV > [title^=Fed]', result: null },
+      { query: 'DIV > P > [title^=Fed]', result: 'FBI' },
+      { query: '[title^=Fed] ~ *', result: 'CIA' },
+      { query: '[name=three] + *', result: 'label name four' },
+      { query: '[name=three] + [name=four]', result: 'label name four' },
+      { query: '[name=three] + [name=five]', result: null },
+      { query: '[name=three] ~ [name=five]', result: 'label name five' },
+      { query: 'p.good + span.good', result: null },
+      { query: 'p.good ~ span.good', result: null },
+      { query: 'footer.end + span.end-inline', result: null },
+      { query: 'footer.end ~ span.end-inline', result: null },
     ];
 
-    tests.forEach((test) => console.log(document.querySelector(test.query).textContent === test.text, test));
+    tests.forEach((test) => {
+      const { query, result } = test;
+      let pass;
+      if (typeof result === 'string') {
+        try {
+          pass = document.querySelector(query).textContent === result;
+        } catch {
+          console.log('unexpected error');
+          pass = false;
+        }
+      } else if (result === null) {
+        pass = document.querySelector(query) === null;
+      } else if (result === undefined) {
+        try {
+          document.querySelector(query);
+          pass = false;
+        } catch {
+          pass = true;
+        }
+      }
+
+      if (pass) {
+        console.log(test);
+      } else {
+        console.error(test);
+      }
+    });
 
 
   </script>
