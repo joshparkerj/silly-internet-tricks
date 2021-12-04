@@ -11,12 +11,13 @@ const testCases = [
   { name: 'finds descendant', assertions: [{ query: 'footer span', result: 'footer text' }] },
   { name: 'finds descendant with class names specified', assertions: [{ query: 'footer.end span.end-inline', result: 'footer text' }] },
   {
-    name: 'correctly navigates relationships between class parents and children', assertions: [
+    name: 'correctly navigates relationships between class parents and children',
+    assertions: [
       { query: '.good .good', result: 'GOODGOOD' },
       { query: '.good .bad', result: 'GOODBAD' },
       { query: '.bad .good', result: 'BADGOOD' },
-      { query: '.bad .bad', result: 'BADBAD' }
-    ]
+      { query: '.bad .bad', result: 'BADBAD' },
+    ],
   },
   { name: 'finds the element with an id', assertions: [{ query: '#an-id', result: 'I have an id.' }] },
   { name: 'finds the element with a class and a parent with an id', assertions: [{ query: '#bad .bad', result: 'id BADBAD' }] },
@@ -44,19 +45,42 @@ const testCases = [
   { name: 'does not match non-immediate sibling when using adjacent sibling combinator', assertions: [{ query: '[name=three] + [name=five]', result: null }] },
   { name: 'matches non-immediate sibling when using general sibling combinator', assertions: [{ query: '[name=three] ~ [name=five]', result: 'label name five' }] },
   {
-    name: 'does not match child or descendent when using sibling combinators', assertions: [
+    name: 'does not match child or descendent when using sibling combinators',
+    assertions: [
       { query: 'p.good + span.good', result: null },
       { query: 'p.good ~ span.good', result: null },
       { query: 'footer.end + span.end-inline', result: null },
-      { query: 'footer.end ~ span.end-inline', result: null }
-    ]
+      { query: 'footer.end ~ span.end-inline', result: null },
+    ],
   },
   {
-    name: 'can use selector list', assertions: [
+    name: 'can use selector list',
+    assertions: [
       { query: 'p span    ,  p a', result: 'this a is in the p in the div' },
-      { query: 'p a    ,  p span', result: 'this a is in the p in the div' }
-    ]
-  }
+      { query: 'p a    ,  p span', result: 'this a is in the p in the div' },
+    ],
+  },
+  {
+    name: 'can match any combination of classes',
+    assertions: [
+      { query: '#battleship label', result: 'Zebras' },
+      { query: '#battleship .albuquerque', result: 'Albatrosses' },
+      { query: '#battleship .bismarck', result: 'Beavers' },
+      { query: '#battleship .canberra', result: 'Cranes' },
+      { query: '#battleship .denver', result: 'Dolphins' },
+      { query: '#battleship .albuquerque.bismarck', result: 'Alligators and Bison' },
+      { query: '#battleship .albuquerque.canberra', result: 'Antelope and Cats' },
+      { query: '#battleship .albuquerque.denver', result: 'Aardvarks and Deer' },
+      { query: '#battleship .bismarck.canberra', result: 'Bears and Coelocanths' },
+      { query: '#battleship .bismarck.denver', result: 'Buffalo and Dinosaurs' },
+      { query: '#battleship .canberra.denver', result: 'Chihuahuas and Dingos' },
+      { query: '#battleship .albuquerque.bismarck.canberra', result: 'Anteaters, Beetles, and Capybarras' },
+      { query: '#battleship .albuquerque.bismarck.denver', result: 'Apes, Burros, and Damselflies' },
+      { query: '#battleship .albuquerque.canberra.denver', result: 'Abalone, Cheetahs, and Dragonflies' },
+      { query: '#battleship .bismarck.canberra.denver', result: 'Basilisks, Crows, and Dogs' },
+      { query: '#battleship .albuquerque.bismarck.canberra.denver', result: 'Ants, Birds, Cougars, and Dalmatians' },
+    ],
+  },
 ];
 
 if (typeof window === 'undefined') {
