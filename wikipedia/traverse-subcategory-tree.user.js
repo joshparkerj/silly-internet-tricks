@@ -50,6 +50,7 @@
       }
 
       if (!href) {
+        resolve();
         return;
       }
 
