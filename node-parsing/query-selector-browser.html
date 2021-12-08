@@ -3,6 +3,8 @@
 
 <head>
   <title>THIS IS THE TITLE</title>
+  <link rel="stylesheet" type="text/css" href="./style.css" />
+  <script src="./query-selector-tests.js"></script>
 </head>
 
 <body>
@@ -37,6 +39,24 @@
     <li>seven</li>
   </ol>
   <div id="an-id">I have an id.</div>
+  <div id="battleship">
+    <label>Zebras</label>
+    <label class="albuquerque">Albatrosses</label>
+    <label class="bismarck">Beavers</label>
+    <label class="canberra">Cranes</label>
+    <label class="denver">Dolphins</label>
+    <label class="albuquerque bismarck">Alligators and Bison</label>
+    <label class="albuquerque canberra">Antelope and Cats</label>
+    <label class="albuquerque denver">Aardvarks and Deer</label>
+    <label class="bismarck canberra">Bears and Coelocanths</label>
+    <label class="bismarck denver">Buffalo and Dinosaurs</label>
+    <label class="canberra denver">Chihuahuas and Dingos</label>
+    <label class="albuquerque bismarck canberra">Anteaters, Beetles, and Capybarras</label>
+    <label class="albuquerque bismarck denver">Apes, Burros, and Damselflies</label>
+    <label class="albuquerque canberra denver">Abalone, Cheetahs, and Dragonflies</label>
+    <label class="bismarck canberra denver">Basilisks, Crows, and Dogs</label>
+    <label class="albuquerque bismarck canberra denver">Ants, Birds, Cougars, and Dalmatians</label>
+  </div>
   <label name="one">label name one</label>
   <label name="two">label name two</label>
   <label name="three">label name three</label>
@@ -53,52 +73,7 @@
     </div>
   </footer>
   <script>
-    const tests = [
-      { query: 'main', result: 'THIS IS THE MAIN' },
-      { query: '' },
-      { query: '> body' },
-      { query: 'body >' },
-      { query: 'p a', result: 'this a is in the p in the div' },
-      { query: 'div p a', result: 'this a is in the p in the div' },
-      { query: '.cool-class', result: 'THIS IS THE COOL CLASS' },
-      { query: 'span.b', result: 'banana' },
-      { query: 'strong.d', result: 'd mighty' },
-      { query: 'footer span', result: 'footer text' },
-      { query: 'footer.end span.end-inline', result: 'footer text' },
-      { query: '.good .good', result: 'GOODGOOD' },
-      { query: '.good .bad', result: 'GOODBAD' },
-      { query: '.bad .good', result: 'BADGOOD' },
-      { query: '.bad .bad', result: 'BADBAD' },
-      { query: '#an-id', result: 'I have an id.' },
-      { query: '#bad .bad', result: 'id BADBAD' },
-      { query: 'a[href]', result: 'a with an href' },
-      { query: 'ol li', result: 'one' },
-      { query: '.depth', result: 'this is the deep div early in the document' },
-      { query: '#an-id div', result: null },
-      { query: 'label[name=three]', result: 'label name three' },
-      { query: 'abbr[title~=Federal]', result: 'FBI' },
-      { query: 'abbr[title~=Federal', result: 'FBI' },
-      { query: 'abbr[title^=Fed]', result: 'FBI' },
-      { query: 'abbr[title$=cy]', result: 'CIA' },
-      { query: 'abbr[title*=lig]', result: 'CIA' },
-      { query: 'DIV P ABBR[title^=Fed]', result: 'FBI' },
-      { query: '[title^=Fed]', result: 'FBI' },
-      { query: '*[title^=Fed]', result: 'FBI' },
-      { query: 'head *', result: 'THIS IS THE TITLE' },
-      { query: 'DIV P [title^=Fed]', result: 'FBI' },
-      { query: 'DIV [title^=Fed]', result: 'FBI' },
-      { query: 'DIV > [title^=Fed]', result: null },
-      { query: 'DIV > P > [title^=Fed]', result: 'FBI' },
-      { query: '[title^=Fed] ~ *', result: 'CIA' },
-      { query: '[name=three] + *', result: 'label name four' },
-      { query: '[name=three] + [name=four]', result: 'label name four' },
-      { query: '[name=three] + [name=five]', result: null },
-      { query: '[name=three] ~ [name=five]', result: 'label name five' },
-      { query: 'p.good + span.good', result: null },
-      { query: 'p.good ~ span.good', result: null },
-      { query: 'footer.end + span.end-inline', result: null },
-      { query: 'footer.end ~ span.end-inline', result: null },
-    ];
+    const tests = testCases.reduce((acc, { assertions }) => acc.concat(assertions), []);
 
     tests.forEach((test) => {
       const { query, result } = test;
@@ -127,8 +102,6 @@
         console.error(test);
       }
     });
-
-
   </script>
 </body>
 
