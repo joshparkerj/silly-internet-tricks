@@ -10,6 +10,8 @@
 // ==/UserScript==
 
 (function upAndComingUserScript() {
+  const sortButton = document.createElement('button');
+  sortButton.innerText = 'sort by movement';
   const movementButton = document.createElement('button');
   movementButton.innerText = 'get chart movement';
 
@@ -60,7 +62,12 @@
 
     const categoryLinks = document.querySelectorAll('#mw-pages li > a');
 
-    movementButton.innerText = `getting movement (${Math.ceil(categoryLinks.length / REQUESTS_PER_SECOND)} seconds)`;
+    const remainingSeconds = Math.ceil(categoryLinks.length / REQUESTS_PER_SECOND);
+    movementButton.innerText = `getting movement (${remainingSeconds} seconds)`;
+    const updateRemainingSeconds = function updateRemainingSeconds() {
+      const remainingSecondsNow = Number(movementButton.innerText.match(/getting movement \((?<remainingSeconds>-?\d+(\.\d+)?) seconds\)/).groups.remainingSeconds) - 0.5;
+      movementButton.innerText = `getting movement (${remainingSecondsNow} seconds)`;
+    };
 
     const pageViewUrls = getPageViewUrls(categoryLinks);
     for (let i = 0; i < pageViewUrls.length; i += Math.floor(REQUESTS_PER_SECOND / 2)) {
@@ -75,6 +82,7 @@
                 results.months = monthResults;
                 results.months.forEach(setViewAttribute(categoryLinks, i, 'views-months'));
                 if (results.years) {
+                  updateRemainingSeconds();
                   resolve(results);
                 }
               });
@@ -83,6 +91,7 @@
                 results.years = yearResults;
                 results.years.forEach(setViewAttribute(categoryLinks, i, 'views-years'));
                 if (results.months) {
+                  updateRemainingSeconds();
                   resolve(results);
                 }
               });
@@ -99,9 +108,47 @@
         catLinks.sort((a, b) => b.getAttribute('views-years') - a.getAttribute('views-years'));
         catLinks.forEach((link, i) => link.setAttribute('rank-years', i));
         catLinks.forEach((link) => { const a = link; a.innerText += ` (movement: ${a.getAttribute('rank-years') - a.getAttribute('rank-months')})`; });
+        document.querySelector('#mw-pages > h2').appendChild(sortButton);
         movementButton.innerText = 'done';
       });
   };
+
+  const sortByMovement = function sortByMovement() {
+    const categoryLinks = document.querySelectorAll('#mw-pages li > a');
+    const linkSorter = (ab) => {
+      const viewMatch = ab.innerText.match(/\(movement: (-?\d+)\)/);
+      if (viewMatch) {
+        return +(viewMatch[1]);
+      }
+
+      return -1;
+    };
+
+    const sortedLinks = [...categoryLinks].sort((a, b) => linkSorter(b) - linkSorter(a));
+    const categorySection = document.querySelector('#mw-pages .mw-category') || document.querySelector('#mw-pages .mw-content-ltr');
+    const allCategorySections = document.querySelectorAll('#mw-pages .mw-category');
+    const unsorted = [...allCategorySections].map((section) => section.innerHTML);
+    categorySection.innerHTML = '';
+    const undoSort = function undoSort() {
+      document.styleSheets[0].deleteRule(0);
+      document.styleSheets[0].deleteRule(0);
+      allCategorySections.forEach((section, i) => {
+        const s = section;
+        s.innerHTML = unsorted[i];
+      });
+      sortButton.removeEventListener('click', undoSort);
+      sortButton.addEventListener('click', sortByMovement);
+    };
+
+    document.styleSheets[0].insertRule('#mw-pages .mw-category a { display: block; }');
+    document.styleSheets[0].insertRule('#mw-pages .mw-category ~ .mw-category { display: none; }');
+    sortedLinks.forEach((link) => categorySection.appendChild(link));
+    sortButton.removeEventListener('click', sortByMovement);
+    sortButton.addEventListener('click', undoSort);
+    sortButton.innerText = 'undo sort';
+  };
+
+  sortButton.addEventListener('click', sortByMovement);
 
   movementButton.addEventListener('click', getPageViews);
   document.querySelector('#mw-pages > h2').appendChild(movementButton);
