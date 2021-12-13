@@ -151,5 +151,18 @@
   sortButton.addEventListener('click', sortByMovement);
 
   movementButton.addEventListener('click', getPageViews);
-  document.querySelector('#mw-pages > h2').appendChild(movementButton);
+  let mwPagesH2 = document.querySelector('#mw-pages > h2');
+  if (!mwPagesH2) {
+    let mwPages = document.querySelector('#mw-pages');
+    if (!mwPages) {
+      mwPages = document.createElement('div');
+      mwPages.id = 'mw-pages';
+      document.querySelector('div#mw-content-text').after(mwPages);
+    }
+
+    mwPagesH2 = document.createElement('h2');
+    mwPages.appendChild(mwPagesH2);
+  }
+
+  mwPagesH2.appendChild(movementButton);
 }());

@@ -11,8 +11,17 @@
 // ==/UserScript==
 
 (function categoryOnePageUserScript() {
+  let categoryArea = document.querySelector('div#mw-pages > div.mw-content-ltr');
+  if (!categoryArea) {
+    const mwPages = document.createElement('div');
+    mwPages.id = 'mw-pages';
+    categoryArea = document.createElement('div');
+    categoryArea.classList.add('mw-content-ltr');
+    mwPages.appendChild(categoryArea);
+    document.querySelector('div#mw-content-text').after(mwPages);
+  }
+
   const categoryPages = document.querySelector('div#mw-pages');
-  const categoryArea = [...categoryPages.childNodes].find((node) => node.className === 'mw-content-ltr');
   const navLinks = [...categoryPages.childNodes].filter((node) => node.tagName === 'A');
   const nextLinks = navLinks.filter((a) => a.textContent.includes('next'));
   const previousLinks = navLinks.filter((a) => a.textContent.includes('previous'));
