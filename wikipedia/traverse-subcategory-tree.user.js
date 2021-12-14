@@ -38,9 +38,51 @@
   let count = 0;
   const disabledButtonText = () => { count += 1; return `${count} subcategories found`; };
   const parser = new DOMParser();
-  const categoryArea = document.querySelector('div#mw-pages > div.mw-content-ltr');
+  let categoryArea = document.querySelector('div#mw-pages > div.mw-content-ltr');
+  if (!categoryArea) {
+    const mwPages = document.createElement('div');
+    mwPages.id = 'mw-pages';
+    categoryArea = document.createElement('div');
+    categoryArea.classList.add('mw-content-ltr');
+    mwPages.appendChild(categoryArea);
+    document.querySelector('div#mw-content-text').after(mwPages);
+  }
+
   let maxSubcategories;
   const alreadyRetrieved = new Set();
+  const getAll = function getAll(doc, docHref) {
+    return new Promise((resolve) => {
+      let href = docHref;
+      if (!href) {
+        const docLinks = [...doc.querySelectorAll('#mw-pages > a')].filter((a) => a.textContent.includes('next'));
+        href = docLinks.length > 0 ? docLinks[0].href : null;
+      }
+
+      if (!href) {
+        resolve();
+        return;
+      }
+
+      const docCategoryPages = doc.querySelector('div#mw-pages');
+      const docCategoryArea = [...docCategoryPages.childNodes].find((node) => node.className === 'mw-content-ltr');
+      fetch(href)
+        .then((r) => r.text())
+        .then((text) => parser.parseFromString(text, 'text/html'))
+        .then((nextDoc) => {
+          const nextDocCategoryArea = nextDoc.querySelector('#mw-pages > .mw-content-ltr').innerHTML;
+          docCategoryArea.innerHTML += `<hr>${nextDocCategoryArea}`;
+
+          const nextDocLinks = [...nextDoc.querySelectorAll('#mw-pages > a')].filter((a) => a.textContent.includes('next'));
+          const nextDocHref = nextDocLinks.length > 0 ? nextDocLinks[0].href : null;
+          if (nextDocHref) {
+            getAll(doc, nextDocHref).then(() => resolve());
+          } else {
+            resolve();
+          }
+        });
+    });
+  };
+
   const traverseTree = function traverseTree(url, depth, parent) {
     if (!url || depth < 1) {
       return;
@@ -50,12 +92,14 @@
       .then((r) => r.text())
       .then((text) => parser.parseFromString(text, 'text/html'))
       .then((doc) => {
-        const title = doc.querySelector('h1#firstHeading').innerText.replace('Category:', '');
-        categoryArea.innerHTML += `<hr><h3 class="subcategory-title">${title} (parent category: ${parent})</h3>${doc.querySelector('#mw-pages > .mw-content-ltr').innerHTML}`;
-        const children = [...doc.querySelectorAll('div#mw-subcategories ul > li a')].slice(0, maxSubcategories).filter(({ href }) => !alreadyRetrieved.has(href));
-        maxSubcategories -= children.length;
-        getSubcategoryPagesButton.innerText = disabledButtonText();
-        children.forEach(({ href }) => traverseTree(href, depth - 1, title));
+        getAll(doc).then(() => {
+          const title = doc.querySelector('h1#firstHeading').innerText.replace('Category:', '');
+          categoryArea.innerHTML += `<hr><h3 class="subcategory-title">${title} (parent category: ${parent})</h3>${doc.querySelector('#mw-pages > .mw-content-ltr').innerHTML}`;
+          const children = [...doc.querySelectorAll('div#mw-subcategories ul > li a')].slice(0, maxSubcategories).filter(({ href }) => !alreadyRetrieved.has(href));
+          maxSubcategories -= children.length;
+          getSubcategoryPagesButton.innerText = disabledButtonText();
+          children.forEach(({ href }) => traverseTree(href, depth - 1, title));
+        });
       });
 
     alreadyRetrieved.add(url);

@@ -9,8 +9,6 @@ const html = readFileSync('./node-parsing/query-selector-browser.html', 'utf8');
 const doc = parse(html);
 const text = (element) => element.childNodes.find((childNode) => childNode.nodeName === '#text')?.value;
 
-console.log(testCases);
-
 testCases.forEach(({ name, assertions }) => {
   test(name, () => {
     assertions.forEach(({ query, result }) => {
@@ -21,6 +19,6 @@ testCases.forEach(({ name, assertions }) => {
       } else if (result === undefined) {
         expect(() => querySelector(doc, query)).toThrow();
       }
-    })
+    });
   });
 });

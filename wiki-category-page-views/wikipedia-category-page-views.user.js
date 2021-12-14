@@ -130,7 +130,21 @@
 
   sortByPageViewsButton.addEventListener('click', sortByPageViews);
 
-  document.querySelector('#mw-pages > h2').appendChild(getPageViewsButton);
+  let mwPagesH2 = document.querySelector('#mw-pages > h2');
+  if (!mwPagesH2) {
+    let mwPages = document.querySelector('#mw-pages');
+    if (!mwPages) {
+      mwPages = document.createElement('div');
+      mwPages.id = 'mw-pages';
+      document.querySelector('div#mw-content-text').after(mwPages);
+    }
+
+    mwPagesH2 = document.createElement('h2');
+    mwPages.appendChild(mwPagesH2);
+  }
+
+  mwPagesH2.appendChild(getPageViewsButton);
+
   Object.keys(startDates).forEach((periodValue) => {
     const periodOption = document.createElement('option');
     periodOption.innerText = periodValue;
@@ -144,5 +158,7 @@
     sortByPageViewsButton.innerText = sortButtonInnerText();
     getPageViewsButton.innerText = getButtonInnerText();
   });
+
   document.querySelector('#mw-pages > h2').appendChild(periodSelect);
+  // document.styleSheets[0].addRule('#mw-pages .mw-content-ltr', 'column-count: 3');
 }());
