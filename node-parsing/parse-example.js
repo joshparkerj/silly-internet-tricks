@@ -12,6 +12,26 @@ const getDescendant = (node, predicate) => {
   return null;
 };
 
+const getChild = (node, predicate) => {
+  for (let i = 0; i < node.childNodes?.length; i++) {
+    if (predicate(node.childNodes[i])) return node.childNodes;
+  }
+
+  return null;
+};
+
+const getFollowingSibling = (node, predicate) => {
+  for (let i = 0, foundNode = false; i < node.parentNode?.childNodes?.length; i++) {
+    if (foundNode) {
+      if (predicate(node.parentNode.childNodes[i])) return node.childNodes;
+    } else if (node.parentNode.childNodes[i] === node) {
+      foundNode = true;
+    }
+  }
+
+  return null;
+};
+
 const getDescendantByTag = (node, tag) => (
   getDescendant(node, (childNode) => childNode.tagName === tag)
 );
