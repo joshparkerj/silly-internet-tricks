@@ -1,0 +1,42 @@
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="./marquee.css">
+</head>
+
+<body>
+  <main></main>
+  <marquee>You know, there's a big world out there filled with desperate orphans who would gladly swim across an ocean
+    of thumbtacks just to be eclipsed by the long shadow that is cast by my accomplishments. But I don't care about
+    them. I chose to open my heart to you two loverly children and your hideous primate. All I ask in return is that you
+    do each and every thing that pops into my head while I enjoy the enormous fortune your parents left behind.
+  </marquee>
+  <p>You know, there's a big world out there filled with desperate orphans who would gladly swim across an ocean
+    of thumbtacks just to be eclipsed by the long shadow that is cast by my accomplishments. But I don't care about
+    them. I chose to open my heart to you two loverly children and your hideous primate. All I ask in return is that you
+    do each and every thing that pops into my head while I enjoy the enormous fortune your parents left behind.
+  </p>
+  <script>
+    const main = document.querySelector('main');
+    const speech = 'You know, there\'s a big world out there filled with desperate orphans who would gladly swim across an ocean of thumbtacks just to be eclipsed by the long shadow that is cast by my accomplishments. But I don\'t care about them. I chose to open my heart to you two loverly children and your hideous primate. All I ask in return is that you do each and every thing that pops into my head while I enjoy the enormous fortune your parents left behind.';
+    const FRAMES_PER_SECOND = 30;
+
+    let marqueeStart = 0;
+    let marqueeEnd = 30;
+    const wrap = (string, start, end) => {
+      s = start % string.length;
+      e = end % string.length;
+      if (e > s) return string.slice(s, e);
+      return string.slice(s) + string.slice(0, e);
+    };
+
+    const scrolling = () => wrap(speech, marqueeStart++, marqueeEnd++);
+    const static = () => wrap(speech, marqueeStart, marqueeEnd);
+    let isScrolling = true;
+    setInterval(() => main.innerHTML = isScrolling ? scrolling() : static(), 1000 * 1 / FRAMES_PER_SECOND);
+    main.addEventListener('mousedown', () => isScrolling = false);
+    main.addEventListener('mouseup', () => isScrolling = true);
+  </script>
+</body>
+
+</html>
