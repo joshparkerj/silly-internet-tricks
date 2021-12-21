@@ -15,5 +15,13 @@
   },
   "plugins": [
     "jest"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.user.js"],
+      "env": {
+        "greasemonkey": true
+      }
+    }
   ]
 }
