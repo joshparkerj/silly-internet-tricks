@@ -2,9 +2,10 @@
 // @name         worldometer covid table
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  Show the numbers in tabular format (any US state for now)
+// @description  Show the numbers in tabular format
 // @author       Josh Parker
 // @match        https://www.worldometers.info/coronavirus/usa/*
+// @match        https://www.worldometers.info/coronavirus/country/*
 // @icon         https://www.google.com/s2/favicons?domain=worldometers.info
 // @grant        none
 // ==/UserScript==
