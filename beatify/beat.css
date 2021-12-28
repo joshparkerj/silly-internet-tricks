@@ -1,0 +1,27 @@
+body {
+  animation-duration: 3s;
+  animation-name: beat;
+  animation-iteration-count: infinite;
+  background-color: black;
+  padding: 50px 5px;
+  display: inline-block;
+  margin: 250px 5px;
+}
+
+@keyframes beat {
+  from {
+    transform: rotate(0);
+  }
+
+  25% {
+    transform: rotate(360deg);
+  }
+
+  50% {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}

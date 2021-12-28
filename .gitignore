@@ -2,3 +2,4 @@ node_modules/
 jsjq/*/images/*
 *-notes.txt
 watch-history.json
+**/notes
