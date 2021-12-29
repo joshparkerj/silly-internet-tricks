@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .fidget > span {
+      animation-name: fidget;
+      animation-iteration-count: infinite;
+      display: inline-block;
+    }
+
+    @keyframes fidget {
+      from {
+        transform: rotate(0);
+      }
+
+      35% {
+        transform: rotate(0);
+      }
+
+      50% {
+        transform: rotate(360deg);
+      }
+
+      65% {
+        transform: rotate(360deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <p>This is where we like to <span
+      class="fidget"><span>f</span><span>i</span><span>d</span><span>g</span><span>e</span><span>t</span></span> all the
+    time haha</p>
+    <script>
+      const fidgetChars = [...document.querySelectorAll('.fidget > span')];
+      fidgetChars.forEach((char) => {
+        char.setAttribute('style', `animation-duration: ${4 + Math.random() * 8}s; animation-delay: ${Math.random() * 1.6}s;`);
+      });
+    </script>
+</body>
+
+</html>

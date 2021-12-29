@@ -1,27 +1,74 @@
 body {
+  background-color: black;
+  position: fixed;
+  inset: 0;
+}
+
+h1 {
+  margin: 8em;
   animation-duration: 3s;
   animation-name: beat;
   animation-iteration-count: infinite;
-  background-color: black;
-  padding: 50px 5px;
+  color: gold;
+  text-align: center;
+}
+
+p {
+  color: white;
+  position: fixed;
+  inset: 20%;
+}
+
+.ease {
+  animation-timing-function: ease;
+}
+
+.linear {
+  animation-timing-function: linear;
+}
+
+.beat-effect {
+  position: relative;
+}
+
+.beat-effect::before {
+  content: attr(title);
+  opacity: 0;
+}
+
+.beat-effect::after {
   display: inline-block;
-  margin: 250px 5px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: inherit;
+  content: attr(title);
+  animation-duration: 3s;
+  animation-name: beat;
+  animation-iteration-count: infinite;
+  position: absolute;
+  inset: 0;
+  height: inherit;
 }
 
 @keyframes beat {
   from {
-    transform: rotate(0);
-  }
-
-  25% {
-    transform: rotate(360deg);
+    /* font-size: xx-small; */
+    font-stretch: condensed;
+    /* letter-spacing: 0.5em;
+    line-height: 3; */
   }
 
   50% {
-    transform: translateY(0);
+    font-stretch: normal;
+    /* font-size: large; */
+    /* letter-spacing: normal;
+    line-height: normal; */
   }
 
   to {
-    transform: translateY(0);
+    font-stretch: condensed;
+    /* font-size: xx-small; */
+    /* letter-spacing: 0.5em;
+    line-height: 3; */
   }
 }
