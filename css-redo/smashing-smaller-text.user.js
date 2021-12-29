@@ -10,10 +10,9 @@
 // ==/UserScript==
 
 (function smashingSmallerText() {
-  const styleSheets = [...document.styleSheets];
-
   // delete rules is meant to be reusable across many userscripts
   const deleteRules = (selector, ruleName) => {
+    const styleSheets = [...document.styleSheets];
     styleSheets.forEach((styleSheet, ssi) => {
       const cssRules = [...styleSheet.cssRules];
       cssRules.forEach((cssRule, cri) => {
