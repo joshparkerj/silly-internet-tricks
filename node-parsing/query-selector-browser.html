@@ -3,11 +3,21 @@
 
 <head>
   <title>THIS IS THE TITLE</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bitter&family=Mukta&family=Rock+Salt&family=Zen+Kaku+Gothic+Antique&family=Zen+Old+Mincho&display=swap"
+    rel="stylesheet">
+
   <link rel="stylesheet" type="text/css" href="./style.css" />
   <script src="./query-selector-tests.js"></script>
 </head>
 
 <body>
+  <header>
+    <h1>THIS IS THE HEADER</h1>
+  </header>
   <main>THIS IS THE MAIN</main>
   <div>
     <div>
@@ -67,6 +77,38 @@
       and the <abbr title="Cental Intelligence Agency">CIA</abbr>!</p>
   </div>
   <div class="depth">this is the shallow div late in the document</div>
+  <form id="test-form">
+    <fieldset>
+      <legend>name</legend>
+      <label for="first-name">first name</label>
+      <input type="text" id="first-name" name="first-name">
+      <br>
+      <label for="last-name">last name</label>
+      <input type="text" id="last-name" name="last-name">
+      <br>
+    </fieldset>
+    <label for="occupation">occupation</label>
+    <input type="text" id="occupation" name="occupation" list="occupations">
+    <datalist id="occupations">
+      <option value="executive">executive</option>
+      <option value="doctor">doctor</option>
+      <option value="lawyer">lawyer</option>
+      <option value="senator">senator</option>
+      <option value="loser">loser</option>
+    </datalist>
+  </form>
+  <table>
+    <thead>
+      <tr><th id="fish" colspan="2">Fish</th><th id="birds" colspan="2">Birds</th></tr>
+      <tr><th id="freshwater-fish">Freshwater Fish</th><th id="saltwater-fish">Saltwater Fish</th><th id="songbirds">Songbirds</th><th id="birds-of-prey">Birds of Prey</th></tr>
+      <tr></tr>
+    </thead>
+    <tbody>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+    </tbody>
+  </table>
   <footer class="end">
     <div>
       <p><span class="end-inline">footer text</span></p>

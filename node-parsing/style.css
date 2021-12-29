@@ -1,4 +1,55 @@
-body {
+/* body {
   background-image: linear-gradient(45deg, #33ccff, #cc33ff);
   height: 100vh;
+} */
+
+:root {
+  --polished-pine: hsl(156, 24%, 51%);
+  --onyx: hsl(120, 1%, 25%);
+  --maximum-yellow: hsl(59, 94%, 57%);
+  --heliotrope-gray: hsl(290, 11%, 67%);
+  --middle-blue-green: hsl(171, 56%, 69%);
+  --irresistible: hsl(342, 48%, 47%);
+}
+
+main::before {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  background-image: linear-gradient(var(--polished-pine), var(--middle-blue-green));
+  inset: 0;
+}
+
+body {
+  color: var(--onyx);
+}
+
+h1 {
+  color: var(--maximum-yellow);
+  font-family: 'Rock Salt', cursive;
+}
+
+a {
+  color: var(--irresistible);
+}
+
+input[type=text] {
+  caret-color: var(--heliotrope-gray);
+  font-size: larger;
+}
+
+.albuquerque {
+  font-family: 'Bitter', serif;
+}
+
+.bismarck {
+  font-family: 'Mukta', sans-serif;
+}
+
+.canberra {
+  font-family: 'Zen Kaku Gothic Antique', sans-serif;
+}
+
+.denver {
+  font-family: 'Zen Old Mincho', serif;
 }

@@ -84,7 +84,17 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
 
   for (let i = 0; i < selectorList.length; i++) {
     const selector = selectorList[i];
+
+    // const trimmedSelector = selector.trim();
+    // const combinator = '>~+'.includes(trimmedSelector[0]) ? trimmedSelector[0] : null;
+    // const afterCombinator = trimmedSelector.replace(/^[>~+]/, '').trim();
+    // const restMatch = afterCombinator.match(/[\s+>~].*$/);
+    // const rest = restMatch ? restMatch[0] : null;
+    // const elementSelector = afterCombinator.replace(/[\s+>~].*/, '');
+    // console.log(elementSelector);
+
     const { combinator, elementSelector, rest } = selector.trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>(\[[^\]]+\]?|[^\s+>~])+)(?<rest>[\s+>~].*)?$/).groups;
+
     let searchNodes;
     if (!combinator || combinator === '>') {
       searchNodes = node.childNodes.filter((childNode) => childNode.nodeName.match(/^[^#]/));
