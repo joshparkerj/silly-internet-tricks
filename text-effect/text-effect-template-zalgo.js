@@ -50,7 +50,15 @@
       const classNames = [...e.childNodes].map((node) => node.className);
       const selectionStart = classNames.indexOf('selected');
       const selectionEnd = classNames.lastIndexOf('selected') + 1;
-      e.innerHTML = `${text.slice(0, selectionStart)}<span class='${effectClassName}'>${text.slice(selectionStart, selectionEnd)}</span>${text.slice(selectionEnd)}`;
+
+      e.innerHTML = '';
+      e.appendChild(new Text(text.slice(0, selectionStart)));
+      const effectSpan = document.createElement('span');
+      effectSpan.className = effectClassName;
+      effectSpan.appendChild(new Text(text.slice(selectionStart, selectionEnd)));
+      e.appendChild(effectSpan);
+      e.appendChild(new Text(text.slice(selectionEnd)));
+
       applyTextEffect(e.querySelector(`span.${effectClassName}`));
       textEffectButton.removeAttribute('disabled');
     };

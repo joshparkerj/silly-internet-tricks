@@ -12,70 +12,97 @@
 // @grant        none
 // ==/UserScript==
 
-(function zanyifyUserScript() {
+(function zanifyUserScript() {
+  const addSingleLetterSpanTextEffect = function addSingleLetterSpanTextEffect(element, effect) {
+    const e = element;
+    const elementLength = e.textContent.length;
+    const singleLetterSpans = e.textContent.split('').map((c, i) => {
+      const singleLetterSpan = document.createElement('span');
+      singleLetterSpan.textContent = c;
+      effect(singleLetterSpan, i, elementLength);
+      return singleLetterSpan;
+    });
+
+    e.textContent = '';
+    singleLetterSpans.forEach((span) => e.appendChild(span));
+  };
+
+  /* This section is unique to the zany effect */
+  const buttonText = 'zanyify';
+  const effectClassName = 'zany-text';
+  const textEffect = function zanyEffect(singleLetterSpan) {
+    singleLetterSpan.style.setProperty('transform', `rotate(${Math.random() / 5 - 0.1}turn)`);
+    singleLetterSpan.style.setProperty('display', 'inline-block');
+    if (singleLetterSpan.textContent === ' ') {
+      singleLetterSpan.style.setProperty('padding', '0 .25em');
+    }
+  };
+
+  const applyTextEffect = function applyZanyEffect(element) {
+    addSingleLetterSpanTextEffect(element, textEffect);
+  };
+
+  /* The rest is common to all of the text effects.
+     It's duplicated in each script
+     because I want them each to be usable as a stand-alone script. */
   const body = document.querySelector('body');
   const existingTextManips = document.querySelector('body > div.josh-text-manips');
   const joshTextManips = existingTextManips || document.createElement('div');
   joshTextManips.className = 'josh-text-manips';
-  const zanyifyButton = document.createElement('button');
-  zanyifyButton.innerText = 'zanyify';
+  const textEffectButton = document.createElement('button');
+  textEffectButton.innerText = buttonText;
 
-  const changeTextToZanyText = function changeTextToZanyText(element) {
-    const e = element;
-    const singleLetterSpans = e.textContent.split('').map((c) => {
-      const singleLetterSpan = document.createElement('span');
-      singleLetterSpan.textContent = c;
-      singleLetterSpan.style.setProperty('transform', `rotate(${Math.random() / 2 - 0.25}turn)`);
-      return singleLetterSpan;
-    });
+  const addTextEffect = function addTextEffect({ target }) {
+    const t = target;
+    body.removeEventListener('mousedown', addTextEffect);
 
-    e.textContent = '';
-    singleLetterSpans.forEach((span) => e.appendChild(span));
-  };
-
-  const zanyify = function zanyify({ target }) {
-    const e = target;
-    body.removeEventListener('mousedown', zanyify);
-
-    const singleLetterSpans = e.textContent.split('').map((c) => {
+    const singleLetterSpans = t.textContent.split('').map((c) => {
       const singleLetterSpan = document.createElement('span');
       singleLetterSpan.textContent = c;
       return singleLetterSpan;
     });
 
-    e.textContent = '';
-    singleLetterSpans.forEach((span) => e.appendChild(span));
+    t.textContent = '';
+    singleLetterSpans.forEach((span) => t.appendChild(span));
 
-    const zanyifyMouseover = ({ target: mouseoverTarget }) => {
-      const f = mouseoverTarget;
-      if (f.tagName === 'SPAN') {
-        f.className = 'selected';
+    const textEffectMouseover = ({ target: mouseoverTarget }) => {
+      const mot = mouseoverTarget;
+      if (mot.tagName === 'SPAN') {
+        mot.className = 'selected';
       }
     };
 
-    e.addEventListener('mouseover', zanyifyMouseover);
+    t.addEventListener('mouseover', textEffectMouseover);
 
-    const zanyifyMouseup = () => {
-      e.removeEventListener('mouseup', zanyifyMouseup);
-      e.removeEventListener('mouseover', zanyifyMouseover);
-      const text = e.textContent;
-      const classNames = [...e.childNodes].map((node) => node.className);
+    const textEffectMouseup = () => {
+      t.removeEventListener('mouseup', textEffectMouseup);
+      t.removeEventListener('mouseover', textEffectMouseover);
+      const text = t.textContent;
+      const classNames = [...t.childNodes].map((node) => node.className);
       const selectionStart = classNames.indexOf('selected');
       const selectionEnd = classNames.lastIndexOf('selected') + 1;
-      e.innerHTML = `${text.slice(0, selectionStart)}<span class='zany-text'>${text.slice(selectionStart, selectionEnd)}</span>${text.slice(selectionEnd)}`;
-      changeTextToZanyText(e.querySelector('span.zany-text'));
-      zanyifyButton.removeAttribute('disabled');
+
+      t.innerHTML = '';
+      t.appendChild(new Text(text.slice(0, selectionStart)));
+      const effectSpan = document.createElement('span');
+      effectSpan.className = effectClassName;
+      effectSpan.appendChild(new Text(text.slice(selectionStart, selectionEnd)));
+      t.appendChild(effectSpan);
+      t.appendChild(new Text(text.slice(selectionEnd)));
+
+      applyTextEffect(t.querySelector(`span.${effectClassName}`));
+      textEffectButton.removeAttribute('disabled');
     };
 
-    e.addEventListener('mouseup', zanyifyMouseup);
+    t.addEventListener('mouseup', textEffectMouseup);
   };
 
-  zanyifyButton.addEventListener('click', () => {
-    zanyifyButton.setAttribute('disabled', true);
-    body.addEventListener('mousedown', zanyify);
+  textEffectButton.addEventListener('click', () => {
+    textEffectButton.setAttribute('disabled', true);
+    body.addEventListener('mousedown', addTextEffect);
   });
 
-  joshTextManips.appendChild(zanyifyButton);
+  joshTextManips.appendChild(textEffectButton);
   if (!existingTextManips) {
     body.appendChild(joshTextManips);
   }

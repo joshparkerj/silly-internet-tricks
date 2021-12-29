@@ -11,9 +11,8 @@
   /* This section is unique to the highlight effect */
   const buttonText = 'highlightify';
   const effectClassName = 'highlighted-text';
-  const textEffect = function highlightEffect(singleLetterSpan, i, length) {};
 
-  const applyTextEffect = (element) => {
+  const applyTextEffect = () => {
     document.styleSheets[0].insertRule('.highlighted-text { background-color: yellow; }');
   };
 
@@ -27,30 +26,18 @@
   const textEffectButton = document.createElement('button');
   textEffectButton.innerText = buttonText;
 
-  const addSingleLetterSpanTextEffect = function addSingleLetterSpanTextEffect(element, effect) {
-    const elementLength = element.textContent.length;
-    const singleLetterSpans = element.textContent.split('').map((c, i) => {
-      const singleLetterSpan = document.createElement('span');
-      singleLetterSpan.textContent = c;
-      effect(singleLetterSpan, i, elementLength);
-      return singleLetterSpan;
-    });
-
-    element.textContent = '';
-    singleLetterSpans.forEach((span) => element.appendChild(span));
-  };
-
   const addTextEffect = function addTextEffect({ target }) {
+    const e = target;
     body.removeEventListener('mousedown', addTextEffect);
 
-    const singleLetterSpans = target.textContent.split('').map((c) => {
+    const singleLetterSpans = e.textContent.split('').map((c) => {
       const singleLetterSpan = document.createElement('span');
       singleLetterSpan.textContent = c;
       return singleLetterSpan;
     });
 
-    target.textContent = '';
-    singleLetterSpans.forEach((span) => target.appendChild(span));
+    e.textContent = '';
+    singleLetterSpans.forEach((span) => e.appendChild(span));
 
     const textEffectMouseover = ({ target: mouseoverTarget }) => {
       if (mouseoverTarget.tagName === 'SPAN') {
@@ -58,17 +45,24 @@
       }
     };
 
-    target.addEventListener('mouseover', textEffectMouseover);
+    e.addEventListener('mouseover', textEffectMouseover);
 
     const textEffectMouseup = () => {
-      const e = target;
       e.removeEventListener('mouseup', textEffectMouseup);
       e.removeEventListener('mouseover', textEffectMouseover);
       const text = e.textContent;
       const classNames = [...e.childNodes].map((node) => node.className);
       const selectionStart = classNames.indexOf('selected');
       const selectionEnd = classNames.lastIndexOf('selected') + 1;
-      e.innerHTML = `${text.slice(0, selectionStart)}<span class='${effectClassName}'>${text.slice(selectionStart, selectionEnd)}</span>${text.slice(selectionEnd)}`;
+
+      e.innerHTML = '';
+      e.appendChild(new Text(text.slice(0, selectionStart)));
+      const effectSpan = document.createElement('span');
+      effectSpan.className = effectClassName;
+      effectSpan.appendChild(new Text(text.slice(selectionStart, selectionEnd)));
+      e.appendChild(effectSpan);
+      e.appendChild(new Text(text.slice(selectionEnd)));
+
       applyTextEffect(e.querySelector(`span.${effectClassName}`));
       textEffectButton.removeAttribute('disabled');
     };
