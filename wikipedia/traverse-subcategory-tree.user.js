@@ -94,7 +94,14 @@
       .then((doc) => {
         getAll(doc).then(() => {
           const title = doc.querySelector('h1#firstHeading').innerText.replace('Category:', '');
-          categoryArea.innerHTML += `<hr><h3 class="subcategory-title">${title} (parent category: ${parent})</h3>${doc.querySelector('#mw-pages > .mw-content-ltr').innerHTML}`;
+
+          categoryArea.appendChild(document.createElement('hr'));
+          const subcategoryTitle = document.createElement('h3');
+          subcategoryTitle.className = 'subcategory-title';
+          subcategoryTitle.appendChild(new Text(`${title} (parent category: ${parent})`));
+          categoryArea.appendChild(subcategoryTitle);
+          categoryArea.innerHTML += doc.querySelector('#mw-pages > .mw-content-ltr').innerHTML;
+
           const children = [...doc.querySelectorAll('div#mw-subcategories ul > li a')].slice(0, maxSubcategories).filter(({ href }) => !alreadyRetrieved.has(href));
           maxSubcategories -= children.length;
           getSubcategoryPagesButton.innerText = disabledButtonText();
