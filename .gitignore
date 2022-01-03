@@ -4,3 +4,4 @@ jsjq/*/images/*
 watch-history.json
 **/notes
 worldometer/example-chart-options.js
+*.jpeg
