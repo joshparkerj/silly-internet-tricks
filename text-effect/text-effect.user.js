@@ -6,6 +6,8 @@
 // @author       Josh Parker
 // @match        https://www.theatlantic.com/*
 // @match        https://www.washingtonpost.com/*
+// @match        https://www.bls.gov/oes/*
+// @match        https://www.ncbi.nlm.nih.gov/pmc/articles/*
 // @icon         https://www.google.com/s2/favicons?domain=washingtonpost.com
 // @grant        none
 // ==/UserScript==
@@ -153,7 +155,21 @@
   const zanyifyButton = effectify('zanyify', 'zany-text', (element) => addSingleLetterSpanTextEffect(element, zanyEffect));
   joshTextManips.appendChild(zanyifyButton);
 
-  // const fidgetifyButton = effectify('fidgetify', 'fidget-text', )
+  const fidgetEffect = function fidgetEffect(singleLetterSpan) {
+    singleLetterSpan.setAttribute('style', `animation-duration: ${4.8 + Math.random() * 14.4}s; animation-delay: ${Math.random() * 4.8}s;`);
+    if (singleLetterSpan.textContent === ' ') {
+      singleLetterSpan.style.setProperty('padding', '0 .25em');
+    }
+  };
+
+  const fidgetifyButton = effectify('fidgetify', 'fidget-text', (element) => {
+    addCSSRule('@keyframes fidget {from {transform: rotate(0);} 10% {transform: rotate(360deg);} to {transform: rotate(360deg);}}');
+    addCSSRule('.fidget-text > span {animation-name: fidget; animation-iteration-count: infinite; display: inline-block;}');
+    addSingleLetterSpanTextEffect(element, fidgetEffect);
+  });
+
+  joshTextManips.appendChild(fidgetifyButton);
+
   /* const blinkifyButton = effectify('blinkify', 'blink-text', (element) => {
 
   }) */

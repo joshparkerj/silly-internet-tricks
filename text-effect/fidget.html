@@ -18,7 +18,7 @@
         transform: rotate(0);
       }
 
-      35% {
+      30% {
         transform: rotate(0);
       }
 
@@ -26,7 +26,7 @@
         transform: rotate(360deg);
       }
 
-      65% {
+      70% {
         transform: rotate(360deg);
       }
 
@@ -44,7 +44,7 @@
     <script>
       const fidgetChars = [...document.querySelectorAll('.fidget > span')];
       fidgetChars.forEach((char) => {
-        char.setAttribute('style', `animation-duration: ${4 + Math.random() * 8}s; animation-delay: ${Math.random() * 1.6}s;`);
+        char.setAttribute('style', `animation-duration: ${1.6 + Math.random() * 4.8}s; animation-delay: ${Math.random() * 1.6}s;`);
       });
     </script>
 </body>
