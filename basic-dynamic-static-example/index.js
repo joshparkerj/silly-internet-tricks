@@ -45,7 +45,7 @@ http.createServer((req, res) => {
     res.end('NO');
   } else {
     const extension = req.url.match(/\.([^.]+)$/);
-    if (extension && staticExtensions.has(extension[1])) {
+    if (extension && staticExtensions.has(extension[1]) && req.url.match(/^[^./]+\.[^./]+$/)) {
       readFile(`.${req.url}`, (err, data) => {
         if (err) {
           if (err.code === 'ENOENT') {
