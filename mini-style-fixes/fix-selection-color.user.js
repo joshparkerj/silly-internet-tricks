@@ -11,7 +11,7 @@
 
 (function fixSelectionColor() {
   const editRules = function editRules(searchTerm, replaceTerm) {
-    if (!(searchTerm instanceof 'String' || replaceTerm instanceof 'String')) {
+    if (!(searchTerm instanceof String && replaceTerm instanceof String)) {
       throw new Error('string terms only');
     }
 

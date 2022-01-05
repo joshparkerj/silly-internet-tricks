@@ -1,6 +1,9 @@
-const deleteFromRules = (termToDelete) => {
-  if (!(termToDelete instanceof String)) {
-    throw new Error('string search terms only');
+const deleteFromMatchingRules = (termToDelete) => {
+  let re;
+  if (termToDelete instanceof String) {
+    re = new RegExp(termToDelete);
+  } else {
+    re = termToDelete;
   }
 
   const styleSheets = [...document.styleSheets];
@@ -9,10 +12,8 @@ const deleteFromRules = (termToDelete) => {
       const cssRules = [...styleSheet.cssRules];
       cssRules.forEach((cssRule, cri) => {
         const { cssText } = cssRule;
-        if (cssText.includes(termToDelete)) {
-          const editedText = cssText.replace(termToDelete, '');
+        if (cssText.match(re)) {
           document.styleSheets[ssi].deleteRule(cri);
-          document.styleSheets[ssi].insertRule(editedText);
         }
       });
     } catch (e) {
@@ -22,4 +23,4 @@ const deleteFromRules = (termToDelete) => {
   });
 };
 
-module.exports = deleteFromRules;
+module.exports = deleteFromMatchingRules;
