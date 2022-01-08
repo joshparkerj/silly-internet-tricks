@@ -7,7 +7,7 @@
 // @match        https://www.worldometers.info/coronavirus/usa/*
 // @match        https://www.worldometers.info/coronavirus/country/*
 // @icon         https://www.google.com/s2/favicons?domain=worldometers.info
-// @grant        none
+// @grant        GM_download
 // ==/UserScript==
 
 (function worldometerCovidTable() {
@@ -65,5 +65,33 @@
       document.styleSheets[0].insertRule('#covid-table th, #covid-table td { border: solid 0.2px darkgray; }');
       document.styleSheets[0].insertRule('#covid-table th { position: sticky; top: -1px; background: lightblue; padding: 0.4rem 1rem; }');
       document.styleSheets[0].insertRule('#covid-table td { padding: 0.2rem 1rem; }');
+
+      const saveButton = document.createElement('button');
+      saveButton.innerText = 'Save table as CSV';
+
+      saveButton.addEventListener('click', () => {
+        const csv = `${dataColumns.map(({ name }) => name).join(',')}\n${dates.map((date, i) => `${date},${dataColumns.map(({ data }) => data[i]).join(',')}`).join('\n')}`;
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+
+        GM_download({
+          url,
+          name: 'covid-table.csv',
+          saveAs: true,
+          onerror: ({ error, details }) => {
+            console.log(error);
+            console.log(details);
+            if (error === 'not_whitelisted') {
+              const alert = document.createElement('div');
+              alert.innerText = 'You have to have .csv in your whitelisted extensions. Got to tampermonkey settings and make sure settings mode is beginner or advanced, not novice. Look for Downloads BETA.';
+              alert.style.setProperty('color', 'red');
+              saveButton.appendChild(alert);
+            }
+          },
+        });
+      });
+
+      document.querySelector('body').appendChild(saveButton);
     });
 }());
