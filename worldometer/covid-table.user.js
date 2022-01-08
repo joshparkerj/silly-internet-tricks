@@ -70,14 +70,14 @@
       saveButton.innerText = 'Save table as CSV';
 
       saveButton.addEventListener('click', () => {
-        const csv = `${dataColumns.map(({ name }) => name).join(',')}\n${dates.map((date, i) => `${date},${dataColumns.map(({ data }) => data[i]).join(',')}`).join('\n')}`;
+        const csv = `dates,${dataColumns.map(({ name }) => name).join(',')}\n${dates.map((date, i) => `"${date}",${dataColumns.map(({ data }) => data[i]).join(',')}`).join('\n')}`;
 
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
 
         GM_download({
           url,
-          name: 'covid-table.csv',
+          name: `covid-table-${document.title.split('COVID')[0].trim()}.csv`,
           saveAs: true,
           onerror: ({ error, details }) => {
             console.log(error);
@@ -86,6 +86,7 @@
               const alert = document.createElement('div');
               alert.innerText = 'You have to have .csv in your whitelisted extensions. Got to tampermonkey settings and make sure settings mode is beginner or advanced, not novice. Look for Downloads BETA.';
               alert.style.setProperty('color', 'red');
+              alert.style.setProperty('position', 'absolute');
               saveButton.appendChild(alert);
             }
           },
