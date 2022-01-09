@@ -24,7 +24,7 @@
   thead.appendChild(headerRow);
   table.appendChild(thead);
   table.appendChild(tbody);
-  document.querySelectorAll('.responsiveBook').map((rb) => {
+  [...document.querySelectorAll('.responsiveBook')].map((rb) => {
     const title = rb.querySelector('.gr-h3 span[itemprop="name"]').textContent;
     const author = rb.querySelector('span[itemprop="author"]').textContent;
     const rating = rb.querySelector('.communityRating__starsWrapper ~ .gr-metaText').textContent;
@@ -42,7 +42,7 @@
     .forEach((row) => {
       csv += row;
       const bodyRow = document.createElement('tr');
-      row.split(',').forEach((d) => {
+      row.split('","').forEach((d) => {
         const td = document.createElement('td');
         td.textContent = d.replaceAll('"', '');
         bodyRow.appendChild(td);
@@ -50,4 +50,22 @@
 
       tbody.appendChild(bodyRow);
     });
+
+  document.querySelector('.responsiveMainContentContainer').appendChild(table);
+
+  const downloadButton = document.createElement('button');
+  downloadButton.textContent = 'Save table as csv';
+  downloadButton.addEventListener('click', () => {
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${document.title.split('Series')[0].trim().replace(/\s+/g, '-')}-series.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  document.querySelector('.responsiveMainContentContainer').appendChild(downloadButton);
 }());
