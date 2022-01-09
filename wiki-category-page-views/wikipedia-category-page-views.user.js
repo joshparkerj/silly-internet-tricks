@@ -57,7 +57,10 @@
     'three years': { startDate: yyyymmdd(addMonths(thisDate, -36)), granularity: 'monthly' },
   };
 
-  const getPageViewUrls = (categoryLinks, startDate, granularity) => [...categoryLinks].map((a) => `${apiUrl}${a.href.match(/wiki\/(.*)$/)[1].replaceAll('/', '%2F')}/${granularity}/${startDate}/${today}`);
+  const getPageViewUrls = (categoryLinks, startDate, granularity) => [...categoryLinks].map((a) => {
+    const titleHref = a.href.match(/wiki\/(.*)$/)[1].replaceAll('/', '%2F').replace(/^Talk:/, '');
+    return `${apiUrl}${titleHref}/${granularity}/${startDate}/${today}`;
+  });
 
   const REQUESTS_PER_SECOND = 100;
   const getPageViews = function getPageViews(timePeriod) {
