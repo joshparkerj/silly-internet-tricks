@@ -47,7 +47,7 @@ http.createServer((req, res) => {
     const filename = req.url.match(/\/(.*)$/);
     const extension = filename && filename[1].match(/\.([^.]+)$/);
     if (extension && staticExtensions.has(extension[1]) && filename && filename[1].match(/^[^./]+\.[^./]+$/)) {
-      readFile(`.${req.url}`, (err, data) => {
+      readFile(`.${filename}`, (err, data) => {
         if (err) {
           if (err.code === 'ENOENT') {
             res.writeHead(404);
