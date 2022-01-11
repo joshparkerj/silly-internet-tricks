@@ -17,7 +17,7 @@ here's a list of the silly internet tricks so far:
 13. [Wavify]
 14. [text effect](text-effect/text-effect.user.js)
 15. [random password](password/random-password.user.js)
-16. [egs whole storyline](egs/egs-whole-storyline.user.js) [RAW](raw/main/egs/egs-whole-storyline.user.js)
+16. [egs whole storyline](egs/egs-whole-storyline.user.js)
 17. [Aggregate the top ten from each of the four categories](netflix/netflix-top-10-aggregated.user.js)
 18. [Most downloaded versions of an npm package](npm/most-downloaded.user.js)
 19. [No hot network questions]
