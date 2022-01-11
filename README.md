@@ -38,3 +38,5 @@ here's a list of the silly internet tricks so far:
 34. [Smashing smaller text.]
 35. [fix selection color]
 36. [Dark Mode]
+
+TODO: make sure all tricks are present, and organize files and get all the links updated here
