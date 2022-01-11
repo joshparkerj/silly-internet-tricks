@@ -94,7 +94,11 @@
       .then((doc) => {
         getAll(doc).then(() => {
           const title = doc.querySelector('h1#firstHeading').innerText.replace('Category:', '');
-          categoryArea.innerHTML += `<hr><h3 class="subcategory-title">${title} (parent category: ${parent})</h3>`;
+          categoryArea.appendChild(document.createElement('hr'));
+          const subcategoryTitle = document.createElement('h3');
+          subcategoryTitle.classList.add('subcategory-title');
+          subcategoryTitle.appendChild(new Text(`${title} (parent category: ${parent})`));
+          categoryArea.appendChild(subcategoryTitle);
           const docPages = doc.querySelector('#mw-pages > .mw-content-ltr');
           if (docPages) {
             categoryArea.innerHTML += docPages.innerHTML;
