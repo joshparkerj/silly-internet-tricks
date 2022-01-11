@@ -78,7 +78,7 @@ const getElementMatcher = function getElementMatcher(elementSelector) {
 };
 
 const querySelectorHelper = function querySelectorHelper(node, query) {
-  if (!query) {
+  if (!query || query.match(/^\s+$/)) {
     return node;
   }
 
@@ -87,7 +87,14 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
   for (let i = 0; i < selectorList.length; i++) {
     const selector = selectorList[i];
 
-    const { combinator, elementSelector, rest } = selector.trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>(\[[^\]]+\]?|[^\s+>~])+)(?<rest>[\s+>~].*)?$/).groups;
+    const trimmedSelector = selector.trim();
+    const { combinator } = trimmedSelector.match(/^(?<combinator>[>~+])?\s?/).groups;
+
+    const elementSelectorAndRest = trimmedSelector.replace(combinator || '', '');
+
+    const { elementSelector } = elementSelectorAndRest.match(/(?<elementSelector>(\[[^\]]+\]?|[^\s+>~])+)/).groups;
+
+    const rest = elementSelectorAndRest.replace(elementSelector, '');
 
     let searchNodes;
     if (!combinator || combinator === '>') {
