@@ -1,19 +1,21 @@
 const attributeMatcher = function attributeMatcher(actualValues, operator, targetValue) {
+  const target = targetValue.match(/(^'(.*)'$|^"(.*)"$|^(.*)$)/).find((e, i) => i > 1 && e);
+
   switch (operator) {
     case '=':
-      return actualValues.some((actualValue) => actualValue === targetValue);
+      return actualValues.some((actualValue) => actualValue === target);
     case '~=': {
-      const re = new RegExp(`\\b${targetValue}\\b`);
+      const re = new RegExp(`\\b${target}\\b`);
       return actualValues.some((actualValue) => actualValue.match(re));
     }
     case '|=':
       throw new Error('not implemented');
     case '^=':
-      return actualValues.some((actualValue) => actualValue.startsWith(targetValue));
+      return actualValues.some((actualValue) => actualValue.startsWith(target));
     case '$=':
-      return actualValues.some((actualValue) => actualValue.endsWith(targetValue));
+      return actualValues.some((actualValue) => actualValue.endsWith(target));
     case '*=':
-      return actualValues.some((actualValue) => actualValue.includes(targetValue));
+      return actualValues.some((actualValue) => actualValue.includes(target));
     default:
       throw new Error('not a valid selector');
   }
@@ -84,14 +86,6 @@ const querySelectorHelper = function querySelectorHelper(node, query) {
 
   for (let i = 0; i < selectorList.length; i++) {
     const selector = selectorList[i];
-
-    // const trimmedSelector = selector.trim();
-    // const combinator = '>~+'.includes(trimmedSelector[0]) ? trimmedSelector[0] : null;
-    // const afterCombinator = trimmedSelector.replace(/^[>~+]/, '').trim();
-    // const restMatch = afterCombinator.match(/[\s+>~].*$/);
-    // const rest = restMatch ? restMatch[0] : null;
-    // const elementSelector = afterCombinator.replace(/[\s+>~].*/, '');
-    // console.log(elementSelector);
 
     const { combinator, elementSelector, rest } = selector.trim().match(/^(?<combinator>[>~+])?\s?(?<elementSelector>(\[[^\]]+\]?|[^\s+>~])+)(?<rest>[\s+>~].*)?$/).groups;
 

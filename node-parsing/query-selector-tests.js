@@ -81,6 +81,13 @@ const testCases = [
       { query: '#battleship .albuquerque.bismarck.canberra.denver', result: 'Ants, Birds, Cougars, and Dalmatians' },
     ],
   },
+  {
+    name: 'can match element with two attribute selectors',
+    assertions: [
+      { query: '*[colspan=\'2\'][id=fish]', result: 'Fish' },
+      { query: '*[rowspan=\'2\'][title=mk]', result: 'Mortal Kombat' },
+    ],
+  },
 ];
 
 if (typeof window === 'undefined') {

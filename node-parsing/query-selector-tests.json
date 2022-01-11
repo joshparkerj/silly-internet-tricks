@@ -50,5 +50,6 @@
   {"name":"can use selector list", "assertions": [
     {"query": "p span    ,  p a", "textContent": "this a is in the p in the div"},
     {"query": "p a    ,  p span", "textContent": "this a is in the p in the div"}
-  ]}
+  ]},
+  {"name": "can match element with two attribute selectors", "assertions": [{"query": "*[colspan=2][id=fish]", "textContent": "Fish"}]}
 ]
