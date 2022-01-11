@@ -47,7 +47,7 @@ http.createServer((req, res) => {
     const filename = req.url.match(/\/(.*)$/);
     const extension = filename && filename[1].match(/\.([^.]+)$/);
     if (extension && staticExtensions.has(extension[1]) && filename && filename[1].match(/^[^./]+\.[^./]+$/)) {
-      readFile(`.${filename}`, (err, data) => {
+      readFile(`./${filename[1]}`, (err, data) => {
         if (err) {
           if (err.code === 'ENOENT') {
             res.writeHead(404);
@@ -59,7 +59,11 @@ http.createServer((req, res) => {
           return;
         }
 
-        res.writeHead(200, { 'Content-Type': staticContentTypes[extension[1]] });
+        const headers = {
+          'Content-Type': staticContentTypes[extension[1]],
+        };
+
+        res.writeHead(200, headers);
         res.end(data);
       });
     } else if (req.url === '/time') {
