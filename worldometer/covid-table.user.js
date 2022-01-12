@@ -57,14 +57,22 @@
       table.id = 'covid-table';
 
       const dataHeading = dataColumns.map(({ name }) => `<th>${name}</th>`).join('');
-      const bodyRows = dates.map((date, i) => `<tr><td>${date}</td>${dataColumns.map(({ data }) => `<td>${data[i]}</td>`).join('')}</tr>`).join('');
+      const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      const bodyRows = dates.map((date, i) => `<tr title="${days[(new Date(date)).getDay()]}"><td>${date}</td>${dataColumns.map(({ data }) => `<td>${data[i]}</td>`).join('')}</tr>`).join('');
       table.innerHTML = `<thead><tr><th>dates</th>${dataHeading}</tr></thead><tbody>${bodyRows}</tbody>`;
 
       document.querySelector('body').appendChild(table);
       document.styleSheets[0].insertRule('#covid-table { margin: 2rem 6rem; border: solid black; font-size: small; }');
       document.styleSheets[0].insertRule('#covid-table th, #covid-table td { border: solid 0.2px darkgray; }');
       document.styleSheets[0].insertRule('#covid-table th { position: sticky; top: -1px; background: lightblue; padding: 0.4rem 1rem; }');
-      document.styleSheets[0].insertRule('#covid-table td { padding: 0.2rem 1rem; }');
+      document.styleSheets[0].insertRule('#covid-table td { padding: 0.3rem 1.5rem; text-align: right; }');
+      document.styleSheets[0].insertRule('#covid-table tr[title=sunday] { background-color: hsl(300, 100%, 85%); }');
+      document.styleSheets[0].insertRule('#covid-table tr[title=monday] { background-color: hsl(280, 100%, 87%); }');
+      document.styleSheets[0].insertRule('#covid-table tr[title=tuesday] { background-color: hsl(260, 100%, 89%); }');
+      document.styleSheets[0].insertRule('#covid-table tr[title=wednesday] { background-color: hsl(240, 100%, 91%); }');
+      document.styleSheets[0].insertRule('#covid-table tr[title=thursday] { background-color: hsl(220, 100%, 93%); }');
+      document.styleSheets[0].insertRule('#covid-table tr[title=friday] { background-color: hsl(200, 100%, 95%); }');
+      document.styleSheets[0].insertRule('#covid-table tr[title=saturday] { background-color: hsl(180, 100%, 97%); }');
 
       const saveButton = document.createElement('button');
       saveButton.innerText = 'Save table as CSV';
@@ -84,7 +92,7 @@
             console.log(details);
             if (error === 'not_whitelisted') {
               const alert = document.createElement('div');
-              alert.innerText = 'You have to have .csv in your whitelisted extensions. Got to tampermonkey settings and make sure settings mode is beginner or advanced, not novice. Look for Downloads BETA.';
+              alert.innerText = 'You have to have .csv in your whitelisted extensions. Go to tampermonkey settings and make sure settings mode is beginner or advanced, not novice. Look for Downloads BETA.';
               alert.style.setProperty('color', 'red');
               alert.style.setProperty('position', 'absolute');
               saveButton.appendChild(alert);
