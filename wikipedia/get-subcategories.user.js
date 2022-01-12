@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Traverse subcategory tree
+// @name         Get subcategories
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  Bring all articles from subcategories onto this category page

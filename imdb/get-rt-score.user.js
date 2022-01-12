@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         get cross origin
+// @name         get RT score
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  try to take over the world!
@@ -12,28 +12,30 @@
 
 (function getRT() {
   const rtRoot = 'https://www.rottentomatoes.com';
-  // const certifiedFresh =
-  //   '/assets/pizza-pie/images/icons/tomatometer/certified_fresh-notext.56a89734a59.svg';
-  // const fresh = '/assets/pizza-pie/images/icons/tomatometer/tomatometer-fresh.149b5e8adc3.svg';
-  // const rotten = '/assets/pizza-pie/images/icons/tomatometer/tomatometer-rotten.f1ef4f02ce3.svg';
   const rtSearch = '/search?search=';
   const works = [...document.querySelectorAll('.lister-item')];
   const parser = new DOMParser();
   works.forEach((work) => {
-    const { title } = work.querySelector('h3.lister-item-header').innerText.match(/^(?<number>\S+) (?<title>.*) (?<year>\([^)]+\))$/).groups;
-    const topBilled = work.querySelector('.lister-item-content > p > a[href^="/name"]');
-
+    const { title, year } = work.querySelector('h3.lister-item-header').innerText.match(/^(?<number>\S+) (?<title>.*) (?<year>\([^)]+\))$/).groups;
+    const isTV = year.match(/[-–]/);
+    const topBilled = work.querySelector('.lister-item-content > p > a[href^="/name"]').innerText;
+    const searchUrl = `${rtRoot}${rtSearch}${title} ${topBilled}`.replaceAll(' ', '%20');
+    console.log(searchUrl);
     GM.xmlHttpRequest({
       method: 'GET',
-      url: `${rtRoot}${rtSearch}${title} ${topBilled}`,
+      url: searchUrl,
       onload({ responseText }) {
         const dom = parser.parseFromString(responseText, 'text/html');
-        const spmr = dom.querySelector('search-page-media-row');
+
+        let spmr;
+        if (isTV) spmr = dom.querySelector('search-page-result[type=tv] search-page-media-row');
+        else spmr = dom.querySelector('search-page-media-row');
+
         const state = spmr.getAttribute('tomatometerstate');
         const score = spmr.getAttribute('tomatometerscore');
         const rtRating = document.createElement('div');
         const rtRatingContent = document.createElement('span');
-        const rtTitle = dom.querySelector('search-page-media-row > a[slot=title]').textContent.trim();
+        const rtTitle = spmr.querySelector('a[slot=title]').textContent.trim();
         rtRatingContent.innerText = `Rotten tomatoes score for ${rtTitle}: ${score} (${state})`;
         rtRating.classList.add('inline-block');
         rtRating.classList.add('ratings-tomatometer');

@@ -6,6 +6,7 @@
 // @author       Josh Parker
 // @match        https://www.ncbi.nlm.nih.gov/pmc/
 // @match        https://www.ncbi.nlm.nih.gov/pmc/*
+// @match        https://pubmed.ncbi.nlm.nih.gov/*
 // @icon         https://www.google.com/s2/favicons?domain=nih.gov
 // @grant        none
 // ==/UserScript==
@@ -14,6 +15,8 @@
   const addRule = (rule) => document.styleSheets[0].insertRule(rule);
 
   const maincontentSelectors = [
+    'html > body',
+    'html > body div.article-page#article-page',
     '#maincontent #mc',
     '#maincontent #mc div.table-wrap',
     'body#ui-ncbiexternallink-3',
@@ -40,6 +43,14 @@
 
   addRule(`${boxSelectors.join(', ')} { color: white; background-color: #990; }`);
   addRule(`${boxSelectors.map((bs) => `${bs} a`).join(', ')} { color: #CFF; }`);
+
+  const dropdownSelectors = [
+    '#maincontent #mc .ui-ncbilinksmenu',
+    '#maincontent #mc .ui-ncbilinksmenu .oneLevel li a',
+    '#maincontent #mc .ui-ncbilinksmenu .ui-ncbibasicmenu li a',
+  ];
+
+  addRule(`${dropdownSelectors.join(', ')} { background: #222; box-shadow: 0 0 1em 1em #666; }`);
 
   const miscRules = [
     '.bottom #footer a[href], .page .content a[href] { color: #BBF; }',
