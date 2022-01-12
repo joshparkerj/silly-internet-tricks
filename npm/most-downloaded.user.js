@@ -11,7 +11,8 @@
 
 (function mostDownloadedUserScript() {
   const parser = new DOMParser();
-  const versionSorter = (version) => version.querySelector('.downloads').textContent.replaceAll(',', '');
+  const downloadCount = (version) => version.querySelector('.downloads').textContent;
+  const downloadNumber = (version) => Number(downloadCount(version).replaceAll(',', ''));
   const versionNumber = (version) => version.querySelector('a.code').textContent;
   const noDupes = (arr) => (
     arr.filter((e, i) => i === arr.findIndex((f) => versionNumber(e) === versionNumber(f)))
@@ -23,23 +24,27 @@
     .then((doc) => doc.querySelectorAll('#tabpanel-versions li'))
     .then((nodelist) => [...nodelist])
     .then((elements) => elements.filter((element) => element.querySelector('a.code')))
-    .then((versions) => noDupes([...versions]).sort((a, b) => versionSorter(b) - versionSorter(a)))
+    .then((versions) => noDupes([...versions])
+      .sort((a, b) => downloadNumber(b) - downloadNumber(a)))
     .then((sortedVersions) => sortedVersions.slice(0, 10))
     .then((mostDownloadedVersions) => {
-      const makeVersionReadable = (v) => `version number ${versionNumber(v)} : ${v.querySelector('code.downloads').textContent} downloads`;
-      const div = document.createElement('div');
-      div.id = 'most-downloaded-versions';
+      const versionLength = Math.max(...mostDownloadedVersions.map((v) => versionNumber(v)));
+      const downloadLength = Math.max(...mostDownloadedVersions.map((v) => downloadCount(v)));
+      const makeVersionReadable = (v) => `version number ${versionNumber(v).padStart(versionLength, ' ')} : ${downloadCount(v).padStart(downloadLength, ' ')} downloads`;
+      const pre = document.createElement('pre');
+      pre.id = 'most-downloaded-versions';
       mostDownloadedVersions.forEach((version) => {
         const versionDiv = document.createElement('div');
         versionDiv.textContent = makeVersionReadable(version);
-        div.appendChild(versionDiv);
+        pre.appendChild(versionDiv);
       });
 
       const style = document.createElement('style');
       style.textContent = '#most-downloaded-versions { position: fixed; background-color: lightgrey; padding: 5px 10px; top: 62px; right: 10px; border-radius: 16px; box-shadow: 2px 2px 1px black; z-index: 2; }';
+      style.textContent += '#most-downloaded-versions > pre { font-family: monospace; }';
       const head = document.querySelector('head');
       head.appendChild(style);
       const body = document.querySelector('body');
-      body.appendChild(div);
+      body.appendChild(pre);
     });
 }());
