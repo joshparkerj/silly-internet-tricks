@@ -87,14 +87,16 @@
           url,
           name: `covid-table-${document.title.split('COVID')[0].trim()}.csv`,
           saveAs: true,
-          onerror: ({ error, details }) => {
-            console.log(error);
-            console.log(details);
+          onerror: ({ error }) => {
             if (error === 'not_whitelisted') {
               const alert = document.createElement('div');
-              alert.innerText = 'You have to have .csv in your whitelisted extensions. Go to tampermonkey settings and make sure settings mode is beginner or advanced, not novice. Look for Downloads BETA.';
-              alert.style.setProperty('color', 'red');
+              alert.innerText = 'NO CAN DO... You have to have .csv in your whitelisted extensions. Go to tampermonkey settings and make sure settings mode is beginner or advanced, not novice. Look for Downloads BETA.';
+              alert.style.setProperty('color', 'hsl(0deg 100% 70%)');
               alert.style.setProperty('position', 'absolute');
+              alert.style.setProperty('top', '-342px');
+              alert.style.setProperty('background-color', 'black');
+              alert.style.setProperty('padding', '10px');
+              saveButton.style.setProperty('position', 'relative');
               saveButton.appendChild(alert);
             }
           },
