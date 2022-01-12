@@ -85,7 +85,7 @@
 
         GM_download({
           url,
-          name: `covid-table-${document.title.split('COVID')[0].trim()}.csv`,
+          name: `covid-table-${document.title.split('COVID')[0].trim().replace(/\s+/g, '-')}.csv`,
           saveAs: true,
           onerror: ({ error }) => {
             if (error === 'not_whitelisted') {
