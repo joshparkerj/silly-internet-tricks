@@ -12,16 +12,21 @@
 (function mostDownloadedUserScript() {
   const parser = new DOMParser();
   const versionSorter = (version) => version.querySelector('.downloads').textContent.replaceAll(',', '');
+  const versionNumber = (version) => version.querySelector('a.code').textContent;
+  const noDupes = (arr) => (
+    arr.filter((e, i) => i === arr.findIndex((f) => versionNumber(e) === versionNumber(f)))
+  );
+
   fetch('?activeTab=versions')
     .then((response) => response.text())
     .then((text) => parser.parseFromString(text, 'text/html'))
     .then((doc) => doc.querySelectorAll('#tabpanel-versions li'))
     .then((nodelist) => [...nodelist])
     .then((elements) => elements.filter((element) => element.querySelector('a.code')))
-    .then((versions) => [...versions].sort((a, b) => versionSorter(b) - versionSorter(a)))
+    .then((versions) => noDupes([...versions]).sort((a, b) => versionSorter(b) - versionSorter(a)))
     .then((sortedVersions) => sortedVersions.slice(0, 10))
     .then((mostDownloadedVersions) => {
-      const makeVersionReadable = (v) => `version number ${v.querySelector('a.code').textContent} : ${v.querySelector('code.downloads').textContent} downloads`;
+      const makeVersionReadable = (v) => `version number ${versionNumber(v)} : ${v.querySelector('code.downloads').textContent} downloads`;
       const div = document.createElement('div');
       div.id = 'most-downloaded-versions';
       mostDownloadedVersions.forEach((version) => {
