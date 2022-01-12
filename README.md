@@ -20,7 +20,7 @@ here's a list of the silly internet tricks so far:
 16. [egs whole storyline](egs/egs-whole-storyline.user.js)
 17. [Aggregate the top ten from each of the four categories](netflix/netflix-top-10-aggregated.user.js)
 18. [Most downloaded versions of an npm package](npm/most-downloaded.user.js)
-19. [No hot network questions]
+19. [No hot network questions](stack/no-hot-network.user.js)
 20. [series csv](goodreads/series-csv.user.js)
 21. [get cross origin]
 22. [Demolish Style]
