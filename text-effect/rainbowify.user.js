@@ -12,7 +12,7 @@
 // @grant        none
 // ==/UserScript==
 
-(function userScript() {
+(function rainbowify() {
   /* this function is required for the style-based effects, such as rainbow, wave, and zany.
      it isn't needed for the text-based effects, such as sarcastic and zalgo */
   const addSingleLetterSpanTextEffect = function addSingleLetterSpanTextEffect(element, effect) {

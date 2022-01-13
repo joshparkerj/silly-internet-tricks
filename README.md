@@ -3,18 +3,18 @@
 here's a list of the silly internet tricks so far:
 
 1. [Roblox games filter.](roblox-games-filter/filter.user.js)
-2. [El Goonish Shive. No ads. No commentary. No Q&A.]()
-3. [El Goonish Shive Newspaper. No Ads!]
-4. [Washington Post better colors]
+2. [El Goonish Shive. No ads. No commentary. No Q&A.](egs/qol.user.js)
+3. [El Goonish Shive Newspaper. No Ads!](egs/np.user.js)
+4. [Washington Post better colors](wapo/better-colors)
 5. [get page views this month for each page in the category](wikipedia/category-page-views.user.js)
 6. [Show all category links on one page.](wikipedia/one-page-category.user.js)
-7. [Rainbowify]
-8. [Sarcastify]
-9. [Zalgoify]
-10. [Youtube Duration Filter](youtube-duration-filter/yt-duration-filter.user.js)
-11. [Browse the reactjs docs with arrow keys]
+7. [Rainbowify](text-effect/rainbowify.user.js)
+8. [Sarcastify](text-effect/sarcastify.user.js)
+9. [Zalgoify](text-effect/zalgoify.user.js)
+10. [Youtube Duration Filter](youtube/duration-filter.user.js)
+11. [Browse the reactjs docs with arrow keys](reactjs-docs/arrow-keys.user.js)
 12. [Zanyify](text-effect/zanyify.user.js)
-13. [Wavify]
+13. [Wavify](text-effect/wavify.user.js)
 14. [text effect](text-effect/text-effect.user.js)
 15. [random password](password/random-password.user.js)
 16. [egs whole storyline](egs/egs-whole-storyline.user.js)
@@ -22,10 +22,10 @@ here's a list of the silly internet tricks so far:
 18. [Most downloaded versions of an npm package](npm/most-downloaded.user.js)
 19. [No hot network questions](stack/no-hot-network.user.js)
 20. [series csv](goodreads/series-csv.user.js)
-21. [get cross origin]
-22. [Demolish Style]
-23. [Reskin Totally]
-24. [Filter history]
+21. [get rt score](imdb/get-rt-score.user.js)
+22. [Demolish Style](demolish-styles/demolish-styles.user.js)
+23. [Reskin Totally](demolish-styles/reskin-totally.user.js)
+24. [Filter history](youtube/filter-history.user.js)
 25. [Wider Comments](medium/wider-comments.user.js)
 26. [worldometer covid table](worldometer/covid-table.user.js)
 27. [up and coming pages in wikipedia category](wikipedia/up-and-coming.user.js)

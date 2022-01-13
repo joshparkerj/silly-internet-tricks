@@ -4,8 +4,9 @@
 // @version      0.1
 // @description
 // @author       Josh Parker
-// @match        https://www.youtube.com/channel/*/videos
-// @match        https://www.youtube.com/user/*/videos
+// @match        https://www.youtube.com/c/*/videos*
+// @match        https://www.youtube.com/channel/*/videos*
+// @match        https://www.youtube.com/user/*/videos*
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
 // @grant        none
 // ==/UserScript==
@@ -35,9 +36,9 @@
   durationFilterForm.innerHTML = `<h2>duration filter</h2>
   <h3>format hh:mm:ss</h3>
   <label for="duration-filter-min">min</label>
-  <input id="duration-filter-min" type="text" pattern="(([0-5]?\\d:)?[0-5]?\\d:)?[0-5]?\\d" />
+  <input id="duration-filter-min" type="text" pattern="(([0-9]?\\d:)?[0-5]?\\d:)?[0-5]?\\d" />
   <br><label for="duration-filter-max">max</label>
-  <input id="duration-filter-max" type="text" pattern="(([0-5]?\\d:)?[0-5]?\\d:)?[0-5]?\\d" />
+  <input id="duration-filter-max" type="text" pattern="(([0-9]?\\d:)?[0-5]?\\d:)?[0-5]?\\d" />
   <button>filter</button>`;
   durationFilterForm.id = 'duration-filter';
   durationFilterForm.onsubmit = function filterDurations(event) {

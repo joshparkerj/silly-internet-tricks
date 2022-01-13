@@ -20,7 +20,6 @@
     const isTV = year.match(/[-–]/);
     const topBilled = work.querySelector('.lister-item-content > p > a[href^="/name"]').innerText;
     const searchUrl = `${rtRoot}${rtSearch}${title} ${topBilled}`.replaceAll(' ', '%20');
-    console.log(searchUrl);
     GM.xmlHttpRequest({
       method: 'GET',
       url: searchUrl,

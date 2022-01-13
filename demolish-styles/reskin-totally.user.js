@@ -106,15 +106,16 @@
     letter-spacing: calc(0.5953rem + 0.1984vw);
   }`);
 
-  document.styleSheets[0].insertRule(``);
+  /*  document.styleSheets[0].insertRule(``);
 
-  document.styleSheets[0].insertRule(``);
+    document.styleSheets[0].insertRule(``);
 
-  document.styleSheets[0].insertRule(``);
+    document.styleSheets[0].insertRule(``);
 
-  document.styleSheets[0].insertRule(``);
+    document.styleSheets[0].insertRule(``);
 
-  document.styleSheets[0].insertRule(``);
+    document.styleSheets[0].insertRule(``);
 
-  document.styleSheets[0].insertRule(``);
+    document.styleSheets[0].insertRule(``);
+    */
 }());
