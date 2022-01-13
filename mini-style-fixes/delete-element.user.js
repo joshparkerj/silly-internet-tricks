@@ -14,9 +14,10 @@
 
   const lastDeleted = [];
 
-  const handler = ({ target }) => {
-    target.style.setProperty('display', 'none');
-    lastDeleted.push(target);
+  const handler = (event) => {
+    event.preventDefault();
+    event.target.style.setProperty('display', 'none');
+    lastDeleted.push(event.target);
   };
 
   body.addEventListener('keydown', ({ code }) => {
