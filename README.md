@@ -1,11 +1,11 @@
 # silly-internet-tricks
 
-here's a list of the silly internet tricks so far:
+## brief table of contents
 
 1. [Roblox games filter.](roblox-games-filter/filter.user.js)
 2. [El Goonish Shive. No ads. No commentary. No Q&A.](egs/qol.user.js)
 3. [El Goonish Shive Newspaper. No Ads!](egs/np.user.js)
-4. [Washington Post better colors](wapo/better-colors)
+4. [Washington Post better colors](wapo/better-colors.user.js)
 5. [get page views this month for each page in the category](wikipedia/category-page-views.user.js)
 6. [Show all category links on one page.](wikipedia/one-page-category.user.js)
 7. [Rainbowify](text-effect/rainbowify.user.js)
@@ -17,12 +17,11 @@ here's a list of the silly internet tricks so far:
 13. [Wavify](text-effect/wavify.user.js)
 14. [text effect](text-effect/text-effect.user.js)
 15. [random password](password/random-password.user.js)
-16. [egs whole storyline](egs/egs-whole-storyline.user.js)
+16. [egs whole storyline](egs/whole-storyline.user.js)
 17. [Aggregate the top ten from each of the four categories](netflix/netflix-top-10-aggregated.user.js)
 18. [Most downloaded versions of an npm package](npm/most-downloaded.user.js)
 19. [No hot network questions](stack/no-hot-network.user.js)
 20. [series csv](goodreads/series-csv.user.js)
-21. [get rt score](imdb/get-rt-score.user.js)
 22. [Demolish Style](demolish-styles/demolish-styles.user.js)
 23. [Reskin Totally](demolish-styles/reskin-totally.user.js)
 24. [Filter history](youtube/filter-history.user.js)
@@ -39,4 +38,4 @@ here's a list of the silly internet tricks so far:
 35. [fix selection color](mini-style-fixes/fix-selection-color.user.js)
 36. [Dark Mode](pubmed-central/dark-mode.user.js)
 
-TODO: make sure all tricks are present, and organize files and get all the links updated here
+TODO: add a more detailed table of contents
