@@ -37,8 +37,9 @@
 
   body.addEventListener('keypress', ({ code }) => {
     if (code === 'KeyZ') {
-      const { target, display } = lastDeleted.pop();
-      if (target) {
+      const e = lastDeleted.pop();
+      if (e) {
+        const { target, display } = e;
         target.style.removeProperty('display');
         if (display) {
           target.style.setProperty('display', display);
