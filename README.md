@@ -38,5 +38,6 @@
 34. [fix selection color](mini-style-fixes/fix-selection-color.user.js)
 35. [Dark Mode](pubmed-central/dark-mode.user.js)
 36. [Delete Element](mini-style-fixes/delete-element.user.js)
+37. [Github Fixed UI](github/fixed-ui.user.js)
 
 TODO: add a more detailed table of contents
