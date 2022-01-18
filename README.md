@@ -40,4 +40,7 @@
 36. [Delete Element](mini-style-fixes/delete-element.user.js)
 37. [Github Fixed UI](github/fixed-ui.user.js)
 
+## All of the above are userscripts
+Run them with tampermonkey on chrome. Installation instructions are at https://www.tampermonkey.net/faq.php#Q102
+
 TODO: add a more detailed table of contents
