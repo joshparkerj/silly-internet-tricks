@@ -39,6 +39,7 @@
 35. [Dark Mode](pubmed-central/dark-mode.user.js)
 36. [Delete Element](mini-style-fixes/delete-element.user.js)
 37. [Github Fixed UI](github/fixed-ui.user.js)
+38. [Three Column Reading](britannica/three-column.user.js)
 
 ## All of the above are userscripts
 Run them with tampermonkey on chrome. Installation instructions are at https://www.tampermonkey.net/faq.php#Q102
