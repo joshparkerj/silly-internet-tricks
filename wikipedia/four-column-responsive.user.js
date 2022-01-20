@@ -13,13 +13,14 @@
   const css = `
 div#bodyContent {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(12, 1fr);
 }
 
 div#mw-content-text {
-  grid-column: span 1;
+  grid-column: span 3;
   padding: 1em;
   position: relative;
+  border-right: 1px solid #bbc;
 }
 
 div#mw-content-text:nth-child(7) {
@@ -49,6 +50,44 @@ div#mw-panel {
 
 h1#firstHeading {
   width: fit-content;
+}
+
+#siteSub, #contentSub, #contentSub2, #jump-to-nav {
+  display: none;
+}
+
+div#catlinks {
+  grid-column: span 12;
+}
+
+@media (max-width: 2000px) {
+  div#mw-content-text:nth-child(10) {
+    display: none;
+  }
+
+  div#mw-content-text {
+    grid-column: span 4;
+  }
+}
+
+@media (max-width: 1500px) {
+  div#mw-content-text:nth-child(9) {
+    display: none;
+  }
+
+  div#mw-content-text {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 1000px) {
+  div#mw-content-text:nth-child(8) {
+    display: none;
+  }
+
+  div#mw-content-text {
+    grid-column: span 12;
+  }
 }
 `;
 
