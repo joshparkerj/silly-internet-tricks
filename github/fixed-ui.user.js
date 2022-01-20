@@ -33,5 +33,5 @@
   const dls = document.querySelector('div.Layout-sidebar');
   dls.style.setProperty('position', 'fixed');
   dls.style.setProperty('top', '12rem');
-  dls.style.setProperty('right', '40rem');
+  dls.style.setProperty('right', '7rem');
 }());
