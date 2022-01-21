@@ -28,19 +28,6 @@
   top: -37px;
 }
 
-/* TODO: find a more dynamic way to calculate the top values so there is no overlap between columns */
-#mw-content-text > #grid-container > .mw-parser-output:nth-child(2) {
-  top: calc(-82vh - 37px);
-}
-
-#mw-content-text > #grid-container > .mw-parser-output:nth-child(3) {
-  top: calc(-164vh - 37px);
-}
-
-#mw-content-text > #grid-container > .mw-parser-output:nth-child(4) {
-  top: calc(-246vh - 37px);
-}
-
 @media (max-width: 2000px) {
   #mw-content-text > #grid-container > .mw-parser-output:nth-child(4) {
     display: none;
@@ -131,4 +118,16 @@ h1#firstHeading {
   const style = document.createElement('style');
   style.appendChild(new Text(css));
   gridContainer.appendChild(style);
+
+  const intersectionObserver = new IntersectionObserver((e, o) => {
+    const columnHeight = e[0].intersectionRect.height;
+    document.querySelectorAll('#grid-container > .mw-parser-output').forEach((column, i) => {
+      column.style.setProperty('top', `calc(-${columnHeight * i}px - 37px)`);
+    });
+    o.disconnect();
+  });
+
+  setInterval(() => {
+    intersectionObserver.observe(document.querySelector('#grid-container > .mw-parser-output'));
+  }, 2000);
 }());
