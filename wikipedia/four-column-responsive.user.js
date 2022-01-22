@@ -15,13 +15,15 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   overflow: hidden;
+  position: relative;
+  top: -37px;
 }
 
 #mw-content-text > #grid-container > .mw-parser-output {
   min-width: 0;
   grid-column: span 1;
-  padding: 1em;
   position: relative;
+  padding: 1em;
   border-right: 1px solid #bbc;
 }
 
@@ -126,7 +128,7 @@ h1#firstHeading {
     const columns = [...document.querySelectorAll('#grid-container > .mw-parser-output')]
       .filter((column) => getComputedStyle(column).getPropertyValue('display') !== 'none');
     columns.forEach((column, i) => {
-      const top = 37 + columnHeight * i;
+      const top = columnHeight * i;
       column.style.setProperty('top', `-${top}px`);
     });
 
