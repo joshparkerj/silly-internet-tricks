@@ -9,6 +9,7 @@
 // @grant        none
 // ==/UserScript==
 
+// This is just not working. It's possible nerdwallet may have blacklisted my ip
 (function colTable() {
   const headings = {
     name: 'Name',
@@ -39,65 +40,39 @@
     ranking: 'Ranking',
   };
 
-  /* This doesn't work and I'm about to delete it.
-  I felt bad about deleting it without committing though, so here we are.
-
-  // eslint-disable-next-line no-underscore-dangle
-  const cityIds = window.__INITIAL_STATE__.costOfLivingCalculator.cities.map(({ id }) => id);
-
-  const fetchOptions = (id) => ({
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'accept-encoding': 'gzip, delfate, br',
-      'accept-language': 'en-US,en;q=0.9',
-      'content-length': 48,
-      'content-type': 'application/json',
-      origin: 'https://www.nerdwallet.com',
-      referer: 'https://www.nerdwallet.com',
-      'sec-fetch-dest': 'empty',
-      'sec-fetch-mode': 'cors',
-      'sec-fetch-site': 'same-site',
-    },
-    body: {
-      ids: [id],
-    },
-  });
-
-  const apiUrl = 'https://api.nerdwallet.com/homeownership/v1/cost-of-living/city-data?client_id=diy-tools-hac';
-  const table = document.createElement('table');
-  const thead = document.createElement('thead');
-  const tr = document.createElement('tr');
-  Object.values(headings).forEach((heading) => {
-    const th = document.createElement('th');
-    th.appendChild(new Text(heading));
-    tr.appendChild(th);
-  });
-
-  thead.appendChild(tr);
-  table.appendChild(thead);
-
   const tbody = document.createElement('tbody');
-  Promise.all(
-    cityIds.map((id) => fetch(apiUrl, fetchOptions(id))
-      .then((r) => r.json())
-      .then((json) => {
-        const row = document.createElement('tr');
+  const openRequest = indexedDB.open('colTable');
+  openRequest.onerror = () => console.error('error loading database');
+  openRequest.onsuccess = () => {
+    const db = openRequest.result;
+
+    const store = db.transaction('colTable').objectStore('colTable');
+    store.openCursor().onsuccess = ({ target }) => {
+      const cursor = target.result;
+
+      if (cursor) {
+        const tr = document.createElement('tr');
+        const { value } = cursor;
         Object.keys(headings).forEach((heading) => {
           const td = document.createElement('td');
-          td.appendChild(new Text(json[0][heading]));
-          row.appendChild(td);
+          td.appendChild(new Text(value[heading]));
+          tr.appendChild(td);
         });
 
-        tbody.appendChild(row);
-      })),
-  )
-    .then(() => {
-      table.appendChild(tbody);
-      document.querySelector('body').appendChild(table);
-    });
+        tbody.appendChild(tr);
 
-  // TODO: add option to sort table by each column
-  // TODO: add option to save table as csv
-  */
+        cursor.continue();
+      } else {
+        console.log('items all displayed');
+      }
+    };
+  };
+
+  openRequest.onupgradeneeded = ({ target }) => {
+    const newDb = target.result;
+    newDb.onerror = () => console.error('error loading database');
+    const store = newDb.createObjectStore('colTable', { keyPath: 'col' });
+    Object.keys(headings).forEach((heading) => store.createIndex(heading, heading));
+    console.log('object store created');
+  };
 }());

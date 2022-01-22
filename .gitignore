@@ -6,3 +6,6 @@ watch-history.json
 worldometer/example-chart-options.js
 *.jpeg
 readme-assets/
+lc/
+nerdwallet/*
+wikipedia/*.css

@@ -14,6 +14,7 @@
 #mw-content-text > #grid-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
 }
 
 #mw-content-text > #grid-container > .mw-parser-output {
@@ -22,10 +23,6 @@
   padding: 1em;
   position: relative;
   border-right: 1px solid #bbc;
-}
-
-#mw-content-text > #grid-container > .mw-parser-output:nth-child(1) {
-  top: -37px;
 }
 
 @media (max-width: 2000px) {
@@ -125,13 +122,29 @@ h1#firstHeading {
 
   const intersectionObserver = new IntersectionObserver((e, o) => {
     const columnHeight = e[0].intersectionRect.height;
-    document.querySelectorAll('#grid-container > .mw-parser-output').forEach((column, i) => {
-      column.style.setProperty('top', `calc(-${columnHeight * i}px - 37px)`);
+    const totalHeight = e[0].target.scrollHeight;
+    const columns = [...document.querySelectorAll('#grid-container > .mw-parser-output')]
+      .filter((column) => getComputedStyle(column).getPropertyValue('display') !== 'none');
+    columns.forEach((column, i) => {
+      const top = 37 + columnHeight * i;
+      column.style.setProperty('top', `-${top}px`);
     });
+
+    if (totalHeight > columns.length * columnHeight) {
+      gridContainer.style.setProperty('height', `${totalHeight - (columns.length - 1) * columnHeight}px`);
+    } else {
+      gridContainer.style.setProperty('height', `${totalHeight / columns.length}px`);
+    }
+
     o.disconnect();
   });
 
-  setInterval(() => {
-    intersectionObserver.observe(document.querySelector('#grid-container > .mw-parser-output'));
-  }, 2000);
+  const resizeColumns = () => intersectionObserver.observe(document.querySelector('#grid-container > .mw-parser-output'));
+
+  resizeColumns();
+  for (let i = 0; i < 10; i++) {
+    setTimeout(resizeColumns, 200 * i);
+  }
+
+  setInterval(resizeColumns, 2000);
 }());
