@@ -105,6 +105,10 @@ h1#firstHeading {
     tableContainer.appendChild(wikitable.cloneNode(true));
     tableContainer.style.setProperty('max-width', '100%');
     tableContainer.style.setProperty('overflow', 'auto');
+    if (wikitable.getAttribute('align') === 'right') {
+      tableContainer.style.setProperty('float', 'right');
+    }
+
     wikitable.insertAdjacentElement('afterend', tableContainer);
     wikitable.parentNode.removeChild(wikitable);
   });
