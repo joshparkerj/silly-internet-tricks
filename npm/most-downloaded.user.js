@@ -29,15 +29,20 @@
         .sort((a, b) => downloadNumber(b) - downloadNumber(a)))
       .then((sortedVersions) => sortedVersions.slice(0, 10))
       .then((mostDownloadedVersions) => {
-        const versionLength = Math.max(...mostDownloadedVersions.map((v) => versionNumber(v)));
-        const downloadLength = Math.max(...mostDownloadedVersions.map((v) => downloadCount(v)));
+        const versionLength = Math.max(...mostDownloadedVersions.map((v) => (
+          versionNumber(v).length
+        )));
+
+        const downloadLength = Math.max(...mostDownloadedVersions.map((v) => (
+          downloadCount(v).length
+        )));
+
         const makeReadable = (v) => `version number ${versionNumber(v).padStart(versionLength, ' ')} : ${downloadCount(v).padStart(downloadLength, ' ')} downloads`;
         const pre = document.createElement('pre');
         pre.id = 'most-downloaded-versions';
         mostDownloadedVersions.forEach((version) => {
           const versionDiv = document.createElement('div');
           const readableVersion = makeReadable(version);
-          console.log(readableVersion);
           versionDiv.textContent = readableVersion;
           pre.appendChild(versionDiv);
         });
