@@ -42,6 +42,7 @@
 38. [Three Column Reading](britannica/three-column.user.js)
 39. [Four Column Responsive](wikipedia/four-column-responsive.user.js)
 40. [Google More Results](google/more-results.user.js)
+41. [Restyled goodreads reviews](goodreads/restyled-reviews.user.js)
 
 ## All of the above are userscripts
 Run them with tampermonkey on chrome. Installation instructions are at https://www.tampermonkey.net/faq.php#Q102
