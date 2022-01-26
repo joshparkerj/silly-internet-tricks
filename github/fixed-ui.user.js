@@ -10,6 +10,16 @@
 // ==/UserScript==
 
 (function fixedUi() {
+  const css = `
+main#js-pjax-container {
+  top: 3rem;
+  position: relative;
+}
+`;
+  const style = document.createElement('style');
+  style.appendChild(new Text(css));
+  document.querySelector('body').appendChild(style);
+
   const jhwHeader = document.querySelector('div.js-header-wrapper > header');
   jhwHeader.style.setProperty('position', 'fixed');
   jhwHeader.style.setProperty('width', '100%');
