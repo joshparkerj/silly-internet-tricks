@@ -6,6 +6,7 @@
 // @author       Josh Parker
 // @match        https://en.wikipedia.org/wiki/*
 // @exclude      https://en.wikipedia.org/wiki/Category*
+// @exclude      https://en.wikipedia.org/wiki/Template*
 // @icon         https://www.google.com/s2/favicons?domain=wikipedia.org
 // @grant        none
 // ==/UserScript==
