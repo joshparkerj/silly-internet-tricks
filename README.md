@@ -45,6 +45,7 @@
 41. [Restyled goodreads reviews](goodreads/restyled-reviews.user.js)
 42. [Dordle Sploits](itch/dordle-sploits.user.js)
 43. [Four Column Vox](vox/four-column.user.js)
+44. [Four Column Git Docs](git-docs/four-column.user.js)
 
 ## All of the above are userscripts
 Run them with tampermonkey on chrome. Installation instructions are at https://www.tampermonkey.net/faq.php#Q102
