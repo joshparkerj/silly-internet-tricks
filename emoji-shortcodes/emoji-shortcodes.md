@@ -1,3 +1,5 @@
+| column one | column two | column three |
+| --- | --- | --- |
 | :100: `:100:` | :1234: `:1234:` | :8ball: `:8ball:` |
 | :a: `:a:` | :ab: `:ab:` | :abc: `:abc:` |
 | :abcd: `:abcd:` | :accept: `:accept:` | :aerial_tramway: `:aerial_tramway:` |
