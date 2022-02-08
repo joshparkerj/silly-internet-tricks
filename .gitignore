@@ -7,5 +7,6 @@ worldometer/example-chart-options.js
 *.jpeg
 readme-assets/
 lc/
+leetcode/
 nerdwallet/*
 wikipedia/*.css
