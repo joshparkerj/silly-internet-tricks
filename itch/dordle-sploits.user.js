@@ -39,11 +39,14 @@
 
   const letterCounts = {};
   const abc = 'abcdefghijklmnopqrstuvwxyz';
-  [...abc].forEach((c) => { letterCounts[c] = 0; });
-  const score = (w) => [...w].reduce((acc, c) => acc + letterCounts[c], 0);
+  [...abc].forEach((c) => { letterCounts[c] = [0,0,0,0,0]; });
+  const score = (w) => [...w].reduce((acc, c, i) => acc + letterCounts[c][i], 0);
 
   const allFives = dict.filter((w) => w.length === 5).sort((a, b) => score(b) - score(a));
   const fives = allFives.filter((w) => (new Set(w)).size === 5);
+  
+  fives.forEach((w) => [...w].forEach((c, i) => { letterCounts[c][i] += 1; }));
+  
   const leftGuesses = document.querySelector('#game td:nth-child(1) .table_guesses tbody');
   const rightGuesses = document.querySelector('#game td:nth-child(2) .table_guesses tbody');
   const leftOptions = document.createElement('ol');
