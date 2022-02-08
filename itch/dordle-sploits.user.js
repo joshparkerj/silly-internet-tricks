@@ -82,6 +82,14 @@
     const includes = [];
     let excludes = [];
     const regExpItems = ['.', '.', '.', '.', '.'];
+    const anythingBut = (letter, i) => {
+      if (regExpItems[i] === '.') {
+        regExpItems[i] = `[^${letter}`;
+      } else if (regExpItems[i].startsWith('[')) {
+        regExpItems[i] += letter;
+      }
+    };
+
     tbody.querySelectorAll('td').forEach((td, index) => {
       const tdStatus = getStatus(td);
 
@@ -95,13 +103,13 @@
       } else if (tdStatus === 'var(--near-color)') {
         includes.push(letter);
         excludes = excludes.filter((c) => c !== letter);
-        if (regExpItems[i] === '.') {
-          regExpItems[i] = `[^${letter}`;
-        } else if (regExpItems[i].startsWith('[')) {
-          regExpItems[i] += letter;
+        anythingBut(letter, i);
+      } else if (tdStatus === 'var(--bg-color)' && letter) {
+        if (!includes.includes(letter)) {
+          excludes.push(letter);
+        } else {
+          anythingBut(letter, i);
         }
-      } else if (tdStatus === 'var(--bg-color)' && letter && !includes.includes(letter)) {
-        excludes.push(letter);
       }
     });
 
