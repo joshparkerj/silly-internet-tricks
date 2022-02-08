@@ -120,25 +120,42 @@
       return result;
     }
 
-    result = wordle(secondSorted, includes, excludes, regExp).slice(0, 26);
-    if (result.length === 26) {
+    result.push('-----');
+    result = result.concat(
+      wordle(secondSorted, includes, excludes, regExp)
+        .filter((w) => !result.includes(w)),
+    ).slice(0, 27);
+    if (result.length === 27) {
       return result;
     }
 
-    result = wordle(fivesSorted, includes, excludes, regExp).slice(0, 26);
-    if (result.length === 26) {
+    result.push('-----');
+
+    result = result.concat(
+      wordle(fivesSorted, includes, excludes, regExp)
+        .filter((w) => !result.includes(w)),
+    ).slice(0, 28);
+    if (result.length === 28) {
       return result;
     }
 
-    return wordle(allFivesSorted, includes, excludes, regExp).slice(0, 26);
+    result.push('-----');
+    return result.concat(
+      wordle(allFivesSorted, includes, excludes, regExp)
+        .filter((w) => !result.includes(w)),
+    ).slice(0, 29);
   };
 
   document.querySelector('body').addEventListener('keypress', ({ code }) => {
     if (code === 'Enter') {
       const fillOptions = (options) => (w) => {
-        const li = document.createElement('li');
-        li.appendChild(new Text(w));
-        options.appendChild(li);
+        if (w === '-----') {
+          options.appendChild(document.createElement('hr'));
+        } else {
+          const li = document.createElement('li');
+          li.appendChild(new Text(w));
+          options.appendChild(li);
+        }
       };
 
       leftOptions.innerHTML = '';
