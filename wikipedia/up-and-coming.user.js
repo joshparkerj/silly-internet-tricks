@@ -15,11 +15,14 @@
   const movementButton = document.createElement('button');
   movementButton.innerText = 'get chart movement';
 
-  const apiUrl = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/';
+  const apiRoot = 'https://wikimedia.org/';
+  const apiPath = 'api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/';
+  const apiUrl = `${apiRoot}${apiPath}`;
 
   const yyyymmdd = function yyyymmdd(date) {
     const isoString = date.toISOString();
-    const isoMatch = isoString.match(/(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})T\d\d:\d\d:\d\d.\d{3}Z/);
+    const isoRe = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})T\d\d:\d\d:\d\d.\d{3}Z/;
+    const isoMatch = isoString.match(isoRe);
     const { year, month, day } = isoMatch.groups;
     return `${year}${month}${day}`;
   };
@@ -35,7 +38,18 @@
   const threeMonths = yyyymmdd(addMonths(now, -3));
   const threeYears = yyyymmdd(addMonths(now, -36));
 
-  const getPageViewUrls = (categoryLinks) => [...categoryLinks].map((a) => `${apiUrl}${a.href.match(/wiki\/(.*)$/)[1].replaceAll('/', '%2F')}/monthly/`).map((urlPrefix) => ({ months: `${urlPrefix}${threeMonths}/${today}`, years: `${urlPrefix}${threeYears}/${today}` }));
+  const mapTitles = (a) => {
+    const title = a.href.match(/wiki\/(.*)$/)[1].replaceAll('/', '%2F');
+    return `${apiUrl}${title}/monthly/`;
+  };
+
+  const mapMonthsYears = (urlPrefix) => (
+    {
+      months: `${urlPrefix}${threeMonths}/${today}`,
+      years: `${urlPrefix}${threeYears}/${today}`,
+    });
+
+  const getPageViewUrls = (categoryLinks) => [...categoryLinks].map(mapTitles).map(mapMonthsYears);
 
   const fetchUrls = function fetchUrls(urls, name) {
     return urls.map((url) => fetch(url[name]).then((r) => r.json()).then((json) => {
@@ -64,15 +78,18 @@
 
     const remainingSeconds = Math.ceil(categoryLinks.length / REQUESTS_PER_SECOND);
     movementButton.innerText = `getting movement (${remainingSeconds} seconds)`;
-    const updateRemainingSeconds = function updateRemainingSeconds() {
-      const remainingSecondsNow = Number(movementButton.innerText.match(/getting movement \((?<remainingSeconds>-?\d+(\.\d+)?) seconds\)/).groups.remainingSeconds) - 0.5;
-      movementButton.innerText = `getting movement (${remainingSecondsNow} seconds)`;
-    };
+    // const updateRemainingSeconds = function updateRemainingSeconds() {
+    //   const innerTextRe = /getting movement \((?<remainingSeconds>-?\d+(\.\d+)?) seconds\)/;
+    //   const innerTextMatch = movementButton.innerText.match(innerTextRe);
+    //   const { remainingSecondsText } = innerTextMatch.groups;
+    //   const remainingSecondsNow = Number(remainingSecondsText) - 0.5;
+    //   movementButton.innerText = `getting movement (${remainingSecondsNow} seconds)`;
+    // };
 
     const pageViewUrls = getPageViewUrls(categoryLinks);
-    for (let i = 0; i < pageViewUrls.length; i += Math.floor(REQUESTS_PER_SECOND / 2)) {
-      const pageViewUrlsSlice = pageViewUrls.slice(i, i + Math.floor(REQUESTS_PER_SECOND / 2));
-      const timeoutDelayInMilliseconds = (i * 1000) / REQUESTS_PER_SECOND;
+    for (let i = 0; i < pageViewUrls.length; i++) {
+      const pageViewUrlsSlice = pageViewUrls.slice(i, i + 1);
+      const timeoutDelayInMilliseconds = (2 * (i * 1000)) / REQUESTS_PER_SECOND;
       timeouts.push(() => (
         new Promise((resolve) => {
           setTimeout(() => {
@@ -82,7 +99,7 @@
                 results.months = monthResults;
                 results.months.forEach(setViewAttribute(categoryLinks, i, 'views-months'));
                 if (results.years) {
-                  updateRemainingSeconds();
+                  // updateRemainingSeconds();
                   resolve(results);
                 }
               });
@@ -91,7 +108,7 @@
                 results.years = yearResults;
                 results.years.forEach(setViewAttribute(categoryLinks, i, 'views-years'));
                 if (results.months) {
-                  updateRemainingSeconds();
+                  // updateRemainingSeconds();
                   resolve(results);
                 }
               });
@@ -107,7 +124,11 @@
         catLinks.forEach((link, i) => link.setAttribute('rank-months', i));
         catLinks.sort((a, b) => b.getAttribute('views-years') - a.getAttribute('views-years'));
         catLinks.forEach((link, i) => link.setAttribute('rank-years', i));
-        catLinks.forEach((link) => { const a = link; a.innerText += ` (movement: ${a.getAttribute('rank-years') - a.getAttribute('rank-months')})`; });
+        catLinks.forEach((link) => {
+          const rankYears = link.getAttribute('rank-years');
+          const rankMonths = link.getAttribute('rank-months');
+          link.appendChild(new Text(` (movement: ${rankYears - rankMonths})`));
+        });
         document.querySelector('#mw-pages > h2').appendChild(sortButton);
         movementButton.innerText = 'done';
       });
@@ -125,7 +146,9 @@
     };
 
     const sortedLinks = [...categoryLinks].sort((a, b) => linkSorter(b) - linkSorter(a));
-    const categorySection = document.querySelector('#mw-pages .mw-category') || document.querySelector('#mw-pages .mw-content-ltr');
+    const mwCategory = document.querySelector('#mw-pages .mw-category');
+    const mwContentLtr = document.querySelector('#mw-pages .mw-content-ltr');
+    const categorySection = mwCategory || mwContentLtr;
     const allCategorySections = document.querySelectorAll('#mw-pages .mw-category');
     const unsorted = [...allCategorySections].map((section) => section.innerHTML);
     categorySection.innerHTML = '';
