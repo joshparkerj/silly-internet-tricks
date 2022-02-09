@@ -7,6 +7,7 @@
 // @match        https://en.wikipedia.org/wiki/*
 // @exclude      https://en.wikipedia.org/wiki/Category*
 // @exclude      https://en.wikipedia.org/wiki/Template*
+// @exclude      https://en.wikipedia.org/wiki/Talk*
 // @icon         https://www.google.com/s2/favicons?domain=wikipedia.org
 // @grant        none
 // ==/UserScript==
