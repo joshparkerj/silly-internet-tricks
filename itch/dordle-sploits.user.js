@@ -1,3 +1,4 @@
+/* eslint-disable prefer-regex-literals */
 // ==UserScript==
 // @name         Dordle Sploits
 // @namespace    http://tampermonkey.net/
@@ -52,6 +53,7 @@
   const score = (counts) => (w) => [...w].reduce((acc, c, i) => acc + counts[c][i], 0);
 
   const allFives = dict.filter((w) => w.length === 5);
+  allFives.push('inbox');
   const fives = allFives.filter((w) => (new Set(w)).size === 5);
   const second = fives.filter((w) => !w.endsWith('s'));
   const first = second.filter((w) => !w.endsWith('d') && !w.endsWith('y'));
@@ -67,16 +69,18 @@
   };
 
   const allFivesSorted = allFives.sort(scoreSorter(letterCounts));
-  const fivesSorted = fives.sort(scoreSorter(letterCounts));
-  const secondSorted = second.sort(scoreSorter(letterCounts));
-  const firstSorted = first.sort(scoreSorter(letterCounts));
+  const fivesSorted = fives.sort(scoreSorter(thirdLetterCounts));
+  const secondSorted = second.sort(scoreSorter(secondLetterCounts));
+  const firstSorted = first.sort(scoreSorter(firstLetterCounts));
 
   const leftGuesses = document.querySelector('#game td:nth-child(1) .table_guesses tbody');
   const rightGuesses = document.querySelector('#game td:nth-child(2) .table_guesses tbody');
   const leftOptions = document.createElement('ol');
   const rightOptions = document.createElement('ol');
+  const untriedOptions = document.createElement('p');
 
   const getStatus = (td) => td.style.getPropertyValue('background-color');
+  // const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
   const getIncludes = (tbody) => {
     const includes = [];
@@ -164,6 +168,21 @@
       leftIncludes.forEach(fillOptions(leftOptions));
       const rightIncludes = getIncludes(rightGuesses);
       rightIncludes.forEach(fillOptions(rightOptions));
+      const colorMatcher = new RegExp('var\\([^)]+\\)', 'g');
+      const untriedLetters = [...'abcdefghijklmnopqrstuvwxyz'].filter((c) => {
+        const td = document.querySelector(`#keyboard td#${c}`);
+        const tdStyle = td.style;
+        const tdBackgroundImage = tdStyle.getPropertyValue('background-image');
+        const tdBackgroundImageMatches = tdBackgroundImage.match(colorMatcher);
+        const everyMatch = tdBackgroundImageMatches.every((m) => m === 'var(--bg-color)');
+        return everyMatch;
+      });
+      const untried = new RegExp(`^[${untriedLetters.join('')}]{5}$`);
+      const untriedWords = fivesSorted.filter((w) => w.match(untried));
+
+      // TODO: find words that can narrow down the few remaining uncertain letters when applicable
+      untriedOptions.textContent = '';
+      untriedOptions.appendChild(new Text(untriedWords.slice(0, 16).join(', ')));
     }
   });
 
@@ -173,9 +192,12 @@
   rightOptions.style.setProperty('position', 'fixed');
   rightOptions.style.setProperty('top', '10%');
   rightOptions.style.setProperty('right', '5%');
+  untriedOptions.style.setProperty('max-width', '400px');
+  untriedOptions.style.setProperty('margin-left', '70px');
 
   document.querySelector('body').appendChild(leftOptions);
   document.querySelector('body').appendChild(rightOptions);
+  document.querySelector('body').appendChild(untriedOptions);
 
   const divBody = document.querySelector('div#body');
   divBody.style.setProperty('max-width', '400px');
