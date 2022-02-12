@@ -76,8 +76,11 @@
   const leftGuesses = document.querySelector('#game td:nth-child(1) .table_guesses tbody');
   const rightGuesses = document.querySelector('#game td:nth-child(2) .table_guesses tbody');
   const leftOptions = document.createElement('ol');
+  leftOptions.id = 'left-options';
   const rightOptions = document.createElement('ol');
+  rightOptions.id = 'right-options';
   const untriedOptions = document.createElement('p');
+  untriedOptions.id = 'untried-options';
 
   const getStatus = (td) => td.style.getPropertyValue('background-color');
   // const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -181,25 +184,96 @@
       const untriedWords = fivesSorted.filter((w) => w.match(untried));
 
       // TODO: find words that can narrow down the few remaining uncertain letters when applicable
+      // For example:
+      // if the possible words are patch, match, latch, watch, natch, catch, and hatch
+      // we should suggest a word that contains as many of p, m, l, w, and n as possible
+      // (not necessarily c and h since those already appear to be accounted for)
+      // this will narrow down the possible answers faster.
+      // in this example, "clamp" would be a good suggestion since it contains p, m, and l
+      // (plus the c in first position is useful in case the answer is catch)
+      // Example two:
+      // if the possible words are elint, fient, inlet, intel, and inept
+      // we should suggest a word that contains as many of l, f, and p as possible
+      // good suggestions include flaps, flips, flops, flump, pelfs, and pilaf
+      // And one more example:
+      // possible words: baler, paler, lager, layer, laver, laxer
+      // suggested word should have b, p, g, y, v, x
+      // I believe we'd have to settle for three of the six
+      // bumpy might be a good suggestion,
+      // since the b in first position might help in case it's baler
+      // example four:
+      // possible words: croup, cromb, crony, croon, crool
+      // suggested word should have u, p, m, b, n, y, l
+      // bumpy would be an excellent suggestion,
+      // since all five letters come from the required letter list.
+      // example five:
+      // possible words:
+      // shyer, shrew, syver, syker, strep, skyer, sprew, strew, shred, spred, seres,
+      // serks, sered, serer, seder, sewer, sever, sheer, steer, speer, sweer, skeer
+      // suggested word should have w, t, y, p, d, h, k, v
+      // letters that appear most frequently among the possible words might be most valuable
+      // w: 5, t: 3, y: 4, p: 4, d: 4, h: 4, k: 4, v: 2
+      // I'd try pawky as an example suggestion
+      // example six:
+      // different situation.
+      // Possible words on the left are upled and expel.
+      // Possible words on the right are alter and alder.
+      // suggested word should have u, x, t, d
+      // perhaps exult?
+      // example seven:
+      // left words: swamp, spams, spaws, spaza, spasm, spazz
+      // right words: minim, jinni
+      // suggested word should have w, j, z, m
+      // in this case, swamp would be a good suggested word
+      // it contains w and m and I didn't find any word that contains more than 2 of the 4 letters.
+
+      // TODO: double letters still don't always work correctly.
+      // example: First guess SWELL
+      // three greens: SW__L
+      // suggestions include SWILL
+      // definitely wrong
+      // if there was an L in fourth position, it would have been yellow not gray)
+      // needs fix
       untriedOptions.textContent = '';
-      untriedOptions.appendChild(new Text(untriedWords.slice(0, 16).join(', ')));
+      untriedOptions.appendChild(new Text(untriedWords.slice(0, 26).join(', ')));
     }
   });
 
-  leftOptions.style.setProperty('position', 'fixed');
-  leftOptions.style.setProperty('top', '10%');
-  leftOptions.style.setProperty('left', '-2%');
-  rightOptions.style.setProperty('position', 'fixed');
-  rightOptions.style.setProperty('top', '10%');
-  rightOptions.style.setProperty('right', '5%');
-  untriedOptions.style.setProperty('max-width', '400px');
-  untriedOptions.style.setProperty('margin-left', '70px');
+  const css = `
+body > ol#left-options,
+body > ol#right-options {
+  position: fixed;
+  top: 10%;
+}
 
-  document.querySelector('body').appendChild(leftOptions);
-  document.querySelector('body').appendChild(rightOptions);
-  document.querySelector('body').appendChild(untriedOptions);
+body > ol#left-options {
+  left: -2%;
+}
 
-  const divBody = document.querySelector('div#body');
-  divBody.style.setProperty('max-width', '400px');
-  divBody.style.setProperty('margin-left', '64px');
+body > ol#right-options {
+  right: 5%;
+}
+
+body > p#untried-options {
+  max-width: 400px;
+  margin-left: 70px;
+  position: relative;
+  top: -12px;
+  font-size: .8em;
+}
+
+body > div#body {
+  margin-left: 64px;
+}
+`;
+
+  const style = document.createElement('style');
+  style.appendChild(new Text(css));
+  const body = document.querySelector('body');
+  body.appendChild(style);
+  body.appendChild(leftOptions);
+  body.appendChild(rightOptions);
+  body.appendChild(untriedOptions);
+
+  document.querySelector('body > div#body').style.setProperty('max-width', '400px');
 }());
