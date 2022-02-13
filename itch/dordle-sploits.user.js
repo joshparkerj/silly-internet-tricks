@@ -183,6 +183,38 @@
       const untried = new RegExp(`^[${untriedLetters.join('')}]{5}$`);
       const untriedWords = fivesSorted.filter((w) => w.match(untried));
 
+      const matchCount = (word, letters) => {
+        const wordSet = new Set(word);
+        return [...wordSet].reduce((acc, e) => (letters.has(e) ? acc + 1 : acc), 0);
+      };
+
+      const mostMatched = (words, letters) => {
+        const sortable = words.slice();
+        return sortable.sort((a, b) => matchCount(b, letters) - matchCount(a, letters));
+      };
+
+      const foundLetters = (words) => (
+        words.reduce((acc, word) => [...word].filter((c) => acc.includes(c)), [...words[0]])
+      );
+
+      const possibleLetters = (words) => {
+        const letterSet = new Set(words.join(''));
+        const fl = foundLetters(words);
+        fl.forEach((c) => letterSet.delete(c));
+        return letterSet;
+      };
+
+      const suggestions = (words, sugDict = allFives) => {
+        const pl = possibleLetters(words.split(' '));
+        const mm = mostMatched(sugDict, pl);
+        return mm.filter((w) => matchCount(w, pl) === matchCount(mm[0], pl));
+      };
+
+      const twoSuggestions = (longWordList, shortWordList) => {
+        const longSuggs = suggestions(longWordList);
+        return suggestions(shortWordList, longSuggs);
+      };
+
       // TODO: find words that can narrow down the few remaining uncertain letters when applicable
       // For example:
       // if the possible words are patch, match, latch, watch, natch, catch, and hatch
@@ -226,6 +258,32 @@
       // suggested word should have w, j, z, m
       // in this case, swamp would be a good suggested word
       // it contains w and m and I didn't find any word that contains more than 2 of the 4 letters.
+      // example eight:
+      // left words: spods, spook, spoof, swoop
+      // right words: maiko, amigo, axiom, amido
+      // suggested word should have w, d, f, g, k, x
+      // k would be especially good since it's relevant on the left and right
+      // good suggestions might include: gawks, gawky, gowks, kedge
+      // simple example:
+      // mealy, vealy, leavy, leafy
+      // letters: m, v, f
+      // suggestion: muffs
+      // simple example:
+      // pudge, mudge, fudge
+      // letters: p, m, f
+      // suggestion: frump
+      // finally:
+      // faver, faker, waver, waker, waxer, wafer
+      // letters: w, f, k, x, v
+      // suggestion: waver
+      // again:
+      // fugly, duply, bully, dully, gully, fully
+      // letters: f, g, d, p, b
+      // suggestion: fudge
+      // again:
+      // bravi, bajri, libra, hijra, liard, izard, laari, rabbi, ardri, aggri
+      // letters: d, g, h, j, l, z, v, b
+      // suggestion: lobed
 
       // TODO: double letters still don't always work correctly.
       // example: First guess SWELL
