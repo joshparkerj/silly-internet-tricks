@@ -27,9 +27,11 @@
     fetch(`${url}${date}/wordlist/${difficulty}?name=${username}&key=${word}`)
       .then((r) => r.json())
       .then((leaderboard) => {
-        const guesses = leaderboard.flatMap((e) => e.guesses);
+        const allGuesses = leaderboard
+          .filter(({ guesses }) => guesses)
+          .flatMap(({ guesses }) => guesses);
         const words = {};
-        guesses.forEach((guess) => {
+        allGuesses.forEach((guess) => {
           if (words[guess]) {
             words[guess] += 1;
           } else {
