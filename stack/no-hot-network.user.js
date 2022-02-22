@@ -7,6 +7,7 @@
 // @match        https://stackoverflow.com/questions/*
 // @match        https://*.stackexchange.com/questions/*
 // @match        https://serverfault.com/questions/*
+// @match        https://superuser.com/questions/*
 // @icon         https://www.google.com/s2/favicons?domain=stackoverflow.com
 // @grant        none
 // ==/UserScript==
