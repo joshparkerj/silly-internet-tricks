@@ -40,14 +40,15 @@ const getElementMatcher = function getElementMatcher(elementSelector) {
   if (classes) {
     filters.push((childNode) => (classes.every((className) => {
       const { attrs } = childNode;
-      const classList = attrs?.find(({ name }) => name === 'class')?.value.split(' ');
-      return classList?.includes(className.replace('.', ''));
+      const classAttr = attrs && attrs.find(({ name }) => name === 'class');
+      const classList = classAttr && classAttr.value.split(' ');
+      return classList && classList.includes(className.replace('.', ''));
     })));
   }
 
   const id = elementSelector.match(/#[^.#[]+/);
   if (id) {
-    filters.push((childNode) => childNode.attrs?.find(({ name, value }) => name === 'id' && value === id[0].replace('#', '')));
+    filters.push((childNode) => childNode.attrs && childNode.attrs.find(({ name, value }) => name === 'id' && value === id[0].replace('#', '')));
   }
 
   const attributeSelectors = elementSelector.match(/\[[^\]]+\]?/g);
@@ -57,13 +58,13 @@ const getElementMatcher = function getElementMatcher(elementSelector) {
       const attributeMatch = attributeContent.match(/^(?<attr>[\w-]+)\s*(?<operator>[~|^$*]?=)?\s*(?<attrValue>"[^"]*"|'[^']*'|[\w-]+)?$/);
       const { attr, operator, attrValue } = attributeMatch.groups;
       if (!operator && !attrValue) {
-        return childNode.attrs?.some(({ name }) => name === attr);
+        return childNode.attrs && childNode.attrs.some(({ name }) => name === attr);
       }
 
       if (operator && attrValue) {
         const attributeValues = childNode.attrs
-          ?.filter(({ name }) => name === attr)
-          .map(({ value }) => value);
+          && childNode.attrs.filter(({ name }) => name === attr)
+            .map(({ value }) => value);
 
         return attributeMatcher(attributeValues, operator, attrValue);
       }

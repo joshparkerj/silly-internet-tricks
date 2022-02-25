@@ -8,12 +8,8 @@ const html = readFileSync('./node-parsing/query-selector-browser.html', 'utf8');
 
 const doc = parse(html);
 const text = (element) => {
-  const textNode = element.childNodes.find((childNode) => childNode.nodeName === '#text');
-  if (textNode) {
-    return textNode.value;
-  }
-
-  return null;
+  const childNode = element.childNodes.find((cn) => cn.nodeName === '#text');
+  return childNode && childNode.value;
 };
 
 testCases.forEach(({ name, assertions }) => {
