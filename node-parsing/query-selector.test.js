@@ -7,7 +7,14 @@ const testCases = require('./query-selector-tests');
 const html = readFileSync('./node-parsing/query-selector-browser.html', 'utf8');
 
 const doc = parse(html);
-const text = (element) => element.childNodes.find((childNode) => childNode.nodeName === '#text')?.value;
+const text = (element) => {
+  const textNode = element.childNodes.find((childNode) => childNode.nodeName === '#text');
+  if (textNode) {
+    return textNode.value;
+  }
+
+  return null;
+};
 
 testCases.forEach(({ name, assertions }) => {
   test(name, () => {
