@@ -12,14 +12,11 @@
 (function mostGuessed() {
   const url = 'https://ec2.hryanjones.com/leaderboard/';
   const yyyyMmDd = (date) => {
-      const match = date.toLocaleString().match(/(\d+)\D+(\d+)\D+(\d+)/);
-      return `${match[3]}-${match[1].padStart(2, '0')}-${match[2].padStart(2, '0')}`;
+    const match = date.toLocaleString().match(/(\d+)\D+(\d+)\D+(\d+)/);
+    return `${match[3]}-${match[1].padStart(2, '0')}-${match[2].padStart(2, '0')}`;
   };
 
   const date = yyyyMmDd(new Date());
-
-  console.log('date');
-  console.log(date);
 
   const username = JSON.parse(localStorage.usernamesUsed)[0];
 
@@ -35,8 +32,6 @@
     fetch(`${url}${date}/wordlist/${difficulty}?name=${username}&key=${word}`)
       .then((r) => r.json())
       .then((leaderboard) => {
-        console.log('leaderboard');
-        console.log(leaderboard);
         const allGuesses = leaderboard
           .filter(({ guesses }) => guesses)
           .flatMap(({ guesses }) => guesses);
