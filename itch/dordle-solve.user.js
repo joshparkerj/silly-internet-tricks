@@ -66,15 +66,15 @@
       const letter = td.textContent.toLocaleLowerCase();
       const i = index % 5;
 
-      if (tdStatus === 'var(--ok-color)') {
+      if (tdStatus === 'var(--okc)') {
         includes.push(letter);
         excludes = excludes.filter((c) => c !== letter);
         regExpItems[i] = letter;
-      } else if (tdStatus === 'var(--near-color)') {
+      } else if (tdStatus === 'var(--nc)') {
         includes.push(letter);
         excludes = excludes.filter((c) => c !== letter);
         anythingBut(letter, i);
-      } else if (tdStatus === 'var(--bg-color)' && letter) {
+      } else if (tdStatus === 'var(--bgc)' && letter) {
         if (!includes.includes(letter)) {
           excludes.push(letter);
         } else {
