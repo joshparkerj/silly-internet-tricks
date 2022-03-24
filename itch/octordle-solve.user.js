@@ -1,3 +1,4 @@
+/* eslint-disable prefer-regex-literals */
 // ==UserScript==
 // @name         Octordle Cheats
 // @namespace    http://tampermonkey.net/
@@ -73,7 +74,7 @@
         includes.push(letter);
         excludes = excludes.filter((c) => c !== letter);
         anythingBut(letter, i);
-      } else if (tdStatus === 'rgb(24, 25, 27)' && letter) {
+      } else if (tdStatus === 'rgb(24, 26, 27)' && letter) {
         if (!includes.includes(letter)) {
           excludes.push(letter);
         } else {
@@ -84,7 +85,8 @@
 
     const regExp = regExpItems.map((item) => (item.startsWith('[') ? `${item}]` : item)).join('');
 
-    return wordle(allFives, includes, excludes, regExp);
+    const result = wordle(allFives, includes, excludes, regExp);
+    return result;
   };
 
   const matchCount = (word, letters) => {
@@ -148,7 +150,13 @@
         [...w].forEach((c, i) => { letterCounts[c][i] += 1; });
       });
 
-      const suggs = manySuggestions(wordLists, wordList);
+      const wordListSet = new Set(wordList);
+      const whiteSpace = new RegExp('\\s+', 'g');
+      const alreadyGuessed = [...document.querySelectorAll('#game div[id$=container][style*=block] table.table_guesses')].map((table) => [...table.querySelectorAll('tr')].map((e) => e.textContent?.replace(whiteSpace, '').toLocaleLowerCase()).filter((w) => w?.length === 5)).flat();
+
+      alreadyGuessed.forEach((word) => wordListSet.delete(word));
+
+      const suggs = manySuggestions(wordLists, [...wordListSet]);
       suggs.sort(scoreSorter(letterCounts));
 
       nextMove.appendChild(new Text(suggs[0]));
