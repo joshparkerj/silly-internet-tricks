@@ -169,7 +169,7 @@ body > p#next-move {
   margin-left: 70px;
   position: relative;
   top: -250px;
-  font-size: .8em;
+  font-size: 1.8em;
 }
 `;
 
