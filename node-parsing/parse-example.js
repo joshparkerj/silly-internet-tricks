@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const fetch = require('node-fetch');
 const { parse } = require('parse5');
 

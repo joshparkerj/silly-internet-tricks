@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 const { parse } = require('parse5');
 const { readFileSync } = require('fs');
 const querySelector = require('./query-selector');
@@ -13,6 +14,7 @@ const text = (element) => {
 };
 
 testCases.forEach(({ name, assertions }) => {
+  // eslint-disable-next-line jest/valid-title
   test(name, () => {
     assertions.forEach(({ query, result }) => {
       if (typeof result === 'string') {

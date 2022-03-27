@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const channelObj = {};
 const watchHistoryFilter = (e) => e.subtitles && e.subtitles.length === 1;
 const addToChannelObj = ({
