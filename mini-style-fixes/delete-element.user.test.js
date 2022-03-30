@@ -9,3 +9,13 @@ describe('Google', () => {
     await expect(page.title()).resolves.toMatch('Google');
   });
 });
+
+describe('Wikipedia', () => {
+  beforeAll(async () => {
+    await page.goto('https://en.wikipedia.org');
+  });
+  
+  it('should load page' , async () => {
+    await expect(page.title()).resolves.toMatch('Wikipedia');
+  });
+});
