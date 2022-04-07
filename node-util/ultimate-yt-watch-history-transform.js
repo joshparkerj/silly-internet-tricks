@@ -1,5 +1,6 @@
 const { writeFileSync } = require('fs');
 
+// eslint-disable-next-line import/no-unresolved
 const watchHistory = require('./watch-history.json');
 
 const viewHistory = watchHistory.filter(({ subtitles: s }) => s && s.length === 1);

@@ -1,3 +1,5 @@
+[![Node.js CI](https://github.com/joshparkerj/silly-internet-tricks/actions/workflows/node.js.yml/badge.svg)](https://github.com/joshparkerj/silly-internet-tricks/actions/workflows/node.js.yml)
+
 # silly-internet-tricks
 
 ## brief table of contents
