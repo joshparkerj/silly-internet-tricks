@@ -135,6 +135,7 @@
       const wordLists = [];
       guesses.forEach((guessTable) => {
         const includes = getIncludes(guessTable);
+        console.log(includes);
         if (includes.length === 1) {
           nextMove.appendChild(new Text(`${includes[0]}, `));
         } else {
@@ -145,21 +146,25 @@
       const letterCounts = {};
       [...abc].forEach((c) => { letterCounts[c] = [0, 0, 0, 0, 0]; });
 
-      const wordList = wordLists.reduce((acc, e) => acc.concat(e));
-      wordList.forEach((w) => {
-        [...w].forEach((c, i) => { letterCounts[c][i] += 1; });
-      });
+      if (wordLists.length === 0) {
+        nextMove.appendChild(new Text('We have all the answers!'));
+      } else {
+        const wordList = wordLists.reduce((acc, e) => acc.concat(e));
+        wordList.forEach((w) => {
+          [...w].forEach((c, i) => { letterCounts[c][i] += 1; });
+        });
 
-      const wordListSet = new Set(wordList);
-      const whiteSpace = new RegExp('\\s+', 'g');
-      const alreadyGuessed = [...document.querySelectorAll('#game div[id$=container][style*=block] table.table_guesses')].map((table) => [...table.querySelectorAll('tr')].map((e) => e.textContent?.replace(whiteSpace, '').toLocaleLowerCase()).filter((w) => w?.length === 5)).flat();
+        const wordListSet = new Set(wordList);
+        const whiteSpace = new RegExp('\\s+', 'g');
+        const alreadyGuessed = [...document.querySelectorAll('#game div[id$=container][style*=block] table.table_guesses')].map((table) => [...table.querySelectorAll('tr')].map((e) => e.textContent?.replace(whiteSpace, '').toLocaleLowerCase()).filter((w) => w?.length === 5)).flat();
 
-      alreadyGuessed.forEach((word) => wordListSet.delete(word));
+        alreadyGuessed.forEach((word) => wordListSet.delete(word));
 
-      const suggs = manySuggestions(wordLists, [...wordListSet]);
-      suggs.sort(scoreSorter(letterCounts));
+        const suggs = manySuggestions(wordLists, [...wordListSet]);
+        suggs.sort(scoreSorter(letterCounts));
 
-      nextMove.appendChild(new Text(suggs[0]));
+        nextMove.appendChild(new Text(suggs[0]));
+      }
     }
   });
 
