@@ -171,6 +171,20 @@ body > p#next-move {
   top: -250px;
   font-size: 1.8em;
 }
+
+/* glow effect based on https://css-tricks.com/how-to-create-neon-text-with-css/#aa-adding-a-glow-effect-to-text */
+body {
+    color: white;
+    text-shadow:
+        0 0 7px white,
+        0 0 11px white,
+        0 0 17px white,
+        0 0 26px white,
+        0 0 40px #f0f,
+        0 0 62px #f0f,
+        0 0 96px #f0f,
+        0 0 150px #f0f;
+}
 `;
 
   const style = document.createElement('style');
