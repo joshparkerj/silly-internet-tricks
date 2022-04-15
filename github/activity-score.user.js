@@ -16,7 +16,7 @@
   div.style.setProperty('left', '5vw');
 
   const scorer = (tc) => {
-    if (tc.includes('hours')) {
+    if (tc.includes('hours') || tc.includes('minutes')) {
       return 30;
     }
 
