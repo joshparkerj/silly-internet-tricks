@@ -13,3 +13,4 @@ wikipedia/*.css
 dist/
 coverage/
 deploy
+file-sizes
