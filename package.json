@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "npx eslint \"**/*.js\"",
     "build": "node bundle-build.js"
   },

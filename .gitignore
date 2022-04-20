@@ -11,3 +11,4 @@ leetcode/
 nerdwallet/*
 wikipedia/*.css
 dist/
+coverage/
