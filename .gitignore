@@ -12,3 +12,4 @@ nerdwallet/*
 wikipedia/*.css
 dist/
 coverage/
+deploy

@@ -23,3 +23,15 @@ const editRules = function editRules(searchTerm, replaceTerm) {
 };
 
 module.exports = editRules;
+
+[...document.styleSheets].forEach((styleSheet, i) => {
+  [...styleSheet.cssRules].forEach((cssRule, j) => {
+    if (cssRule.cssText.includes('zoom: 0.8;')) {
+      const editedText = cssRule.cssText.replace('zoom: 0.8;', '');
+      document.styleSheets[i].deleteRule(j);
+      document.styleSheets[i].insertRule(editedText);
+    }
+  });
+});
+
+module.exports = editRules;

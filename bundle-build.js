@@ -13,6 +13,7 @@ glob(buildPattern)
         const entryFile = files[i];
         const outputFile = entryFile.replace('user.js', 'bundle.user.js');
         const distFile = `./dist${outputFile.slice(1)}`;
+        const metaFile = distFile.replace('user.js', 'meta.js');
         console.log(entryFile);
         console.log(outputFile);
         console.log(distFile);
@@ -57,7 +58,13 @@ glob(buildPattern)
                     if (writeDistFileErr) {
                       console.error(writeDistFileErr);
                     } else {
-                      bundle(i + 1);
+                      writeFile(metaFile, userscriptHeader, (writeMetaFileErr) => {
+                        if (writeMetaFileErr) {
+                          console.error(writeMetaFileErr);
+                        } else {
+                          bundle(i + 1);
+                        }
+                      });
                     }
                   });
                 }

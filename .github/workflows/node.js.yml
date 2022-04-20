@@ -27,7 +27,6 @@ jobs:
     - name: Codecov
       uses: codecov/codecov-action@v2.1.0
   analyze:
-    name: Analyze
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -49,3 +48,8 @@ jobs:
       uses: github/codeql-action/autobuild@v1
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
+  deploy:
+    needs: analyze
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run deploy

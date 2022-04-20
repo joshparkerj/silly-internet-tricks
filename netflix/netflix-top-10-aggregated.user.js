@@ -50,9 +50,9 @@
       });
     });
 
-  const mutationObserver = new MutationObserver((m) => {
+  const mutationObserver = new MutationObserver((mutationRecords) => {
     const addedNodes = [];
-    m.forEach((mutationRecord) => mutationRecord.addedNodes.forEach((node) => {
+    mutationRecords.forEach((mutationRecord) => mutationRecord.addedNodes.forEach((node) => {
       addedNodes.push(node);
     }));
     addedNodes.forEach((node) => {

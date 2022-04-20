@@ -5,6 +5,9 @@
 // Each of the 3 players loses 1 game and at the conclusion of the 3 games each man has $16.
 // How much money did each man start with?
 
+// seems like a bit of a nonsense game.
+// What if a player doesn't have enough to double the others' money?
+
 const reverseSimGame = (loserOfEachRound, finalDistributionOfCash) => (
   loserOfEachRound
 
