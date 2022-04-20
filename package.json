@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --coverage",
     "lint": "npx eslint \"**/*.js\"",
-    "build": "node bundle-build.js",
+    "build": "node bundle-build.js \"./@(stack|text-effect)/**/*.user.js\"",
     "deploy": "node bundle-deploy.js"
   },
   "author": "",

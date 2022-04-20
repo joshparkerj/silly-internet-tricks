@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const globber = require('glob');
 const { readFile, writeFile } = require('fs');
 
-const buildPattern = './@(stack)/**/*.user.js';
+const buildPattern = process.argv[2];
 
 const glob = (globPattern) => (new Promise((r) => { globber(globPattern, (_, s) => r(s)); }));
 
