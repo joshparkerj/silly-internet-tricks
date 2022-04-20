@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "lint": "npx eslint \"**/*.js\""
+    "lint": "npx eslint \"**/*.js\"",
+    "build": "node bundle-build.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +20,9 @@
     "puppeteer": "^13.5.1"
   },
   "dependencies": {
+    "glob": "^8.0.1",
     "node-fetch": "^3.2.3",
-    "parse5": "^6.0.1"
+    "parse5": "^6.0.1",
+    "webpack": "^5.72.0"
   }
 }

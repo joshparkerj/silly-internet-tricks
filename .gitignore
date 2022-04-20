@@ -10,3 +10,4 @@ lc/
 leetcode/
 nerdwallet/*
 wikipedia/*.css
+dist/

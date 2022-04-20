@@ -13,10 +13,9 @@
 // @grant        none
 // ==/UserScript==
 
-(function noHotNetwork() {
-  const hotNetworkQuestions = document.querySelector('#hot-network-questions');
-  hotNetworkQuestions.setAttribute('style', 'display:none');
+import remove from './remove';
 
-  const sSidebarWidget = document.querySelector('.s-sidebarwidget');
-  sSidebarWidget.setAttribute('style', 'display:none');
+(function noHotNetwork() {
+  remove('#hot-network-questions');
+  remove('.s-sidebarwidget');
 }());
