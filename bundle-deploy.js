@@ -1,5 +1,4 @@
 const { Octokit } = require('@octokit/core');
-const { createActionAuth } = require('@octokit/auth-action');
 const globber = require('glob');
 const { readFile } = require('fs');
 
@@ -7,8 +6,10 @@ const pattern = './@(dist)/**/*.@(user|meta).js';
 
 const glob = (globPattern) => (new Promise((r) => { globber(globPattern, (_, s) => r(s)); }));
 
+const auth = process.env.PERSONAL_ACCESS_TOKEN;
+
 const octokit = new Octokit({
-  authStrategy: createActionAuth,
+  auth,
 });
 
 glob(pattern)
@@ -25,10 +26,6 @@ glob(pattern)
             const description = content.match(/description\s+(.*)/)[1];
             const filename = file.includes('meta') ? content.match(/updateURL.*raw\/[^/]+\/([^/]*)/)[1] : content.match(/downloadURL.*raw\/[^/]+\/([^/]*)/)[1];
 
-            console.log(content);
-            console.log(gistId);
-            console.log(description);
-            console.log(filename);
             octokit.request(`PATCH /gists/${gistId}`, {
               gist_id: gistId,
               description,
