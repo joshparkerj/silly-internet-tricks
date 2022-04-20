@@ -24,5 +24,11 @@
         "greasemonkey": true
       }
     }
+  ],
+  "ignorePatterns": [
+    "**/dist/**/*",
+    "**/node_modules/**/*",
+    "**/lc/**/*",
+    "**/worldometer/example-chart-options.js"
   ]
 }
