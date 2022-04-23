@@ -4,6 +4,9 @@
 // @version      0.1
 // @description  show svgs
 // @author       Josh Parker
+// @source       https://github.com/joshparkerj/silly-internet-tricks/blob/main/wikipedia/show-svgs.user.js
+// @downloadURL  https://gist.github.com/joshparkerj/387e6798a4b5cb2e64e21bb2daf7d6fc/raw/show-svgs.user.js
+// @updateURL    https://gist.github.com/joshparkerj/387e6798a4b5cb2e64e21bb2daf7d6fc/raw/show-svgs.meta.js
 // @match        https://en.wikipedia.org/wiki/*
 // @icon         https://www.google.com/s2/favicons?domain=wikipedia.org
 // @grant        none

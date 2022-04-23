@@ -4,10 +4,15 @@
 // @version      0.1
 // @description  Bring all articles from subcategories onto this category page
 // @author       Josh Parker
+// @source       https://github.com/joshparkerj/silly-internet-tricks/blob/main/wikipedia/get-subcategories.user.js
+// @downloadURL  https://gist.github.com/joshparkerj/4d8f488ecd0912680635483a8eb97bf6/raw/get-subcategories.user.js
+// @updateURL    https://gist.github.com/joshparkerj/4d8f488ecd0912680635483a8eb97bf6/raw/get-subcategories.meta.js
 // @match        https://en.wikipedia.org/wiki/Category:*
 // @icon         https://www.google.com/s2/favicons?domain=wikipedia.org
 // @grant        none
 // ==/UserScript==
+
+import getCategoryArea from './get-category-area';
 
 (function subcategoryTreeUserScript() {
   const DEFAULT_DEPTH = 3;
@@ -38,15 +43,7 @@
   let count = 0;
   const disabledButtonText = () => { count += 1; return `${count} subcategories found`; };
   const parser = new DOMParser();
-  let categoryArea = document.querySelector('div#mw-pages > div.mw-content-ltr');
-  if (!categoryArea) {
-    const mwPages = document.createElement('div');
-    mwPages.id = 'mw-pages';
-    categoryArea = document.createElement('div');
-    categoryArea.classList.add('mw-content-ltr');
-    mwPages.appendChild(categoryArea);
-    document.querySelector('div#mw-content-text').after(mwPages);
-  }
+  const categoryArea = getCategoryArea();
 
   let maxSubcategories;
   const alreadyRetrieved = new Set();

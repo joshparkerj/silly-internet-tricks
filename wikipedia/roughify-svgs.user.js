@@ -4,6 +4,9 @@
 // @version      0.1
 // @description  Roughify Svgs
 // @author       Josh Parker
+// @source       https://github.com/joshparkerj/silly-internet-tricks/blob/main/wikipedia/roughify-svgs.user.js
+// @downloadURL  https://gist.github.com/joshparkerj/b61746e7f95aa03ffb4ac303bc01aa52/raw/roughify-svgs.user.js
+// @updateURL    https://gist.github.com/joshparkerj/b61746e7f95aa03ffb4ac303bc01aa52/raw/roughify-svgs.meta.js
 // @match        https://en.wikipedia.org/wiki/*
 // @require      https://unpkg.com/roughjs@latest/bundled/rough.js
 // @icon         https://www.google.com/s2/favicons?domain=wikipedia.org

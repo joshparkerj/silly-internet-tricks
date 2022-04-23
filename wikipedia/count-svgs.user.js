@@ -4,6 +4,9 @@
 // @version      0.1
 // @description  count svgs on each page
 // @author       Josh Parker
+// @source       https://github.com/joshparkerj/silly-internet-tricks/blob/main/wikipedia/count-svgs.user.js
+// @downloadURL  https://gist.github.com/joshparkerj/c67bbcfe9dac51a27e30193b061c65fe/raw/count-svgs.user.js
+// @updateURL    https://gist.github.com/joshparkerj/c67bbcfe9dac51a27e30193b061c65fe/raw/count-svgs.meta.js
 // @match        https://en.wikipedia.org/wiki/Category:*
 // @icon         https://www.google.com/s2/favicons?domain=wikipedia.org
 // @grant        none

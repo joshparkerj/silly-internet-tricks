@@ -4,6 +4,9 @@
 // @version      0.1
 // @description
 // @author       Josh Parker
+// @source       https://github.com/joshparkerj/silly-internet-tricks/blob/main/wikipedia/category-page-views.user.js
+// @downloadURL  https://gist.github.com/joshparkerj/03cb85844025abc5294281f9bf321a1c/raw/category-page-views.user.js
+// @updateURL    https://gist.github.com/joshparkerj/03cb85844025abc5294281f9bf321a1c/raw/category-page-views.meta.js
 // @match        https://en.wikipedia.org/wiki/Category:*
 // @match        https://en.wikipedia.org/w/index.php?title=Category:*
 // @icon         https://www.google.com/s2/favicons?domain=wikipedia.org

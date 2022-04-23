@@ -29,6 +29,7 @@
     "**/dist/**/*",
     "**/node_modules/**/*",
     "**/lc/**/*",
+    "**/leetcode/**/*",
     "**/worldometer/example-chart-options.js"
   ]
 }

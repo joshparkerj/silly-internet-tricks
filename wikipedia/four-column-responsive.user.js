@@ -4,6 +4,9 @@
 // @version      0.1
 // @description  render text in as many as four columns, depending on display size
 // @author       Josh Parker
+// @source       https://github.com/joshparkerj/silly-internet-tricks/blob/main/wikipedia/four-column-responsive.user.js
+// @downloadURL  https://gist.github.com/joshparkerj/fbe1e3126cde7f365a9492f951d9bf7a/raw/four-column-responsive.user.js
+// @updateURL    https://gist.github.com/joshparkerj/fbe1e3126cde7f365a9492f951d9bf7a/raw/four-column-responsive.meta.js
 // @match        https://en.wikipedia.org/wiki/*
 // @exclude      https://en.wikipedia.org/wiki/Category*
 // @exclude      https://en.wikipedia.org/wiki/Template*
