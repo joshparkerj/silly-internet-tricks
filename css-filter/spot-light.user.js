@@ -16,7 +16,7 @@
   diffuseSpotLightingFilter.innerHTML = `
 <svg width="0">
 <filter id="diffuse-spot-lighting">
-  <feDiffuseLighting>
+  <feDiffuseLighting surfaceScale="${fraction(1, 16)(window.innerHeight + window.innerWidth)}" result="spotlight" >
     <feSpotLight
       x="${half(window.innerWidth)}"
       y="0"
@@ -26,7 +26,8 @@
       pointsAtZ="0"
       limitingConeAngle="20">
     </feSpotLight>
-  </feSpecularLighting>
+  </feDiffuseLighting>
+  <feComposite in="SourceGraphic" in2="spotlight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
 </filter>
 </svg>
 `;
