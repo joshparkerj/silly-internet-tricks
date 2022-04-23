@@ -49,7 +49,7 @@ jobs:
       uses: github/codeql-action/autobuild@v1
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
-  deploy:
+  publish:
     needs: analyze
     runs-on: ubuntu-latest
     steps:
@@ -61,6 +61,6 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build
-    - run: npm run deploy
+    - run: npm run publish
       env:
         PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

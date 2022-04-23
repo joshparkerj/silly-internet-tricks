@@ -7,7 +7,7 @@
     "test": "jest --coverage",
     "lint": "npx eslint \"**/*.js\"",
     "build": "node bundle-build.js \"./@(stack|text-effect|wikipedia)/**/*.user.js\"",
-    "deploy": "node bundle-deploy.js"
+    "publish": "node bundle-publish.js"
   },
   "author": "",
   "license": "ISC",
