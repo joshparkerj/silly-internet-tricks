@@ -16,7 +16,13 @@
   diffuseSpotLightingFilter.innerHTML = `
 <svg width="0">
 <filter id="diffuse-spot-lighting">
-  <feDiffuseLighting surfaceScale="${fraction(1, 16)(window.innerHeight + window.innerWidth)}" result="spotlight" >
+  <feColorMatrix in="SourceGraphic" result="alpha-matrix"
+        type="matrix"
+        values=" 0  0  0  0  0
+                 0  0  0  0  0
+                 0  0  0  0  0
+                -1 -1 -1  1  0" />
+    <feDiffuseLighting in="alpha-matrix" surfaceScale="${fraction(1, 16)(window.innerHeight + window.innerWidth)}" result="spotlight" >
     <feSpotLight
       x="${half(window.innerWidth)}"
       y="0"
@@ -24,10 +30,12 @@
       pointsAtX="${half(window.innerWidth)}"
       pointsAtY="${half(window.innerHeight)}"
       pointsAtZ="0"
-      limitingConeAngle="20">
+      limitingConeAngle="20" >
     </feSpotLight>
   </feDiffuseLighting>
-  <feComposite in="SourceGraphic" in2="spotlight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+  <feFlood flood-color="gainsboro" flood-opacity="1" result="gainsboro" />
+  <feBlend in="SourceGraphic" in2="gainsboro" mode="darken" result="darkened" />
+  <feComposite in="darkened" in2="spotlight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
 </filter>
 </svg>
 `;
