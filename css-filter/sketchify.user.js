@@ -29,13 +29,13 @@
               0  0 -1  0  1
               0  0  0  1  0"
   />
-  <feGaussianBlur in="inverted" stdDeviation="3" result="blurred" />
+  <feGaussianBlur in="inverted" stdDeviation="1" result="blurred" />
   <feBlend in="desaturated" in2="blurred" mode="color-dodge" result="light-sketch" />
   <feColorMatrix in="light-sketch" result="darkened"
     type="matrix"
-    values="   3   0   0   0   -2
-               0   3   0   0   -2
-               0   0   3   0   -2
+    values="   13   0   0   0   -12
+               0   13   0   0   -12
+               0   0   13   0   -12
                0   0   0   1    0"
   />
 </filter>
