@@ -14,3 +14,5 @@ dist/
 coverage/
 deploy
 file-sizes
+nightcafe/result*
+nightcafe-result
