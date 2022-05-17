@@ -10,6 +10,17 @@
 // ==/UserScript==
 
 (function curatingCollections() {
+  const css = `
+div.gallery-image-wrapper.accent > a.image.lightbox > p {
+  margin: 0;
+  font-size: 10px;
+}
+`;
+
+  const style = document.createElement('style');
+  style.appendChild(new Text(css));
+  document.querySelector('body').appendChild(style);
+
   document.querySelectorAll('div.gallery-image-wrapper.accent,a.image.lightbox,div.thumb')
     .forEach((e) => e.style.removeProperty('height'));
 
