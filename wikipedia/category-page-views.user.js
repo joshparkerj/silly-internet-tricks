@@ -7,8 +7,8 @@
 // @source       https://github.com/joshparkerj/silly-internet-tricks/blob/main/wikipedia/category-page-views.user.js
 // @downloadURL  https://gist.github.com/joshparkerj/03cb85844025abc5294281f9bf321a1c/raw/category-page-views.user.js
 // @updateURL    https://gist.github.com/joshparkerj/03cb85844025abc5294281f9bf321a1c/raw/category-page-views.meta.js
-// @match        https://en.wikipedia.org/wiki/Category:*
-// @match        https://en.wikipedia.org/w/index.php?title=Category:*
+// @match        https://*.wikipedia.org/wiki/Categor*:*
+// @match        https://*.wikipedia.org/w/index.php?title=Categor*:*
 // @icon         https://www.google.com/s2/favicons?domain=wikipedia.org
 // @grant        none
 // ==/UserScript==
@@ -87,7 +87,7 @@
             document.querySelector('#mw-pages > h2').appendChild(sortByPageViewsButton);
             results.forEach((views, index) => {
               if (typeof views === 'number') {
-                categoryLinks[index + i].innerText += ` (${views} page views in the past ${timePeriod})`;
+                categoryLinks[index + i].innerText += ` (${views} page views in the past ${timePeriod}) (${Math.round(10 * Math.log(views))})`;
               } else {
                 categoryLinks[index + i].innerText += ` (page views ${views})`;
               }
