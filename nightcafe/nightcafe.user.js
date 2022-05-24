@@ -14,12 +14,20 @@
   const parser = new DOMParser();
   const jsonOutput = {};
 
+  // for now, let's just filter on a hard-coded value.
+  // If that goes well, then maybe let's think about adding user input for the filter value...
+
+  // "trending on Artstation" is one of the most commonly used modifier phrases
+  // in nightcafe text prompts.
+  const filterString = 'trending on Artstation';
+
+  // We could use an empty string if we want to let everything through the filter.
+  // const filterString = '';
+
   const fetchDetails = async (node) => {
     const author = node.querySelector('[rel=author]')?.href;
     const creationLink = node.querySelector('[href^="/creation"]')?.href;
     if (creationLink && author && !filter.has(author)) {
-      filter.add(author);
-      console.log(filter.size);
       const fetchResponse = await fetch(creationLink);
       const textResponse = await fetchResponse.text();
       const dom = parser.parseFromString(textResponse, 'text/html');
@@ -29,7 +37,13 @@
           styleElement.parentNode.removeChild(styleElement);
         });
 
-        jsonOutput[creationLink] = descriptiveElement.textContent.match(/"[^"]*/g).filter((t) => !t.includes('weight')).map((t) => t.slice(1));
+        const textPrompts = descriptiveElement.textContent.match(/"[^"]*/g).filter((t) => !t.includes('weight')).map((t) => t.slice(1));
+
+        if (textPrompts.some((textPrompt) => textPrompt.includes(filterString))) {
+          jsonOutput[creationLink] = textPrompts;
+          filter.add(author);
+          console.log(filter.size);
+        }
       }
 
       if (filter.size >= 64) {
