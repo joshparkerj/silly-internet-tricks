@@ -24,6 +24,7 @@
     top: -400px;
     left: 400px;
     height: 0;
+    max-width: ${window.innerWidth - 1000}px;
 }
 
 .creation-settings-clone .css-1yjg2a0 > * {
