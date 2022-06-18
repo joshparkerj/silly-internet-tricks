@@ -27,7 +27,7 @@
     max-width: ${window.innerWidth - 500}px;
 }
 
-.creation-settings-clone .css-1yjg2a0 > * {
+.creation-settings-clone h2 + style + div > style + div > * {
     display: inline;
     margin-right: 0.5rem;
 }
