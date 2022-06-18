@@ -52,15 +52,10 @@ h3.css-1txomwt {
   const modifyMyCreations = () => {
     const cards = document.querySelectorAll(cardSelector);
     cards.forEach(async (card) => {
-      if (card.classList.contains('checked-for-creation-settings')) return;
+      const cardA = card.querySelector('a');
+      if (!cardA || card.classList.contains('checked-for-creation-settings')) return;
 
       card.classList.add('checked-for-creation-settings');
-      const cardA = card.querySelector('a');
-      if (!cardA) {
-        card.classList.remove('checked-for-creation-settings');
-        return;
-      }
-
       const { href } = cardA;
       if (!href.includes('creator.nightcafe.studio/creation')) return;
 
