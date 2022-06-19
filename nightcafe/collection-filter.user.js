@@ -22,14 +22,15 @@
 
     const textPrompts = [...document.querySelectorAll('#__next div[itemprop=mainEntity] p')]
       .filter((e) => e.textContent.includes('weight'))
-      .map((e) => e.textContent.replace(/weight.*/, ''));
+      .map((e) => e.textContent.replace(/weight.*/, '').replace(/\.\s?/g, '').toLocaleLowerCase());
 
-    const title = document.querySelector('body #__next [itemprop=mainEntity] h1:nth-child(1)').textContent;
+    const title = document.querySelector('body #__next [itemprop=mainEntity] h1:nth-child(1)').textContent.toLocaleLowerCase();
     const text = `${textPrompts.join(' ')} ${title}`;
 
     collections.forEach((collection) => {
-      const collectionName = collection.textContent;
-      if (!text.includes(collectionName)) {
+      const collectionName = collection.textContent.replace(/\.\s?/g, '').toLocaleLowerCase();
+      const cnre = new RegExp(`\\b${collectionName}\\b`);
+      if (!text.match(cnre)) {
         collection.parentElement.style.setProperty('display', 'none');
       }
     });
