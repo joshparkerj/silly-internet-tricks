@@ -54,7 +54,7 @@ h3.css-1txomwt {
   max-width: 350px;
 }
 
-[id^="creation-settings-likedby"] {
+.creation-settings-likedby {
   display: none;
 }
 `;
@@ -96,31 +96,31 @@ h3.css-1txomwt {
 
       const creationSettingsHtml = `
 <h2>Creation Settings</h2>
-<div id="creation-settings-preset-style-${creationId}">
+<div class="creation-settings-preset-style">
   <h4>Preset Style</h4>
 </div>
-<div id="creation-settings-text-prompts-${creationId}">
+<div class="creation-settings-text-prompts">
   <h4>Text Prompts</h4>
 </div>
-<div id="creation-settings-initial-resolution-${creationId}">
+<div class="creation-settings-initial-resolution">
   <h4>Initial Resolution</h4>
 </div>
-<div id="creation-settings-runtime-${creationId}">
+<div class="creation-settings-runtime">
   <h4>Runtime</h4>
 </div>
-<div id="creation-settings-seed-${creationId}">
+<div class="creation-settings-seed">
   <h4>Seed</h4>
 </div>
-<div id="creation-settings-overall-prompt-weight-${creationId}">
+<div class="creation-settings-overall-prompt-weight">
   <h4>Weight</h4>
 </div>
-<div id="creation-settings-accuracy-boost-${creationId}">
+<div class="creation-settings-accuracy-boost">
   <h4>Accuracy Boost</h4>
 </div>
-<div id="creation-settings-symmetry-${creationId}">
+<div class="creation-settings-symmetry">
   <h4>Symmetry</h4>
 </div>
-<div id="creation-settings-likedby-${creationId}">
+<div class="creation-settings-likedby">
   <h4>Liked By</h4>
 </div>
 `;
@@ -129,27 +129,27 @@ h3.css-1txomwt {
       creationSettings.classList.add('creation-settings');
       creationSettings.innerHTML = creationSettingsHtml;
 
-      const textPrompts = creationSettings.querySelector('[id^="creation-settings-text-prompts"]');
+      const textPrompts = creationSettings.querySelector('.creation-settings-text-prompts');
       prompts.forEach((prompt, i) => {
         appendText(textPrompts, `"${prompt}" - weight: ${promptWeights[i]}`);
         textPrompts.appendChild(document.createElement('br'));
       });
 
-      appendText(creationSettings, cap(resolution), '[id^="creation-settings-initial-resolution"]');
+      appendText(creationSettings, cap(resolution), '.creation-settings-initial-resolution');
 
-      appendText(creationSettings, cap(runtime), '[id^="creation-settings-runtime"]');
+      appendText(creationSettings, cap(runtime), '.creation-settings-runtime');
 
-      appendText(creationSettings, seed, '[id^="creation-settings-seed"]');
+      appendText(creationSettings, seed, '.creation-settings-seed');
 
       if (algorithm === 'vqganclip') {
-        displayNone(creationSettings, '[id^="creation-settings-overall-prompt-weight"]');
-        displayNone(creationSettings, '[id^="creation-settings-accuracy-boost"]');
-        displayNone(creationSettings, '[id^="creation-settings-symmetry"]');
+        displayNone(creationSettings, '.creation-settings-overall-prompt-weight');
+        displayNone(creationSettings, '.creation-settings-accuracy-boost');
+        displayNone(creationSettings, '.creation-settings-symmetry');
 
         if (preset === 'none') {
-          displayNone(creationSettings, '[id^="creation-settings-preset-style"]');
+          displayNone(creationSettings, '.creation-settings-preset-style');
         } else {
-          appendText(creationSettings, preset, '[id^="creation-settings-preset-style"]');
+          appendText(creationSettings, preset, '.creation-settings-preset-style');
         }
       } else if (algorithm === 'diffusion') {
         const {
@@ -163,11 +163,11 @@ h3.css-1txomwt {
           noiseInfluence,
         } = data.pageProps.initialJob;
 
-        appendText(creationSettings, `Overall Prompt Weight: ${percent(promptWeight)}. Start Image Weight: ${percent(initScale)}. Noise Weight: ${percent(noiseInfluence)}.`, '[id^="creation-settings-overall-prompt-weight"');
+        appendText(creationSettings, `Overall Prompt Weight: ${percent(promptWeight)}. Start Image Weight: ${percent(initScale)}. Noise Weight: ${percent(noiseInfluence)}.`, '.creation-settings-overall-prompt-weight');
 
-        appendText(creationSettings, (accuracyBoost && cutBatchesBoost && 'Extra') || (accuracyBoost && 'Standard') || 'None', '[id^="creation-settings-accuracy-boost"]');
+        appendText(creationSettings, (accuracyBoost && cutBatchesBoost && 'Extra') || (accuracyBoost && 'Standard') || 'None', '.creation-settings-accuracy-boost');
 
-        const symmetry = creationSettings.querySelector('[id^="creation-settings-symmetry"]');
+        const symmetry = creationSettings.querySelector('.creation-settings-symmetry');
         if (horizontalSymmetry && verticalSymmetry) {
           appendText(symmetry, `Horizontal and Vertical ${percent(symmetryTransformationPercent)}`);
         } else if (horizontalSymmetry) {
@@ -178,7 +178,7 @@ h3.css-1txomwt {
           displayNone(symmetry);
         }
 
-        displayNone(creationSettings, '[id^="creation-settings-preset-style"]');
+        displayNone(creationSettings, '.creation-settings-preset-style');
       } else {
         console.error(`wasn't expecting ${algorithm}!`);
       }
