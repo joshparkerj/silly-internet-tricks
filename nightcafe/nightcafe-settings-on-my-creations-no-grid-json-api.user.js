@@ -136,9 +136,7 @@ h3.css-1txomwt {
       });
 
       appendText(creationSettings, cap(resolution), '.creation-settings-initial-resolution');
-
       appendText(creationSettings, cap(runtime), '.creation-settings-runtime');
-
       appendText(creationSettings, seed, '.creation-settings-seed');
 
       if (algorithm === 'vqganclip') {
