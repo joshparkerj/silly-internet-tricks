@@ -13,6 +13,22 @@
   const percent = (n) => `${Math.round(100 * n)}%`;
   const cap = (w) => `${w[0].toLocaleUpperCase()}${w.slice(1)}`;
 
+  const appendText = (root, text, selector) => {
+    if (selector) {
+      root.querySelector(selector).appendChild(new Text(text));
+    } else {
+      root.appendChild(new Text(text));
+    }
+  };
+
+  const displayNone = (root, selector) => {
+    if (selector) {
+      root.querySelector(selector).style.setProperty('display', 'none');
+    } else {
+      root.style.setProperty('display', 'none');
+    }
+  };
+
   const cardContainerSelector = '#__next div.css-16jqqjd + div > .css-0';
   const cardSelector = `${cardContainerSelector} > div`;
   const css = `
@@ -38,13 +54,13 @@ h3.css-1txomwt {
   max-width: 350px;
 }
 
-#creation-settings-likedby {
+[id^="creation-settings-likedby"] {
   display: none;
 }
 `;
 
   const style = document.createElement('style');
-  style.appendChild(new Text(css));
+  appendText(style, css);
 
   const body = document.querySelector('body');
   body.appendChild(style);
@@ -80,62 +96,60 @@ h3.css-1txomwt {
 
       const creationSettingsHtml = `
 <h2>Creation Settings</h2>
-<div id="creation-settings-preset-style">
+<div id="creation-settings-preset-style-${creationId}">
   <h4>Preset Style</h4>
 </div>
-<div id="creation-settings-text-prompts">
+<div id="creation-settings-text-prompts-${creationId}">
   <h4>Text Prompts</h4>
 </div>
-<div id="creation-settings-initial-resolution">
+<div id="creation-settings-initial-resolution-${creationId}">
   <h4>Initial Resolution</h4>
 </div>
-<div id="creation-settings-runtime">
+<div id="creation-settings-runtime-${creationId}">
   <h4>Runtime</h4>
 </div>
-<div id="creation-settings-seed">
+<div id="creation-settings-seed-${creationId}">
   <h4>Seed</h4>
 </div>
-<div id="creation-settings-overall-prompt-weight">
+<div id="creation-settings-overall-prompt-weight-${creationId}">
   <h4>Weight</h4>
 </div>
-<div id="creation-settings-accuracy-boost">
+<div id="creation-settings-accuracy-boost-${creationId}">
   <h4>Accuracy Boost</h4>
 </div>
-<div id="creation-settings-symmetry">
+<div id="creation-settings-symmetry-${creationId}">
   <h4>Symmetry</h4>
 </div>
-<div id="creation-settings-likedby">
+<div id="creation-settings-likedby-${creationId}">
   <h4>Liked By</h4>
 </div>
-      `;
+`;
 
       const creationSettings = document.createElement('div');
       creationSettings.classList.add('creation-settings');
       creationSettings.innerHTML = creationSettingsHtml;
 
-      const textPrompts = creationSettings.querySelector('#creation-settings-text-prompts');
+      const textPrompts = creationSettings.querySelector('[id^="creation-settings-text-prompts"]');
       prompts.forEach((prompt, i) => {
-        textPrompts.appendChild(new Text(`${prompt} - weight: ${promptWeights[i]}`));
+        appendText(textPrompts, `"${prompt}" - weight: ${promptWeights[i]}`);
         textPrompts.appendChild(document.createElement('br'));
       });
 
-      const initialResolution = creationSettings.querySelector('#creation-settings-initial-resolution');
-      initialResolution.appendChild(new Text(cap(resolution)));
+      appendText(creationSettings, cap(resolution), '[id^="creation-settings-initial-resolution"]');
 
-      const runtimeDiv = creationSettings.querySelector('#creation-settings-runtime');
-      runtimeDiv.appendChild(new Text(cap(runtime)));
+      appendText(creationSettings, cap(runtime), '[id^="creation-settings-runtime"]');
 
-      const seedDiv = creationSettings.querySelector('#creation-settings-seed');
-      seedDiv.appendChild(new Text(seed));
+      appendText(creationSettings, seed, '[id^="creation-settings-seed"]');
 
       if (algorithm === 'vqganclip') {
-        creationSettings.querySelector('#creation-settings-overall-prompt-weight').style.setProperty('display', 'none');
-        creationSettings.querySelector('#creation-settings-accuracy-boost').style.setProperty('display', 'none');
-        creationSettings.querySelector('#creation-settings-symmetry').style.setProperty('display', 'none');
+        displayNone(creationSettings, '[id^="creation-settings-overall-prompt-weight"]');
+        displayNone(creationSettings, '[id^="creation-settings-accuracy-boost"]');
+        displayNone(creationSettings, '[id^="creation-settings-symmetry"]');
+
         if (preset === 'none') {
-          creationSettings.querySelector('#creation-settings-preset-style').style.setProperty('display', 'none');
+          displayNone(creationSettings, '[id^="creation-settings-preset-style"]');
         } else {
-          creationSettings.querySelector('#creation-settings-preset-style').appendChild(new Text(preset));
+          appendText(creationSettings, preset, '[id^="creation-settings-preset-style"]');
         }
       } else if (algorithm === 'diffusion') {
         const {
@@ -149,24 +163,22 @@ h3.css-1txomwt {
           noiseInfluence,
         } = data.pageProps.initialJob;
 
-        creationSettings.querySelector('#creation-settings-overall-prompt-weight').appendChild(
-          new Text(`Overall Prompt Weight: ${percent(promptWeight)}. Start Image Weight: ${percent(initScale)}. Noise Weight: ${percent(noiseInfluence)}.`),
-        );
+        appendText(creationSettings, `Overall Prompt Weight: ${percent(promptWeight)}. Start Image Weight: ${percent(initScale)}. Noise Weight: ${percent(noiseInfluence)}.`, '[id^="creation-settings-overall-prompt-weight"');
 
-        creationSettings.querySelector('#creation-settings-accuracy-boost').appendChild(new Text((accuracyBoost && cutBatchesBoost && 'Extra') || (accuracyBoost && 'Standard') || 'None'));
+        appendText(creationSettings, (accuracyBoost && cutBatchesBoost && 'Extra') || (accuracyBoost && 'Standard') || 'None', '[id^="creation-settings-accuracy-boost"]');
 
-        const symmetry = creationSettings.querySelector('#creation-settings-symmetry');
+        const symmetry = creationSettings.querySelector('[id^="creation-settings-symmetry"]');
         if (horizontalSymmetry && verticalSymmetry) {
-          symmetry.appendChild(new Text(`Horizontal and Vertical ${percent(symmetryTransformationPercent)}`));
+          appendText(symmetry, `Horizontal and Vertical ${percent(symmetryTransformationPercent)}`);
         } else if (horizontalSymmetry) {
-          symmetry.appendChild(new Text(`Horizontal ${percent(symmetryTransformationPercent)}`));
+          appendText(symmetry, `Horizontal ${percent(symmetryTransformationPercent)}`);
         } else if (verticalSymmetry) {
-          symmetry.appendChild(new Text(`Vertical ${percent(symmetryTransformationPercent)}`));
+          appendText(symmetry, `Vertical ${percent(symmetryTransformationPercent)}`);
         } else {
-          symmetry.style.setProperty('display', 'none');
+          displayNone(symmetry);
         }
 
-        creationSettings.querySelector('#creation-settings-symmetry').style.setProperty('display', 'none');
+        displayNone(creationSettings, '[id^="creation-settings-preset-style"]');
       } else {
         console.error(`wasn't expecting ${algorithm}!`);
       }
