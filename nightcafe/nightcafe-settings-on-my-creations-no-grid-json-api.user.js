@@ -10,6 +10,9 @@
 // ==/UserScript==
 
 (function settingsOnMyCreations() {
+  const percent = (n) => `${Math.round(100 * n)}%`;
+  const cap = (w) => `${w[0].toLocaleUpperCase()}${w.slice(1)}`;
+
   const cardContainerSelector = '#__next div.css-16jqqjd + div > .css-0';
   const cardSelector = `${cardContainerSelector} > div`;
   const css = `
@@ -23,10 +26,10 @@
   top: -400px;
   left: 400px;
   height: 0;
-  max-width: ${window.innerWidth - 500}px;
+  max-width: ${window.innerWidth - 1000}px;
 }
 
-.creation-settings h2 + style + div > style + div > * {
+.creation-settings h4 {
   display: inline;
   margin-right: 0.5rem;
 }
@@ -66,19 +69,20 @@ h3.css-1txomwt {
       const creationId = href.match(/creator.nightcafe.studio\/creation\/(.*)/)[1];
       const dataHref = window.location.href.replace('my-creations', `_next/data/${buildId}/creation/${creationId}.json?cid=${creationId}`);
 
-      console.log(buildId, creationId, dataHref);
-
       const response = await fetch(dataHref);
       const data = await response.json();
 
-      console.log(data);
+      console.log(JSON.stringify(data));
 
       const {
-        algorithm, likedBy, promptWeights, prompts, resolution, runtime, seed,
+        algorithm, /* likedBy, */ promptWeights, prompts, resolution, runtime, seed, preset,
       } = data.pageProps.initialJob;
 
       const creationSettingsHtml = `
 <h2>Creation Settings</h2>
+<div id="creation-settings-preset-style">
+  <h4>Preset Style</h4>
+</div>
 <div id="creation-settings-text-prompts">
   <h4>Text Prompts</h4>
 </div>
@@ -116,25 +120,27 @@ h3.css-1txomwt {
       });
 
       const initialResolution = creationSettings.querySelector('#creation-settings-initial-resolution');
-      initialResolution.appendChild(new Text(resolution));
+      initialResolution.appendChild(new Text(cap(resolution)));
 
       const runtimeDiv = creationSettings.querySelector('#creation-settings-runtime');
-      runtimeDiv.appendChild(new Text(runtime));
+      runtimeDiv.appendChild(new Text(cap(runtime)));
 
       const seedDiv = creationSettings.querySelector('#creation-settings-seed');
       seedDiv.appendChild(new Text(seed));
 
-      console.log(creationSettings);
-
-      console.log(likedBy);
-
       if (algorithm === 'vqganclip') {
-        creationSettings.querySelector('#creation-settings-overall-prompt-weight').setProperty('display', 'none');
-        creationSettings.querySelector('#creation-settings-accuracy-boost').setProperty('display', 'none');
-        creationSettings.querySelector('#creation-settings-symmetry').setProperty('display', 'none');
+        creationSettings.querySelector('#creation-settings-overall-prompt-weight').style.setProperty('display', 'none');
+        creationSettings.querySelector('#creation-settings-accuracy-boost').style.setProperty('display', 'none');
+        creationSettings.querySelector('#creation-settings-symmetry').style.setProperty('display', 'none');
+        if (preset === 'none') {
+          creationSettings.querySelector('#creation-settings-preset-style').style.setProperty('display', 'none');
+        } else {
+          creationSettings.querySelector('#creation-settings-preset-style').appendChild(new Text(preset));
+        }
       } else if (algorithm === 'diffusion') {
         const {
           accuracyBoost,
+          cutBatchesBoost,
           horizontalSymmetry,
           verticalSymmetry,
           symmetryTransformationPercent,
@@ -142,23 +148,25 @@ h3.css-1txomwt {
           initScale,
           noiseInfluence,
         } = data.pageProps.initialJob;
-        console.log(initScale, noiseInfluence);
 
         creationSettings.querySelector('#creation-settings-overall-prompt-weight').appendChild(
-          new Text(`Overall Prompt Weight: ${promptWeight}. Start Image Weight: ${initScale}. Noise Weight: ${noiseInfluence}.`),
+          new Text(`Overall Prompt Weight: ${percent(promptWeight)}. Start Image Weight: ${percent(initScale)}. Noise Weight: ${percent(noiseInfluence)}.`),
         );
-        creationSettings.querySelector('#creation-settings-accuracy-boost').appendChild(new Text(accuracyBoost));
+
+        creationSettings.querySelector('#creation-settings-accuracy-boost').appendChild(new Text((accuracyBoost && cutBatchesBoost && 'Extra') || (accuracyBoost && 'Standard') || 'None'));
 
         const symmetry = creationSettings.querySelector('#creation-settings-symmetry');
         if (horizontalSymmetry && verticalSymmetry) {
-          symmetry.appendChild(new Text(`Horizontal and Vertical ${Math.round(100 * symmetryTransformationPercent)}%`));
+          symmetry.appendChild(new Text(`Horizontal and Vertical ${percent(symmetryTransformationPercent)}`));
         } else if (horizontalSymmetry) {
-          symmetry.appendChild(new Text(`Horizontal ${Math.round(100 * symmetryTransformationPercent)}%`));
+          symmetry.appendChild(new Text(`Horizontal ${percent(symmetryTransformationPercent)}`));
         } else if (verticalSymmetry) {
-          symmetry.appendChild(new Text(`Vertical ${Math.round(100 * symmetryTransformationPercent)}%`));
+          symmetry.appendChild(new Text(`Vertical ${percent(symmetryTransformationPercent)}`));
         } else {
           symmetry.style.setProperty('display', 'none');
         }
+
+        creationSettings.querySelector('#creation-settings-symmetry').style.setProperty('display', 'none');
       } else {
         console.error(`wasn't expecting ${algorithm}!`);
       }
