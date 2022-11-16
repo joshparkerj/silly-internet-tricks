@@ -14,6 +14,9 @@
   const parser = new DOMParser();
   const jsonOutput = {};
 
+  document.addEventListener('click', ({ x, y }) => { console.log(x, y); });
+//  return new Promise((resolve) => { document.addEventListener('click', ({ x, y }) => { resolve(`${x} ${y}`); }); });
+
   // for now, let's just filter on a hard-coded value.
   // If that goes well, then maybe let's think about adding user input for the filter value...
 

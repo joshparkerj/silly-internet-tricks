@@ -11,6 +11,39 @@
 // @icon         https://www.google.com/s2/favicons?domain=wikipedia.org
 // @grant        none
 // ==/UserScript==
+const isPalindromeString = function isPalindromeString(s, checked = 0) {
+  if (s.length - 2 * checked < 2) {
+    return true;
+  }
+
+  return s[checked] === s[s.length - 1 - checked]
+    && isPalindromeString(s, checked + 1);
+};
+
+const isPalindromeNumber = function isPalindromeNumber(n, base = 10) {
+  if (n % 1) throw new Error('floating point numbers are not supported!');
+
+  if (n < 0) return false;
+
+  if (n < base) return true;
+
+  const tailLength = Math.floor(Math.log(n) / Math.log(base));
+  const baseToTailLength = base ** tailLength;
+  const first = Math.floor(n / baseToTailLength);
+  const last = n % base;
+  const rest = Math.floor((n % baseToTailLength) / base);
+
+  return first === last
+    && isPalindromeNumber(rest);
+};
+
+const isPalindrome = function isPalindrome(possiblePalindrome) {
+  if (typeof possiblePalindrome === 'string') return isPalindromeString(possiblePalindrome);
+  if (typeof possiblePalindrome === 'number') return isPalindromeNumber(possiblePalindrome);
+  if (typeof possiblePalindrome === 'object' && Array.isArray(possiblePalindrome)) return isPalindromeString(possiblePalindrome);
+  if (typeof possiblePalindrome === 'object') throw new Error('the only supported objects are arrays!');
+  throw new Error(`${typeof possiblePalindrome} is not supported!`);
+};
 
 (function getNumberOfSvgs() {
   const pageLinks = [...document.querySelectorAll('#mw-content-text #mw-pages .mw-content-ltr a[title]')];
@@ -34,5 +67,6 @@
   });
 
   button.innerText = 'get number of svgs on each page';
+  isPalindrome(button.innerText);
   document.querySelector('#mw-pages > h2 ~ p').appendChild(button);
 }());

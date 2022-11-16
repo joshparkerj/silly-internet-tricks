@@ -14,14 +14,35 @@
 // ==/UserScript==
 
 (function wikCategoryPageViewsUserScript() {
+  const appendText = (root, text, selector) => {
+    if (selector) {
+      root.querySelector(selector).appendChild(new Text(text));
+    } else {
+      root.appendChild(new Text(text));
+    }
+  };
+
+  const replaceText = (root, text, selector) => {
+    let parent;
+    if (selector) {
+      parent = root.querySelector(selector);
+    } else {
+      parent = root;
+    }
+
+    const nodeList = [...parent.childNodes];
+    nodeList.filter((node) => !node.tagName).forEach((node) => { parent.removeChild(node); });
+    appendText(root, text, selector);
+  };
+
   let period = 'week';
   const sortByPageViewsButton = document.createElement('button');
   const sortButtonInnerText = () => `sort by page views from the past ${period}`;
-  sortByPageViewsButton.innerText = sortButtonInnerText();
+  appendText(sortByPageViewsButton, sortButtonInnerText());
 
   const getPageViewsButton = document.createElement('button');
   const getButtonInnerText = () => `get page views from the past ${period}`;
-  getPageViewsButton.innerText = getButtonInnerText();
+  appendText(getPageViewsButton, getButtonInnerText());
 
   const periodSelect = document.createElement('select');
 
@@ -87,9 +108,11 @@
             document.querySelector('#mw-pages > h2').appendChild(sortByPageViewsButton);
             results.forEach((views, index) => {
               if (typeof views === 'number') {
-                categoryLinks[index + i].innerText += ` (${views} page views in the past ${timePeriod}) (${Math.round(10 * Math.log(views))})`;
+                appendText(categoryLinks[index + i], ` (${views} page views in the past ${timePeriod}) (${Math.round(1.5 * Math.log(views))})`);
+                // categoryLinks[index + i].style
+                //   .setProperty('font-size', `${Math.round(1.5 * Math.log(views))}px`);
               } else {
-                categoryLinks[index + i].innerText += ` (page views ${views})`;
+                appendText(categoryLinks[index + i], ` (page views ${views})`);
               }
             });
           });
@@ -123,7 +146,7 @@
 
       sortByPageViewsButton.removeEventListener('click', undoSort);
       sortByPageViewsButton.addEventListener('click', sortByPageViews);
-      sortByPageViewsButton.innerText = sortButtonInnerText();
+      replaceText(sortByPageViewsButton, sortButtonInnerText());
     };
 
     document.styleSheets[0].insertRule('#mw-pages .mw-category a { display: block; }');
@@ -131,7 +154,7 @@
     sortedLinks.forEach((link) => categorySection.appendChild(link));
     sortByPageViewsButton.removeEventListener('click', sortByPageViews);
     sortByPageViewsButton.addEventListener('click', undoSort);
-    sortByPageViewsButton.innerText = 'undo sort';
+    replaceText(sortByPageViewsButton, 'undo sort');
   };
 
   sortByPageViewsButton.addEventListener('click', sortByPageViews);
@@ -153,7 +176,7 @@
 
   Object.keys(startDates).forEach((periodValue) => {
     const periodOption = document.createElement('option');
-    periodOption.innerText = periodValue;
+    appendText(periodOption, periodValue);
     periodOption.value = periodValue;
     periodSelect.appendChild(periodOption);
   });
@@ -161,8 +184,8 @@
   periodSelect.querySelector('option').setAttribute('selected', true);
   periodSelect.addEventListener('change', ({ target }) => {
     period = target.value;
-    sortByPageViewsButton.innerText = sortButtonInnerText();
-    getPageViewsButton.innerText = getButtonInnerText();
+    replaceText(sortByPageViewsButton, sortButtonInnerText());
+    replaceText(getPageViewsButton, getButtonInnerText());
   });
 
   document.querySelector('#mw-pages > h2').appendChild(periodSelect);

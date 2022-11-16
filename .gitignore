@@ -17,3 +17,11 @@ file-sizes
 nightcafe/result*
 nightcafe-result
 nightcafe/*.csv
+
+LOW.csv
+TEVA.csv
+
+nightcafe/*.js
+nightcafe/*.html
+wikipedia/*.*
+youtube/*.js
