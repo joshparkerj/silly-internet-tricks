@@ -11,8 +11,14 @@
 
 (function nightCafe() {
   const parser = new DOMParser();
+
+  const filter = new Set();
+
   const artistInitializer = () => ({ filter: new Set() });
-  const artistSerializer = (artist) => { const { filter, ...noFilter } = artist; return noFilter; };
+  // const artistSerializer = (artist) => {
+  //   const { filter, ...noFilter } = artist; return noFilter;
+  // };
+
   const jsonOutput = {
     'Alex Hirsch': artistInitializer(),
     'Albert Gleizes': artistInitializer(),
@@ -85,7 +91,7 @@
 
       if (filter.size >= 64) {
         console.log(JSON.stringify(jsonOutput));
-        alert('YOUR JSON IS READY BABY! PLEASE CHECK CONSOLE!');
+        // alert('YOUR JSON IS READY BABY! PLEASE CHECK CONSOLE!');
       }
     }
   };

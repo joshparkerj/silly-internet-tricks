@@ -73,8 +73,6 @@ const isPalindrome = function isPalindrome(possiblePalindrome) {
     }); return r;
   };
 
-  
-
   const words = (s, l) => {
     let filteredWords = dict.filter((w) => w.match(new RegExp(`^[${s}]{${l}}$`)));
     const letterCounts = counts([...s]);

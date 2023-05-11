@@ -45,13 +45,13 @@ titian wojciechsiudmak matte watercolor photograph`.split(/\s/g);
       const dom = parser.parseFromString(t, 'text/html');
       return Promise.all([...dom.querySelectorAll('[href^="/collection"]')]
         .map(({ href, textContent }) => (fetch(href).then((r) => r.text())
-          .then((collectionHtml) => {
-            const collectionDom = parser.parseFromString(collectionHtml, 'text/html');
-            return [searchable(textContent), dom];
-          })
+          .then(() => (
+            // const collectionDom = parser.parseFromString(collectionHtml, 'text/html');
+            [searchable(textContent), dom]
+          ))
         )));
     })
-    .then((collections) => {
+    .then(() => {
       const findCreations = () => {
         document.querySelectorAll('.css-erlp54').forEach(async (card) => {
           const link = card.querySelector('[href^="/creation"]')?.href;

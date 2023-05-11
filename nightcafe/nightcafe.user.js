@@ -16,14 +16,16 @@
   const jsonOutput = {};
 
   document.addEventListener('click', ({ x, y }) => { console.log(x, y); });
-//  return new Promise((resolve) => { document.addEventListener('click', ({ x, y }) => { resolve(`${x} ${y}`); }); });
+  // return new Promise((resolve) => {
+  //   document.addEventListener('click', ({ x, y }) => { resolve(`${x} ${y}`); });
+  // });
 
   // for now, let's just filter on a hard-coded value.
   // If that goes well, then maybe let's think about adding user input for the filter value...
 
   // "trending on Artstation" is one of the most commonly used modifier phrases
   // in nightcafe text prompts.
-  const filterString = 'trending on Artstation';
+  // const filterString = 'trending on Artstation';
 
   // We could use an empty string if we want to let everything through the filter.
   // const filterString = '';
