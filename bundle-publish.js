@@ -22,23 +22,26 @@ glob(pattern)
             console.error(err);
           } else {
             const content = contentBuffer.toString();
-            const gistId = content.match(/downloadURL.*joshparkerj\/([^/]*)/)[1];
-            const description = content.match(/description\s+(.*)/)[1];
-            const filename = file.includes('meta') ? content.match(/updateURL.*raw\/([^/]*)/)[1] : content.match(/downloadURL.*raw\/([^/]*)/)[1];
+            const gistIdMatch = content.match(/downloadURL.*joshparkerj\/([^/]*)/);
+            if (gistIdMatch) {
+              const gistId = gistIdMatch[1];
+              const description = content.match(/description\s+(.*)/)[1];
+              const filename = file.includes('meta') ? content.match(/updateURL.*raw\/([^/]*)/)[1] : content.match(/downloadURL.*raw\/([^/]*)/)[1];
 
-            octokit.request(`PATCH /gists/${gistId}`, {
-              gist_id: gistId,
-              description,
-              files: {
-                [filename]: {
-                  filename,
-                  content,
+              octokit.request(`PATCH /gists/${gistId}`, {
+                gist_id: gistId,
+                description,
+                files: {
+                  [filename]: {
+                    filename,
+                    content,
+                  },
                 },
-              },
-            })
-              .then(() => {
-                upload(i + 1);
-              });
+              })
+                .then(() => {
+                  upload(i + 1);
+                });
+            }
           }
         });
       }
