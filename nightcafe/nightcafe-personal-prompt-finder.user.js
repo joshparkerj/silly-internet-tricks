@@ -11,23 +11,23 @@
 
 (function nightCafePersonalPromptFilter() {
   // For this early iteration, I'll probably hard code the search terms here.
-  const searchTerms = `jamesgurney pabloamaringo gregrutkowski georgykurasov albertgleizes
-thomaskinkade gustavedore salvadordali hrgiger jimburns kandinsky picasso vangogh alexhirsch
-alphonsemucha amandasage benbocquelet berniewrightson canaletto caspardavidfriedrich claudemonet
-danmumford danwitz edwardhopper ferdinandknab geraldbrom guidoborelli gustavklimt jgquintel
-jeantinguely josephinewall juliapott kellyfreas leonidafremov maxernst moebius pablopicasso
-pendletonward pinodaeni rafaelsanti rebeccasugar rogerdean stevenbelledin stevenhillenberg
-studioghibli timburton wadimkashin wesanderson zdzislawbeksinski davpilkey naokotakeuchi spongebob
-alexgrey summercampisland raphael denali zuko gandalf cleopatra tundra coyote classroom carcosa
-monopoly strawberry colosseum mirkwood swamp anunnaki penthouse bastei guillotine gumball ophelia
-almond raven avalon grendel gold jinn godzilla lilypad sedona midsummer moat yahweh jewel waterfall
-volcano landscape rain mordor marsh nationalpark sunset torch shore yosemite albertbierstadt
-alexanderjansson annestokes arthurrackham billpeet chrisvanallsburg davidahardy davidchoe
-denisvilleneuve drewstruzan emilycarr frankfrazetta howardpyle jrrtolkien jackkirby
-jacqueslouisdavid jakubschikaneder johnbutleryeats johnconstable lisafrank louismaurer
-maartenvanheemskerck makotoshinkai michaelvincentmanalo michaelcheval michaelwhelan normanrockwell
-odilonredon ralphmcquarrie rayharryhausen richardwilliams rosstran stephanmartiniere titian
-wojciechsiudmak matte watercolor photograph`.split(/\s/g);
+  const searchTerms = `albertbierstadt albertgleizes alexanderjansson alexgrey alexhirsch almondby
+alphonsemucha amandasage annestokes anunnakiby arthurrackham avalonby basteiby benbocquelet
+berniewrightson billpeet canaletto carcosaby caspardavidfriedrich chrisvanallsburg classroomby
+claudemonet cleopatra colosseumby coyoteby danmumford danwitz davidahardy davidchoe davpilkey denaliby
+denisvilleneuve drewstruzan edwardhopper emilycarr ferdinandknab frankfrazetta gandalfby
+georgykurasov geraldbrom godzilla gold gregrutkowski grendel guidoborelli guillotine gumballby
+gustavedore gustavklimt howardpyle hrgiger jackkirby jacqueslouisdavid jakubschikaneder jamesgurney
+jeantinguely jewelby jgquintel jimburns jinnby johnbutleryeats johnconstable josephinewall jrrtolkien
+juliapott kandinsky kellyfreas landscape leonidafremov lilypad lisafrank louismaurer
+maartenvanheemskerck makotoshinkai marshby mattepainting maxernst maxfleischer michaelcheval michaelvincentmanalo
+michaelwhelan midsummerby mirkwoodby moatby moebius monopolyby mordorby naokotakeuchi nationalpark
+normanrockwell odilonredon opheliaby pabloamaringo pablopicasso pendletonward penthouseby petermohrbacher detailedphotograph
+picasso pinodaeni rafaelsanti rainby ralphmcquarrie raphael ravenby rayharryhausen rebeccasugar
+richardwilliams rogerdean rosstran salvadordali scaryskeletonastronautinspace sedonaby shoreby spongebob stephanmartiniere
+stevenbelledin stevenhillenberg strawberryby studioghibli summercampisland sunsetby swampby thomaskinkade
+timburton titian torch tundraby valinorby vangogh volcanoby wadimkashin watercolor waterfallby wesanderson
+wojciechsiudmak yahwehby yosemiteby zdzislawbeksinski zukoby`.split(/\s/g);
 
   const results = {};
 
@@ -71,6 +71,8 @@ wojciechsiudmak matte watercolor photograph`.split(/\s/g);
           } else {
             results[searchTerm] = [link];
           }
+
+          console.log(JSON.stringify(results));
         });
     });
   };

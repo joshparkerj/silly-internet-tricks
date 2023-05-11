@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "moduleResolution": "node",
+    "skipLibCheck": true
+  },
+  "files": [
+    "./ts-hello-world/hello.ts"
+  ],
+}

@@ -17,3 +17,10 @@ file-sizes
 nightcafe/result*
 nightcafe-result
 nightcafe/*.csv
+nightcafe/*.txt
+nightcafe/*.json
+nightcafe/prompts/
+ts-hello-world/
+.DS_Store
+50-rando-ticker-symbols.json
+where-am-i.py
