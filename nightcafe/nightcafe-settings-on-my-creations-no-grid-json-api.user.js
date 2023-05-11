@@ -83,6 +83,7 @@ h3.css-1txomwt {
       if (!href.includes('creator.nightcafe.studio/creation')) return;
 
       const creationId = href.match(/creator.nightcafe.studio\/creation\/(.*)/)[1];
+
       const dataHref = window.location.href.replace('my-creations', `_next/data/${buildId}/creation/${creationId}.json?cid=${creationId}`);
 
       const response = await fetch(dataHref);
