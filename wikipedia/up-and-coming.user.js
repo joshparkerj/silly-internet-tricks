@@ -19,14 +19,18 @@ import sortCategoryLinks from './sort-category-links';
 import getChartMovement from './get-chart-movement';
 
 (function upAndComingUserScript() {
-  const sortButton = document.createElement('button');
-  sortButton.innerText = 'sort by chart movement';
-  const movementButton = document.createElement('button');
-  movementButton.innerText = 'get chart movement';
+ const sortButton = document.createElement('button');
+ sortButton.innerText = 'sort by chart movement';
+ const movementButton = document.createElement('button');
+ movementButton.innerText = 'get chart movement';
 
-  sortButton.addEventListener('click', () => sortCategoryLinks(sortButton, 'sort by chart movemenet'));
+ sortButton.addEventListener('click', () => sortCategoryLinks(sortButton, 'sort by chart movemenet'));
 
-  movementButton.addEventListener('click', () => getChartMovement(movementButton, sortButton, 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/'));
+ movementButton.addEventListener('click', () => getChartMovement(
+  movementButton,
+  sortButton,
+  'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/',
+ ));
 
-  getMwPagesH2().appendChild(movementButton);
+ getMwPagesH2().appendChild(movementButton);
 }());

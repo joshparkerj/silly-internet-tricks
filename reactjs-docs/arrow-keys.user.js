@@ -10,23 +10,36 @@
 // ==/UserScript==
 
 (function arrowKeys() {
-  const $x = function $x(xpathExpression) {
-    const evaluatedDocument = document.evaluate(xpathExpression, document);
-    let result = evaluatedDocument.iterateNext();
-    const results = [];
-    while (result !== null) {
-      results.push(result);
-      result = evaluatedDocument.iterateNext();
-    }
+ const $x = function $x(xpathExpression) {
+  const evaluatedDocument = document.evaluate(xpathExpression, document);
+  let result = evaluatedDocument.iterateNext();
+  const results = [];
+  while (result !== null) {
+   results.push(result);
+   result = evaluatedDocument.iterateNext();
+  }
 
-    return results;
-  };
+  return results;
+ };
 
-  document.addEventListener('keydown', (event) => event.code === 'ArrowRight' && window.location.assign($x("//div[contains(.,'Next article')]/following-sibling::div/a")[0].href));
-  document.addEventListener('keydown', (event) => event.code === 'ArrowLeft' && window.location.assign($x("//div[contains(.,'Previous article')]/following-sibling::div/a")[0].href));
-  document.querySelector('div > header').setAttribute('style', 'display:none;');
-  document.querySelector('div > footer').setAttribute('style', 'display:none;');
-  document.querySelector('article ~ div').setAttribute('style', 'display:none;');
-  document.querySelector('article > div > div ~ div').setAttribute('style', 'display:none;');
-  $x("//ul/../../div[contains(.,'Previous article') or contains(.,'Next article')]")[0].setAttribute('style', 'display:none;');
+ document.addEventListener(
+  'keydown',
+  (event) => event.code === 'ArrowRight'
+   && window.location.assign($x("//div[contains(.,'Next article')]/following-sibling::div/a")[0].href),
+ );
+ document.addEventListener(
+  'keydown',
+  (event) => event.code === 'ArrowLeft'
+   && window.location.assign(
+    $x("//div[contains(.,'Previous article')]/following-sibling::div/a")[0].href,
+   ),
+ );
+ document.querySelector('div > header').setAttribute('style', 'display:none;');
+ document.querySelector('div > footer').setAttribute('style', 'display:none;');
+ document.querySelector('article ~ div').setAttribute('style', 'display:none;');
+ document.querySelector('article > div > div ~ div').setAttribute('style', 'display:none;');
+ $x("//ul/../../div[contains(.,'Previous article') or contains(.,'Next article')]")[0].setAttribute(
+  'style',
+  'display:none;',
+ );
 }());

@@ -19,5 +19,5 @@ import standAloneTextEffect from './stand-alone-text-effect';
 import zalgoEffect from './zalgo-effect';
 
 (function zalgoify() {
-  standAloneTextEffect('zalgoify', 'zalgo-text', zalgoEffect);
+ standAloneTextEffect('zalgoify', 'zalgo-text', zalgoEffect);
 }());

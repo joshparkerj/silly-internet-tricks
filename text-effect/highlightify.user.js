@@ -13,5 +13,7 @@
 import standAloneTextEffect from './stand-alone-text-effect';
 
 (function highlightUserScript() {
-  standAloneTextEffect('highlightify', 'highlighted-text', () => { document.styleSheets[0].insertRule('.highlighted-text { background-color: yellow; }'); });
+ standAloneTextEffect('highlightify', 'highlighted-text', () => {
+  document.styleSheets[0].insertRule('.highlighted-text { background-color: yellow; }');
+ });
 }());

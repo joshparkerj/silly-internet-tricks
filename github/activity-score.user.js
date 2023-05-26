@@ -10,25 +10,33 @@
 // ==/UserScript==
 
 (function activityScore() {
-  const div = document.createElement('div');
-  div.style.setProperty('position', 'fixed');
-  div.style.setProperty('top', '20vh');
-  div.style.setProperty('left', '5vw');
+ const div = document.createElement('div');
+ div.style.setProperty('position', 'fixed');
+ div.style.setProperty('top', '20vh');
+ div.style.setProperty('left', '5vw');
 
-  const scorer = (tc) => {
-    if (tc.includes('hours') || tc.includes('minutes')) {
-      return 30;
-    }
+ const scorer = (tc) => {
+  if (tc.includes('hours') || tc.includes('minutes')) {
+   return 30;
+  }
 
-    if (tc.includes('days')) {
-      return 30 * (1 / Math.log(Number(tc.split(' ')[0])));
-    }
+  if (tc.includes('days')) {
+   return 30 * (1 / Math.log(Number(tc.split(' ')[0])));
+  }
 
-    const days = (new Date() - new Date(tc.slice(3))) / 24 / 60 / 60 / 1000;
-    return 30 * (1 / Math.log(Math.floor(days)));
-  };
+  const days = (new Date() - new Date(tc.slice(3))) / 24 / 60 / 60 / 1000;
+  return 30 * (1 / Math.log(Math.floor(days)));
+ };
 
-  div.appendChild(new Text(`ACTIVITY SCORE: ${Math.floor([...document.querySelectorAll('.Details relative-time')].map(({ textContent }) => scorer(textContent)).reduce((a, b) => a + b))}`));
+ div.appendChild(
+  new Text(
+   `ACTIVITY SCORE: ${Math.floor(
+    [...document.querySelectorAll('.Details relative-time')]
+     .map(({ textContent }) => scorer(textContent))
+     .reduce((a, b) => a + b),
+   )}`,
+  ),
+ );
 
-  document.querySelector('body').appendChild(div);
+ document.querySelector('body').appendChild(div);
 }());

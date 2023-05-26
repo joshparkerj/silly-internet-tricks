@@ -10,15 +10,15 @@
 // ==/UserScript==
 
 (function morResults() {
-  // load the pages
-  const parser = new DOMParser();
+ // load the pages
+ const parser = new DOMParser();
 
-  const nextLink = document.querySelector('#pnnext');
+ const nextLink = document.querySelector('#pnnext');
 
-  fetch(nextLink.href)
-    .then((r) => r.text())
-    .then((text) => parser.parseFromString(text, 'text/html'))
-    .then((dom) => {
-      console.log(dom);
-    });
+ fetch(nextLink.href)
+  .then((r) => r.text())
+  .then((text) => parser.parseFromString(text, 'text/html'))
+  .then((dom) => {
+   console.log(dom);
+  });
 }());

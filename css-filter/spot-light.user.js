@@ -10,10 +10,10 @@
 // ==/UserScript==
 
 (function spotLight() {
-  const diffuseSpotLightingFilter = document.createElement('div');
-  const fraction = (num, den) => (n) => Math.round((num * n) / den);
-  const half = fraction(1, 2);
-  diffuseSpotLightingFilter.innerHTML = `
+ const diffuseSpotLightingFilter = document.createElement('div');
+ const fraction = (num, den) => (n) => Math.round((num * n) / den);
+ const half = fraction(1, 2);
+ diffuseSpotLightingFilter.innerHTML = `
 <svg width="0">
 <filter id="diffuse-spot-lighting">
   <feColorMatrix in="SourceGraphic" result="alpha-matrix"
@@ -22,7 +22,10 @@
                  0  0  0  0  0
                  0  0  0  0  0
                 -1 -1 -1  1  0" />
-    <feDiffuseLighting in="alpha-matrix" surfaceScale="${fraction(1, 16)(window.innerHeight + window.innerWidth)}" result="spotlight" >
+    <feDiffuseLighting in="alpha-matrix" surfaceScale="${fraction(
+  1,
+  16,
+ )(window.innerHeight + window.innerWidth)}" result="spotlight" >
     <feSpotLight
       x="${half(window.innerWidth)}"
       y="0"
@@ -39,27 +42,36 @@
 </filter>
 </svg>
 `;
-  const body = document.querySelector('body');
-  const lightSource = diffuseSpotLightingFilter.querySelector('feSpotLight');
-  body.addEventListener('pointermove', ({ x, y }) => { lightSource.setAttribute('pointsAtX', x + window.scrollX); lightSource.setAttribute('pointsAtY', y + window.scrollY); });
-  let pos = 0;
-  setInterval(() => {
-    pos += 20;
-    pos %= (2 * (window.innerWidth + window.innerHeight));
-    if (pos < window.innerWidth) {
-      lightSource.setAttribute('x', window.scrollX + pos);
-      lightSource.setAttribute('y', window.scrollY);
-    } else if (pos < (window.innerWidth + window.innerHeight)) {
-      lightSource.setAttribute('x', window.scrollX + window.innerWidth);
-      lightSource.setAttribute('y', window.scrollY + (pos - window.innerWidth));
-    } else if (pos < (2 * window.innerWidth + window.innerHeight)) {
-      lightSource.setAttribute('x', (window.scrollX + window.innerWidth) - (pos - (window.innerWidth + window.innerHeight)));
-      lightSource.setAttribute('y', window.scrollY + window.innerHeight);
-    } else {
-      lightSource.setAttribute('x', window.scrollX);
-      lightSource.setAttribute('y', (window.scrollY + window.innerHeight) - (pos - (2 * window.innerWidth + window.innerHeight)));
-    }
-  }, 50);
-  body.appendChild(diffuseSpotLightingFilter);
-  body.style.setProperty('filter', 'url(#diffuse-spot-lighting)');
+ const body = document.querySelector('body');
+ const lightSource = diffuseSpotLightingFilter.querySelector('feSpotLight');
+ body.addEventListener('pointermove', ({ x, y }) => {
+  lightSource.setAttribute('pointsAtX', x + window.scrollX);
+  lightSource.setAttribute('pointsAtY', y + window.scrollY);
+ });
+ let pos = 0;
+ setInterval(() => {
+  pos += 20;
+  pos %= 2 * (window.innerWidth + window.innerHeight);
+  if (pos < window.innerWidth) {
+   lightSource.setAttribute('x', window.scrollX + pos);
+   lightSource.setAttribute('y', window.scrollY);
+  } else if (pos < window.innerWidth + window.innerHeight) {
+   lightSource.setAttribute('x', window.scrollX + window.innerWidth);
+   lightSource.setAttribute('y', window.scrollY + (pos - window.innerWidth));
+  } else if (pos < 2 * window.innerWidth + window.innerHeight) {
+   lightSource.setAttribute(
+    'x',
+    window.scrollX + window.innerWidth - (pos - (window.innerWidth + window.innerHeight)),
+   );
+   lightSource.setAttribute('y', window.scrollY + window.innerHeight);
+  } else {
+   lightSource.setAttribute('x', window.scrollX);
+   lightSource.setAttribute(
+    'y',
+    window.scrollY + window.innerHeight - (pos - (2 * window.innerWidth + window.innerHeight)),
+   );
+  }
+ }, 50);
+ body.appendChild(diffuseSpotLightingFilter);
+ body.style.setProperty('filter', 'url(#diffuse-spot-lighting)');
 }());

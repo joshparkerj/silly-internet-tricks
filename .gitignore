@@ -17,3 +17,14 @@ file-sizes
 nightcafe/result*
 nightcafe-result
 nightcafe/*.csv
+LOW.csv
+TEVA.csv
+nightcafe/creation-settings.user.js
+nightcafe/cytoscape-graph-viz.user.js
+nightcafe/js-drop-file.js
+nightcafe/top-ten-log.html
+wikipedia/bitbucket-pipeline-csv-download.user.js
+wikipedia/result.csv
+wikipedia/result.json
+wikipedia/uncials.html
+youtube/something.js

@@ -10,35 +10,34 @@
 // ==/UserScript==
 
 (function testExecutionTimes() {
-  const parser = new DOMParser();
+ const parser = new DOMParser();
 
-  const nextSelector = 'button[aria-label=Next]';
+ const nextSelector = 'button[aria-label=Next]';
 
-  const pages = [document];
-  let { href } = window.location;
+ const pages = [document];
+ let { href } = window.location;
 
-  const getNext = function getNext(next) {
-    return new Promise((resolve, reject) => {
-      if (!next || next.disabled) {
-        resolve();
-      }
+ const getNext = function getNext(next) {
+  return new Promise((resolve, reject) => {
+   if (!next || next.disabled) {
+    resolve();
+   }
 
-      const match = href.match(/(.*)\/(\d+)$/);
+   const match = href.match(/(.*)\/(\d+)$/);
 
-      // eslint-disable-next-line no-unused-vars
-      const [_, url, page] = match;
-      href = `${url}${Number(page) + 1}`;
-      fetch(href)
-        .then((r) => r.text())
-        .then((text) => parser.parseFromString(text, 'text/html'))
-        .then((dom) => {
-          pages.push(dom);
-          resolve(dom.querySelector(nextSelector));
-        })
-        .catch(() => reject());
+   // eslint-disable-next-line no-unused-vars
+   const [_, url, page] = match;
+   href = `${url}${Number(page) + 1}`;
+   fetch(href)
+    .then((r) => r.text())
+    .then((text) => parser.parseFromString(text, 'text/html'))
+    .then((dom) => {
+     pages.push(dom);
+     resolve(dom.querySelector(nextSelector));
     })
-      .then((n) => n && getNext(n));
-  };
+    .catch(() => reject());
+  }).then((n) => n && getNext(n));
+ };
 
-  getNext(document.querySelector(nextSelector));
+ getNext(document.querySelector(nextSelector));
 }());

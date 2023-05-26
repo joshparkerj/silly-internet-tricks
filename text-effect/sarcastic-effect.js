@@ -1,12 +1,12 @@
 export default function sarcasticEffect(element) {
-  const e = element;
-  const sarcasticCase = function sarcasticCase(char, i) {
-    if (i % 2) {
-      return char.toLocaleLowerCase();
-    }
+ const e = element;
+ const sarcasticCase = function sarcasticCase(char, i) {
+  if (i % 2) {
+   return char.toLocaleLowerCase();
+  }
 
-    return char.toLocaleUpperCase();
-  };
+  return char.toLocaleUpperCase();
+ };
 
-  e.textContent = e.textContent.split('').map(sarcasticCase).join('');
+ e.textContent = e.textContent.split('').map(sarcasticCase).join('');
 }

@@ -25,43 +25,52 @@ import zalgoEffect from './zalgo-effect';
 import zanyEffect from './zany-effect';
 
 (function textEffectUserScript() {
-  const joshTextManips = document.createElement('div');
-  joshTextManips.id = 'josh-text-manips';
+ const joshTextManips = document.createElement('div');
+ joshTextManips.id = 'josh-text-manips';
 
-  const rainbowifyButton = effectify('rainbowify', 'rainbow-text', (element) => addSingleLetterSpanTextEffect(element, rainbowEffect));
-  joshTextManips.appendChild(rainbowifyButton);
+ const rainbowifyButton = effectify('rainbowify', 'rainbow-text', (element) => addSingleLetterSpanTextEffect(element, rainbowEffect));
+ joshTextManips.appendChild(rainbowifyButton);
 
-  const sarcastifyButton = effectify('sarcastify', 'sarcastic-text', sarcasticEffect);
+ const sarcastifyButton = effectify('sarcastify', 'sarcastic-text', sarcasticEffect);
 
-  joshTextManips.appendChild(sarcastifyButton);
+ joshTextManips.appendChild(sarcastifyButton);
 
-  const wavifyButton = effectify('wavify', 'wave-text', applyWaveEffect);
+ const wavifyButton = effectify('wavify', 'wave-text', applyWaveEffect);
 
-  joshTextManips.appendChild(wavifyButton);
+ joshTextManips.appendChild(wavifyButton);
 
-  const zalgoifyButton = effectify('zalgoify', 'zalgo-text', zalgoEffect);
+ const zalgoifyButton = effectify('zalgoify', 'zalgo-text', zalgoEffect);
 
-  joshTextManips.appendChild(zalgoifyButton);
+ joshTextManips.appendChild(zalgoifyButton);
 
-  const zanyifyButton = effectify('zanyify', 'zany-text', (element) => addSingleLetterSpanTextEffect(element, zanyEffect));
-  joshTextManips.appendChild(zanyifyButton);
+ const zanyifyButton = effectify('zanyify', 'zany-text', (element) => addSingleLetterSpanTextEffect(element, zanyEffect));
+ joshTextManips.appendChild(zanyifyButton);
 
-  const fidgetEffect = function fidgetEffect(singleLetterSpan) {
-    singleLetterSpan.setAttribute('style', `animation-duration: ${4.8 + Math.random() * 14.4}s; animation-delay: ${Math.random() * 4.8}s;`);
-    if (singleLetterSpan.textContent === ' ') {
-      singleLetterSpan.style.setProperty('padding', '0 .25em');
-    }
-  };
+ const fidgetEffect = function fidgetEffect(singleLetterSpan) {
+  singleLetterSpan.setAttribute(
+   'style',
+   `animation-duration: ${4.8 + Math.random() * 14.4}s; animation-delay: ${Math.random() * 4.8}s;`,
+  );
+  if (singleLetterSpan.textContent === ' ') {
+   singleLetterSpan.style.setProperty('padding', '0 .25em');
+  }
+ };
 
-  const fidgetifyButton = effectify('fidgetify', 'fidget-text', (element) => {
-    addCSSRule('@keyframes fidget {from {transform: rotate(0);} 10% {transform: rotate(360deg);} to {transform: rotate(360deg);}}');
-    addCSSRule('.fidget-text > span {animation-name: fidget; animation-iteration-count: infinite; display: inline-block;}');
-    addSingleLetterSpanTextEffect(element, fidgetEffect);
-  });
+ const fidgetifyButton = effectify('fidgetify', 'fidget-text', (element) => {
+  addCSSRule(
+   '@keyframes fidget {from {transform: rotate(0);} 10% {transform: rotate(360deg);} to {transform: rotate(360deg);}}',
+  );
+  addCSSRule(
+   '.fidget-text > span {animation-name: fidget; animation-iteration-count: infinite; display: inline-block;}',
+  );
+  addSingleLetterSpanTextEffect(element, fidgetEffect);
+ });
 
-  joshTextManips.appendChild(fidgetifyButton);
+ joshTextManips.appendChild(fidgetifyButton);
 
-  addCSSRule('body > div#josh-text-manips { position: fixed; background-color: lightgrey; padding: 5px 10px; top: 62px; right: 10px; border-radius: 16px; box-shadow: 2px 2px 1px black; z-index: 2; display: grid; grid-template-columns: 1fr 1fr 1fr; }');
-  addCSSRule('body > div#josh-text-manips > button { grid-column: span 1; }');
-  document.querySelector('body').appendChild(joshTextManips);
+ addCSSRule(
+  'body > div#josh-text-manips { position: fixed; background-color: lightgrey; padding: 5px 10px; top: 62px; right: 10px; border-radius: 16px; box-shadow: 2px 2px 1px black; z-index: 2; display: grid; grid-template-columns: 1fr 1fr 1fr; }',
+ );
+ addCSSRule('body > div#josh-text-manips > button { grid-column: span 1; }');
+ document.querySelector('body').appendChild(joshTextManips);
 }());

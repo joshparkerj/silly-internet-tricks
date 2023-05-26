@@ -10,30 +10,30 @@
 // ==/UserScript==
 
 (function smashingSmallerText() {
-  // delete rules is meant to be reusable across many userscripts
-  const deleteRules = (selector, ruleName) => {
-    const styleSheets = [...document.styleSheets];
-    styleSheets.forEach((styleSheet, ssi) => {
-      const cssRules = [...styleSheet.cssRules];
-      cssRules.forEach((cssRule, cri) => {
-        const { cssText } = cssRule;
-        const selectorRE = new RegExp(`${selector}.*\\{`, 'i');
-        if (cssText.match(selectorRE)) {
-          const rulesRE = /\{(.*)\}/;
-          const rulesText = cssText.match(rulesRE)[1].trim();
-          const ruleRE = /[^;]*;/g;
-          const rules = rulesText.match(ruleRE);
-          rules.forEach((rule) => {
-            const ruleNameRE = new RegExp(`^${ruleName}:`, 'i');
-            if (rule.match(ruleNameRE)) {
-              document.styleSheets[ssi].deleteRule(cri);
-            }
-          });
-        }
-      });
-    });
-  };
+ // delete rules is meant to be reusable across many userscripts
+ const deleteRules = (selector, ruleName) => {
+  const styleSheets = [...document.styleSheets];
+  styleSheets.forEach((styleSheet, ssi) => {
+   const cssRules = [...styleSheet.cssRules];
+   cssRules.forEach((cssRule, cri) => {
+    const { cssText } = cssRule;
+    const selectorRE = new RegExp(`${selector}.*\\{`, 'i');
+    if (cssText.match(selectorRE)) {
+     const rulesRE = /\{(.*)\}/;
+     const rulesText = cssText.match(rulesRE)[1].trim();
+     const ruleRE = /[^;]*;/g;
+     const rules = rulesText.match(ruleRE);
+     rules.forEach((rule) => {
+      const ruleNameRE = new RegExp(`^${ruleName}:`, 'i');
+      if (rule.match(ruleNameRE)) {
+       document.styleSheets[ssi].deleteRule(cri);
+      }
+     });
+    }
+   });
+  });
+ };
 
-  deleteRules('body', 'font-size');
-  document.styleSheets[0].insertRule('body { font-size: 15px; }');
+ deleteRules('body', 'font-size');
+ document.styleSheets[0].insertRule('body { font-size: 15px; }');
 }());

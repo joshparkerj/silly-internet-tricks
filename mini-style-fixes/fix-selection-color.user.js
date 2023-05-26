@@ -10,29 +10,32 @@
 // ==/UserScript==
 
 (function fixSelectionColor() {
-  const editRules = function editRules(searchTerm, replaceTerm) {
-    if (searchTerm.constructor.name !== 'String' || replaceTerm.constructor.name !== 'String') {
-      throw new Error('string terms only');
-    }
+ const editRules = function editRules(searchTerm, replaceTerm) {
+  if (searchTerm.constructor.name !== 'String' || replaceTerm.constructor.name !== 'String') {
+   throw new Error('string terms only');
+  }
 
-    const styleSheets = [...document.styleSheets];
-    styleSheets.forEach((styleSheet, ssi) => {
-      try {
-        const cssRules = [...styleSheet.cssRules];
-        cssRules.forEach((cssRule, cri) => {
-          const { cssText } = cssRule;
-          if (cssText.includes(searchTerm)) {
-            const editedText = cssText.replace(searchTerm, replaceTerm);
-            document.styleSheets[ssi].deleteRule(cri);
-            document.styleSheets[ssi].insertRule(editedText);
-          }
-        });
-      } catch (e) {
-        console.error(e);
-        console.log('could not access css rules on styleSheet, ', styleSheet);
-      }
+  const styleSheets = [...document.styleSheets];
+  styleSheets.forEach((styleSheet, ssi) => {
+   try {
+    const cssRules = [...styleSheet.cssRules];
+    cssRules.forEach((cssRule, cri) => {
+     const { cssText } = cssRule;
+     if (cssText.includes(searchTerm)) {
+      const editedText = cssText.replace(searchTerm, replaceTerm);
+      document.styleSheets[ssi].deleteRule(cri);
+      document.styleSheets[ssi].insertRule(editedText);
+     }
     });
-  };
+   } catch (e) {
+    console.error(e);
+    console.log('could not access css rules on styleSheet, ', styleSheet);
+   }
+  });
+ };
 
-  editRules('::selection { background: rgb(251, 251, 255); }', '::selection { background: blue; color: white; }');
+ editRules(
+  '::selection { background: rgb(251, 251, 255); }',
+  '::selection { background: blue; color: white; }',
+ );
 }());

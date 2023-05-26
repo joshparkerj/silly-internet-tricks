@@ -8,38 +8,31 @@
 // seems like a bit of a nonsense game.
 // What if a player doesn't have enough to double the others' money?
 
-const reverseSimGame = (loserOfEachRound, finalDistributionOfCash) => (
-  loserOfEachRound
+const reverseSimGame = (loserOfEachRound, finalDistributionOfCash) => loserOfEachRound
 
-    // start with the loser of the last round and work in reverse
-    .reverse()
-    .reduce(
-      (roundResult, roundLoser) => {
-        // all player numbers must match the index of an element of the finalDistributionOfCash
-        if (roundLoser >= roundResult.length) {
-          throw new Error('The player number is too high!');
-        }
+// start with the loser of the last round and work in reverse
+ .reverse()
+ .reduce((roundResult, roundLoser) => {
+  // all player numbers must match the index of an element of the finalDistributionOfCash
+  if (roundLoser >= roundResult.length) {
+   throw new Error('The player number is too high!');
+  }
 
-        if (roundLoser < 0) {
-          throw new Error('The player number is too low!');
-        }
+  if (roundLoser < 0) {
+   throw new Error('The player number is too low!');
+  }
 
-        const amountPaidByLoser = roundResult.reduce(
-          (runningTotal, playerCash, playerNumber) => (
-            playerNumber === roundLoser ? runningTotal : runningTotal + playerCash / 2
-          ),
-          0,
-        );
+  const amountPaidByLoser = roundResult.reduce(
+   (runningTotal, playerCash, playerNumber) => (
+    playerNumber === roundLoser ? runningTotal : runningTotal + playerCash / 2
+   ),
+   0,
+  );
 
-        // return the calculated result of the previous round
-        return roundResult.map(
-          (playerCash, playerNumber) => (
-            playerNumber === roundLoser ? playerCash + amountPaidByLoser : playerCash / 2
-          ),
-        );
-      },
-      finalDistributionOfCash,
-    )
-);
+  // return the calculated result of the previous round
+  return roundResult.map((playerCash, playerNumber) => (
+   playerNumber === roundLoser ? playerCash + amountPaidByLoser : playerCash / 2
+  ));
+ }, finalDistributionOfCash);
 
 module.exports = { reverseSimGame };
