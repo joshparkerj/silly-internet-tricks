@@ -28,3 +28,10 @@ wikipedia/result.csv
 wikipedia/result.json
 wikipedia/uncials.html
 youtube/something.js
+nightcafe/*.txt
+nightcafe/*.json
+nightcafe/prompts/
+ts-hello-world/
+.DS_Store
+50-rando-ticker-symbols.json
+where-am-i.py

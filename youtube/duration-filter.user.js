@@ -7,6 +7,7 @@
 // @match        https://www.youtube.com/c/*/videos*
 // @match        https://www.youtube.com/channel/*/videos*
 // @match        https://www.youtube.com/user/*/videos*
+// @match        https://www.youtube.com/@*/videos
 // @icon         https://www.google.com/s2/favicons?domain=youtube.com
 // @grant        none
 // ==/UserScript==
@@ -33,20 +34,23 @@
  };
 
  const durationFilterForm = document.createElement('form');
- durationFilterForm.innerHTML = `<h2>duration filter</h2>
+ durationFilterForm.innerHTML = `
+  <h2>duration filter</h2>
   <h3>format hh:mm:ss</h3>
   <label for="duration-filter-min">min</label>
   <input id="duration-filter-min" type="text" pattern="(([0-9]?\\d:)?[0-5]?\\d:)?[0-5]?\\d" />
   <br><label for="duration-filter-max">max</label>
   <input id="duration-filter-max" type="text" pattern="(([0-9]?\\d:)?[0-5]?\\d:)?[0-5]?\\d" />
-  <button>filter</button>`;
+  <button>filter</button>
+  `;
+
  durationFilterForm.id = 'duration-filter';
  durationFilterForm.onsubmit = function filterDurations(event) {
   event.preventDefault();
   const min = parseDuration(document.querySelector('input#duration-filter-min').value);
   const max = parseDuration(document.querySelector('input#duration-filter-max').value);
   const ygvrNodeList = document.querySelectorAll(
-   'div#items > ytd-grid-video-renderer.ytd-grid-renderer',
+   'ytd-rich-grid-row #contents ytd-rich-item-renderer',
   );
   ygvrNodeList.forEach((node) => {
    const duration = ygvrDuration(node);
@@ -56,5 +60,17 @@
   });
  };
 
- document.querySelector('div#primary-items').appendChild(durationFilterForm);
+ const styleCss = `
+form#duration-filter {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 0;
+}
+  `;
+
+ const style = document.createElement('style');
+ style.appendChild(new Text(styleCss));
+ document.body.appendChild(durationFilterForm);
+ document.body.appendChild(style);
 }());
