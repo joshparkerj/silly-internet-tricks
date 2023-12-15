@@ -75,4 +75,69 @@
     Object.keys(headings).forEach((heading) => store.createIndex(heading, heading));
     console.log('object store created');
   };
+
+  // learn to guess
+  const dict = [];
+  const makeDict = function makeDict(trie, prefix = '') {
+    Object.keys(trie).forEach((key) => {
+      if (key === '') {
+        dict.push(prefix);
+      }
+
+      makeDict(trie[key], prefix + key);
+    });
+  };
+
+  // eslint-disable-next-line no-undef
+  makeDict(validWordTrie);
+
+  const getCounts = function getCounts(arr) {
+    const counts = {};
+    arr.forEach((e) => {
+      if (e in counts) {
+        counts[e] += 1;
+      } else {
+        counts[e] = 1;
+      }
+    });
+
+    return counts;
+  };
+
+  // eslint-disable-next-line no-unused-vars
+  const guess = function guess(letters, len, guessDict = dict) {
+    const targetCounts = getCounts([...letters]);
+    return guessDict
+      .filter((word) => word.length === len)
+      .filter((word) => [...word].every((letter) => letters.includes(letter)))
+      .filter((word) => (
+        Object.entries(getCounts([...word])).every((count) => count[1] <= targetCounts[count[0]])
+      ));
+  };
+
+  // eslint-disable-next-line no-unused-vars
+  const guessHidden = function guessHidden(letters, len) {
+    const dictCorrectLength = dict.filter((word) => word.length === len);
+    const dictCorrectLetters = dictCorrectLength.filter((word) => {
+      let matchCount = 0;
+      [...word].forEach((letter) => {
+        if (letters.includes(letter)) {
+          matchCount += 1;
+        }
+      });
+
+      // the word may or may not include the hidden letter
+      return matchCount === word.length || matchCount === word.length - 1;
+    });
+
+    const targetCounts = getCounts([...letters]);
+    const dictNoExtraLetters = dictCorrectLetters.filter((word) => (
+      Object.entries(getCounts([...word])).every((count) => count[1] <= (
+        // if the word contains the hidden letter, the count may be one higher than the target count
+        targetCounts[count[0]] + 1
+      ))
+    ));
+
+    return dictNoExtraLetters;
+  };
 }());
