@@ -20,5 +20,5 @@ import standAloneTextEffect from './stand-alone-text-effect';
 import applyWaveEffect from './apply-wave-effect';
 
 (function wavify() {
-  standAloneTextEffect('wavify', 'wave-text', applyWaveEffect);
+ standAloneTextEffect('wavify', 'wave-text', applyWaveEffect);
 }());

@@ -10,38 +10,41 @@
 // ==/UserScript==
 
 (function curatingCollections() {
-  const css = `
+ const css = `
 div.gallery-image-wrapper.accent > a.image.lightbox > p {
   margin: 0;
   font-size: 10px;
 }
 `;
 
-  const style = document.createElement('style');
-  style.appendChild(new Text(css));
-  document.querySelector('body').appendChild(style);
+ const style = document.createElement('style');
+ style.appendChild(new Text(css));
+ document.querySelector('body').appendChild(style);
 
-  document.querySelectorAll('div.gallery-image-wrapper.accent,a.image.lightbox,div.thumb')
-    .forEach((e) => e.style.removeProperty('height'));
+ document
+  .querySelectorAll('div.gallery-image-wrapper.accent,a.image.lightbox,div.thumb')
+  .forEach((e) => e.style.removeProperty('height'));
 
-  document.querySelectorAll('a.image.lightbox')
-    .forEach((a) => a.style.setProperty('flex-direction', 'column'));
+ document
+  .querySelectorAll('a.image.lightbox')
+  .forEach((a) => a.style.setProperty('flex-direction', 'column'));
 
-  const parser = new DOMParser();
+ const parser = new DOMParser();
 
-  [...document.querySelectorAll('main a[href^="/wiki/Collection:"]')]
-    .forEach(async ({ href }) => {
-      const title = href.match(/:_(.*)$/)[1].replace(/_/g, ' ').replace(/%27/g, '\'');
-      const response = await fetch(href);
-      const responseText = await response.text();
-      const dom = parser.parseFromString(responseText, 'text/html');
+ [...document.querySelectorAll('main a[href^="/wiki/Collection:"]')].forEach(async ({ href }) => {
+  const title = href
+   .match(/:_(.*)$/)[1]
+   .replace(/_/g, ' ')
+   .replace(/%27/g, "'");
+  const response = await fetch(href);
+  const responseText = await response.text();
+  const dom = parser.parseFromString(responseText, 'text/html');
 
-      [...dom.querySelectorAll('a.image.lightbox')]
-        .forEach((a) => {
-          const p = document.createElement('p');
-          p.appendChild(new Text(title));
-          const selector = `a[href="${a.href.match(/\/wiki.*/)[0]}"]`;
-          document.querySelector(selector).appendChild(p);
-        });
-    });
+  [...dom.querySelectorAll('a.image.lightbox')].forEach((a) => {
+   const p = document.createElement('p');
+   p.appendChild(new Text(title));
+   const selector = `a[href="${a.href.match(/\/wiki.*/)[0]}"]`;
+   document.querySelector(selector).appendChild(p);
+  });
+ });
 }());

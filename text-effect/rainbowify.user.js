@@ -20,5 +20,5 @@ import standAloneTextEffect from './stand-alone-text-effect';
 import rainbowEffect from './rainbow-effect';
 
 (function rainbowify() {
-  standAloneTextEffect('rainbowify', 'rainbow-text', (element) => addSingleLetterSpanTextEffect(element, rainbowEffect));
+ standAloneTextEffect('rainbowify', 'rainbow-text', (element) => addSingleLetterSpanTextEffect(element, rainbowEffect));
 }());

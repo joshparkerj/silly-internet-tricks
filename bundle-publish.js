@@ -4,12 +4,14 @@ const { readFile } = require('fs');
 
 const pattern = './@(dist)/**/*.@(user|meta).js';
 
-const glob = (globPattern) => (new Promise((r) => { globber(globPattern, (_, s) => r(s)); }));
+const glob = (globPattern) => new Promise((r) => {
+ globber(globPattern, (_, s) => r(s));
+});
 
 const auth = process.env.PERSONAL_ACCESS_TOKEN;
 
 const octokit = new Octokit({
-  auth,
+ auth,
 });
 
 glob(pattern)
@@ -47,5 +49,5 @@ glob(pattern)
       }
     };
 
-    upload();
-  });
+ upload();
+});

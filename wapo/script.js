@@ -10,32 +10,41 @@
 // ==/UserScript==
 
 (function wapoBetterColorsUserScript() {
-  const bodyElement = [...document.getElementsByTagName('body')][0];
+ const bodyElement = [...document.getElementsByTagName('body')][0];
 
-  bodyElement.style.setProperty('text-shadow', 'rgb(127 204 102) 1px 1px 1px, rgb(204 102 127) -1px -1px 1px');
-  bodyElement.style.setProperty('background-image', 'linear-gradient(45deg, #33ccff, #cc33ff)');
+ bodyElement.style.setProperty(
+  'text-shadow',
+  'rgb(127 204 102) 1px 1px 1px, rgb(204 102 127) -1px -1px 1px',
+ );
+ bodyElement.style.setProperty('background-image', 'linear-gradient(45deg, #33ccff, #cc33ff)');
 
-  const commentsWrapper = document.querySelector('main article > #comments-wrapper');
+ const commentsWrapper = document.querySelector('main article > #comments-wrapper');
 
-  const commentsWrapperObserver = new MutationObserver((mutationsList, observer) => {
-    const commentsIframe = commentsWrapper.querySelector('iframe');
-    if (commentsIframe) {
-      const mutationHandler = (commentsIframeMutationsList, ciObserver) => {
-        const commentsDocument = commentsIframe.contentDocument;
-        if (commentsDocument) {
-          const commentsBodyElement = commentsDocument.querySelector('body');
+ const commentsWrapperObserver = new MutationObserver((mutationsList, observer) => {
+  const commentsIframe = commentsWrapper.querySelector('iframe');
+  if (commentsIframe) {
+   const mutationHandler = (commentsIframeMutationsList, ciObserver) => {
+    const commentsDocument = commentsIframe.contentDocument;
+    if (commentsDocument) {
+     const commentsBodyElement = commentsDocument.querySelector('body');
 
-          commentsBodyElement.style.setProperty('text-shadow', 'rgb(127 204 102) 1px 1px 1px, rgb(204 102 127) -1px -1px 1px');
-          commentsBodyElement.style.setProperty('background-image', 'linear-gradient(45deg, #33ccff, #cc33ff)');
-          ciObserver.disconnect();
-        }
-      };
-
-      const commentsIframeObserver = new MutationObserver(mutationHandler);
-      commentsIframeObserver.observe(commentsIframe, { attributes: true });
-      observer.disconnect();
+     commentsBodyElement.style.setProperty(
+      'text-shadow',
+      'rgb(127 204 102) 1px 1px 1px, rgb(204 102 127) -1px -1px 1px',
+     );
+     commentsBodyElement.style.setProperty(
+      'background-image',
+      'linear-gradient(45deg, #33ccff, #cc33ff)',
+     );
+     ciObserver.disconnect();
     }
-  });
+   };
 
-  commentsWrapperObserver.observe(commentsWrapper, { childList: true });
+   const commentsIframeObserver = new MutationObserver(mutationHandler);
+   commentsIframeObserver.observe(commentsIframe, { attributes: true });
+   observer.disconnect();
+  }
+ });
+
+ commentsWrapperObserver.observe(commentsWrapper, { childList: true });
 }());

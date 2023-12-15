@@ -10,24 +10,24 @@
 // ==/UserScript==
 
 (function demolishStyle() {
-  const deleteRules = () => {
-    const styleSheets = [...document.styleSheets];
-    styleSheets.forEach((styleSheet) => {
-      while (styleSheet.cssRules.length > 0) {
-        styleSheet.deleteRule(0);
-      }
-    });
-  };
-
-  deleteRules();
-
-  document.querySelectorAll('style').forEach((style) => {
-    while (style.sheet.cssRules.length > 0) {
-      style.sheet.deleteRule(0);
-    }
+ const deleteRules = () => {
+  const styleSheets = [...document.styleSheets];
+  styleSheets.forEach((styleSheet) => {
+   while (styleSheet.cssRules.length > 0) {
+    styleSheet.deleteRule(0);
+   }
   });
+ };
 
-  document.querySelectorAll('*[style]').forEach((e) => {
-    e.setAttribute('style', null);
-  });
+ deleteRules();
+
+ document.querySelectorAll('style').forEach((style) => {
+  while (style.sheet.cssRules.length > 0) {
+   style.sheet.deleteRule(0);
+  }
+ });
+
+ document.querySelectorAll('*[style]').forEach((e) => {
+  e.setAttribute('style', null);
+ });
 }());

@@ -20,15 +20,15 @@
   //   document.addEventListener('click', ({ x, y }) => { resolve(`${x} ${y}`); });
   // });
 
-  // for now, let's just filter on a hard-coded value.
-  // If that goes well, then maybe let's think about adding user input for the filter value...
+ // for now, let's just filter on a hard-coded value.
+ // If that goes well, then maybe let's think about adding user input for the filter value...
 
   // "trending on Artstation" is one of the most commonly used modifier phrases
   // in nightcafe text prompts.
   // const filterString = 'trending on Artstation';
 
-  // We could use an empty string if we want to let everything through the filter.
-  // const filterString = '';
+ // We could use an empty string if we want to let everything through the filter.
+ // const filterString = '';
 
   const fetchDetails = async (node) => {
     const author = node.querySelector('[rel=author]')?.href;
@@ -73,9 +73,34 @@
     mutationList.forEach(({ addedNodes }) => {
       addedNodes.forEach(fetchDetails);
     });
-  };
 
-  const mo = new MutationObserver(mutationObserverCallback);
+    const textPrompts = descriptiveElement.textContent
+     .match(/"[^"]*/g)
+     .filter((t) => !t.includes('weight'))
+     .map((t) => t.slice(1));
 
-  mo.observe(document.querySelector('#__next > div'), { subtree: true, childList: true });
+    if (textPrompts.some((textPrompt) => textPrompt.includes(filterString))) {
+     jsonOutput[creationLink] = textPrompts;
+     filter.add(author);
+     console.log(filter.size);
+    }
+   }
+
+   if (filter.size >= 64) {
+    console.log(JSON.stringify(jsonOutput));
+    // eslint-disable-next-line no-alert
+    alert('YOUR JSON IS READY BABY! PLEASE CHECK CONSOLE!');
+   }
+  }
+ };
+
+ const mutationObserverCallback = (mutationList) => {
+  mutationList.forEach(({ addedNodes }) => {
+   addedNodes.forEach(fetchDetails);
+  });
+ };
+
+ const mo = new MutationObserver(mutationObserverCallback);
+
+ mo.observe(document.querySelector('#__next > div'), { subtree: true, childList: true });
 }());

@@ -10,38 +10,38 @@
 // ==/UserScript==
 
 (function fixedUi() {
-  const css = `
+ const css = `
 main#js-pjax-container {
   top: 3rem;
   position: relative;
 }
 `;
-  const style = document.createElement('style');
-  style.appendChild(new Text(css));
-  document.querySelector('body').appendChild(style);
+ const style = document.createElement('style');
+ style.appendChild(new Text(css));
+ document.querySelector('body').appendChild(style);
 
-  const jhwHeader = document.querySelector('div.js-header-wrapper > header');
-  jhwHeader.style.setProperty('position', 'fixed');
-  jhwHeader.style.setProperty('width', '100%');
-  jhwHeader.style.setProperty('height', '4rem');
+ const jhwHeader = document.querySelector('div.js-header-wrapper > header');
+ jhwHeader.style.setProperty('position', 'fixed');
+ jhwHeader.style.setProperty('width', '100%');
+ jhwHeader.style.setProperty('height', '4rem');
 
-  const rch = document.querySelector('#repository-container-header');
-  rch.style.setProperty('position', 'fixed');
-  rch.style.setProperty('background-color', 'white');
-  rch.style.setProperty('width', '100%');
-  rch.style.setProperty('z-index', '100');
-  rch.style.setProperty('top', '4rem');
+ const rch = document.querySelector('#repository-container-header');
+ rch.style.setProperty('position', 'fixed');
+ rch.style.setProperty('background-color', 'white');
+ rch.style.setProperty('width', '100%');
+ rch.style.setProperty('z-index', '100');
+ rch.style.setProperty('top', '4rem');
 
-  const sib = document.querySelector('#repository-container-header + div');
-  sib.style.setProperty('position', 'relative');
-  sib.style.setProperty('top', '12rem');
+ const sib = document.querySelector('#repository-container-header + div');
+ sib.style.setProperty('position', 'relative');
+ sib.style.setProperty('top', '12rem');
 
-  const footer = document.querySelector('footer.footer');
-  footer.style.setProperty('position', 'relative');
-  footer.style.setProperty('top', '12rem');
+ const footer = document.querySelector('footer.footer');
+ footer.style.setProperty('position', 'relative');
+ footer.style.setProperty('top', '12rem');
 
-  const dls = document.querySelector('div.Layout-sidebar');
-  dls.style.setProperty('position', 'fixed');
-  dls.style.setProperty('top', '12rem');
-  dls.style.setProperty('right', '7rem');
+ const dls = document.querySelector('div.Layout-sidebar');
+ dls.style.setProperty('position', 'fixed');
+ dls.style.setProperty('top', '12rem');
+ dls.style.setProperty('right', '7rem');
 }());

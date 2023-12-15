@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 (function restyledReviews() {
-  const css = `
+ const css = `
 div#lazy_loadable_view {
   position: absolute;
   top: 80rem;
@@ -70,13 +70,15 @@ div[id^=relatedWorks] ~ .stacked .bigBoxContent.containerWithHeaderContent {
 }
   `;
 
-  const style = document.createElement('style');
-  style.appendChild(new Text(css));
-  document.querySelector('body').appendChild(style);
+ const style = document.createElement('style');
+ style.appendChild(new Text(css));
+ document.querySelector('body').appendChild(style);
 
-  const lazyLoadableView = document.querySelector('div#lazy_loadable_view');
+ const lazyLoadableView = document.querySelector('div#lazy_loadable_view');
 
-  const llvHeight = lazyLoadableView.clientHeight;
+ const llvHeight = lazyLoadableView.clientHeight;
 
-  document.querySelector('footer.responsiveSiteFooter').style.setProperty('top', `${1260 + llvHeight}px`);
+ document
+  .querySelector('footer.responsiveSiteFooter')
+  .style.setProperty('top', `${1260 + llvHeight}px`);
 }());

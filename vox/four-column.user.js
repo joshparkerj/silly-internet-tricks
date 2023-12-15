@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 (function fourColumnVox() {
-  const css = `
+ const css = `
 #mw-content-text > #grid-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -91,62 +91,66 @@ h1#firstHeading {
 }
 `;
 
-  const gridContainer = document.createElement('div');
-  gridContainer.id = 'grid-container';
+ const gridContainer = document.createElement('div');
+ gridContainer.id = 'grid-container';
 
-  const mct = document.querySelector('div#mw-content-text');
-  mct.appendChild(gridContainer);
+ const mct = document.querySelector('div#mw-content-text');
+ mct.appendChild(gridContainer);
 
-  const mpo = mct.querySelector('.mw-parser-output');
-  mpo.querySelectorAll('.wikitable').forEach((wikitable) => {
-    const tableContainer = document.createElement('div');
-    tableContainer.classList.add('table-container');
-    tableContainer.appendChild(wikitable.cloneNode(true));
-    tableContainer.style.setProperty('max-width', '100%');
-    tableContainer.style.setProperty('overflow', 'auto');
-    if (wikitable.getAttribute('align') === 'right') {
-      tableContainer.style.setProperty('float', 'right');
-    }
-
-    wikitable.insertAdjacentElement('afterend', tableContainer);
-    wikitable.parentNode.removeChild(wikitable);
-  });
-
-  for (let i = 0; i < 4; i++) {
-    gridContainer.appendChild(mpo.cloneNode(true));
+ const mpo = mct.querySelector('.mw-parser-output');
+ mpo.querySelectorAll('.wikitable').forEach((wikitable) => {
+  const tableContainer = document.createElement('div');
+  tableContainer.classList.add('table-container');
+  tableContainer.appendChild(wikitable.cloneNode(true));
+  tableContainer.style.setProperty('max-width', '100%');
+  tableContainer.style.setProperty('overflow', 'auto');
+  if (wikitable.getAttribute('align') === 'right') {
+   tableContainer.style.setProperty('float', 'right');
   }
 
-  mpo.parentNode.removeChild(mpo);
+  wikitable.insertAdjacentElement('afterend', tableContainer);
+  wikitable.parentNode.removeChild(wikitable);
+ });
 
-  const style = document.createElement('style');
-  style.appendChild(new Text(css));
-  gridContainer.appendChild(style);
+ for (let i = 0; i < 4; i++) {
+  gridContainer.appendChild(mpo.cloneNode(true));
+ }
 
-  const intersectionObserver = new IntersectionObserver((e, o) => {
-    const columnHeight = e[0].intersectionRect.height;
-    const totalHeight = e[0].target.scrollHeight;
-    const columns = [...document.querySelectorAll('#grid-container > .mw-parser-output')]
-      .filter((column) => getComputedStyle(column).getPropertyValue('display') !== 'none');
-    columns.forEach((column, i) => {
-      const top = columnHeight * i;
-      column.style.setProperty('top', `-${top}px`);
-    });
+ mpo.parentNode.removeChild(mpo);
 
-    if (totalHeight > columns.length * columnHeight) {
-      gridContainer.style.setProperty('height', `${totalHeight - (columns.length - 1) * columnHeight}px`);
-    } else {
-      gridContainer.style.setProperty('height', `${totalHeight / columns.length}px`);
-    }
+ const style = document.createElement('style');
+ style.appendChild(new Text(css));
+ gridContainer.appendChild(style);
 
-    o.disconnect();
+ const intersectionObserver = new IntersectionObserver((e, o) => {
+  const columnHeight = e[0].intersectionRect.height;
+  const totalHeight = e[0].target.scrollHeight;
+  const columns = [...document.querySelectorAll('#grid-container > .mw-parser-output')].filter(
+   (column) => getComputedStyle(column).getPropertyValue('display') !== 'none',
+  );
+  columns.forEach((column, i) => {
+   const top = columnHeight * i;
+   column.style.setProperty('top', `-${top}px`);
   });
 
-  const resizeColumns = () => intersectionObserver.observe(document.querySelector('#grid-container > .mw-parser-output'));
-
-  resizeColumns();
-  for (let i = 0; i < 10; i++) {
-    setTimeout(resizeColumns, 200 * i);
+  if (totalHeight > columns.length * columnHeight) {
+   gridContainer.style.setProperty(
+    'height',
+    `${totalHeight - (columns.length - 1) * columnHeight}px`,
+   );
+  } else {
+   gridContainer.style.setProperty('height', `${totalHeight / columns.length}px`);
   }
 
-  setInterval(resizeColumns, 2000);
+  o.disconnect();
+ });
+
+ const resizeColumns = () => intersectionObserver.observe(document.querySelector('#grid-container > .mw-parser-output'));
+
+ resizeColumns();
+ for (let i = 0; i < 10; i++) {
+  setTimeout(resizeColumns, 200 * i);
+ }
+
+ setInterval(resizeColumns, 2000);
 }());

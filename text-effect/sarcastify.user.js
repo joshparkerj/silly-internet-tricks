@@ -19,5 +19,5 @@ import standAloneTextEffect from './stand-alone-text-effect';
 import sarcasticEffect from './sarcastic-effect';
 
 (function sarcastifyUserScript() {
-  standAloneTextEffect('sarcastify', 'sarcastic-text', sarcasticEffect);
+ standAloneTextEffect('sarcastify', 'sarcastic-text', sarcasticEffect);
 }());

@@ -20,5 +20,5 @@ import standAloneTextEffect from './stand-alone-text-effect';
 import zanyEffect from './zany-effect';
 
 (function zanifyUserScript() {
-  standAloneTextEffect('zanyify', 'zany-text', (e) => addSingleLetterSpanTextEffect(e, zanyEffect));
+ standAloneTextEffect('zanyify', 'zany-text', (e) => addSingleLetterSpanTextEffect(e, zanyEffect));
 }());

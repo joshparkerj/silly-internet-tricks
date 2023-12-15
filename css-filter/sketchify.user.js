@@ -10,9 +10,9 @@
 // ==/UserScript==
 
 (function sketchifyPage() {
-  const filter = document.createElement('div');
+ const filter = document.createElement('div');
 
-  filter.innerHTML = `
+ filter.innerHTML = `
 <svg width="0">
 <filter id="sketch-filter">
   <feColorMatrix in="SourceGraphic" result="desaturated"
@@ -42,7 +42,7 @@
 </svg>
 `;
 
-  const body = document.querySelector('body');
-  body.appendChild(filter);
-  body.style.setProperty('filter', 'url(#sketch-filter)');
+ const body = document.querySelector('body');
+ body.appendChild(filter);
+ body.style.setProperty('filter', 'url(#sketch-filter)');
 }());

@@ -19,6 +19,6 @@
 import remove from './remove';
 
 (function noHotNetwork() {
-  remove('#hot-network-questions');
-  remove('.s-sidebarwidget');
+ remove('#hot-network-questions');
+ remove('.s-sidebarwidget');
 }());

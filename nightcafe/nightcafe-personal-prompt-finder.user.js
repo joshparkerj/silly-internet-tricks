@@ -29,40 +29,44 @@ stevenbelledin stevenhillenberg strawberryby studioghibli summercampisland sunse
 timburton titian torch tundraby valinorby vangogh volcanoby wadimkashin watercolor waterfallby wesanderson
 wojciechsiudmak yahwehby yosemiteby zdzislawbeksinski zukoby`.split(/\s/g);
 
-  const results = {};
+ const results = {};
 
-  const parser = new DOMParser();
-  const fetched = new Set();
+ const parser = new DOMParser();
+ const fetched = new Set();
 
-  const findCreations = () => {
-    document.querySelectorAll('.css-erlp54').forEach(async (card) => {
-      const link = card.querySelector('[href^="/creation"]')?.href;
+ const findCreations = () => {
+  document.querySelectorAll('.css-erlp54').forEach(async (card) => {
+   const link = card.querySelector('[href^="/creation"]')?.href;
 
-      if (!link || fetched.has(link)) return;
+   if (!link || fetched.has(link)) return;
 
-      fetched.add(link);
+   fetched.add(link);
 
-      const response = await fetch(link);
-      const text = await response.text();
-      const dom = parser.parseFromString(text, 'text/html');
-      const selector = '#__next [itemprop=mainEntity] .css-1gzn9ne > .css-ntik0p > .css-q8r9lz';
-      const descriptiveElement = dom.querySelector(selector);
+   const response = await fetch(link);
+   const text = await response.text();
+   const dom = parser.parseFromString(text, 'text/html');
+   const selector = '#__next [itemprop=mainEntity] .css-1gzn9ne > .css-ntik0p > .css-q8r9lz';
+   const descriptiveElement = dom.querySelector(selector);
 
-      if (!descriptiveElement) return;
+   if (!descriptiveElement) return;
 
-      descriptiveElement.querySelectorAll('style').forEach((styleElement) => {
-        styleElement.parentNode.removeChild(styleElement);
-      });
+   descriptiveElement.querySelectorAll('style').forEach((styleElement) => {
+    styleElement.parentNode.removeChild(styleElement);
+   });
 
-      const textPrompts = descriptiveElement.textContent.match(/"[^"]*/g)
-        .filter((t) => !t.includes('weight')).map((t) => t.slice(1))
-        .reduce((acc, e) => acc + e, '');
-      const searchableText = textPrompts.normalize('NFKD')
-        .replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase()
-        .replace(/[\s\W]+/g, '');
+   const textPrompts = descriptiveElement.textContent
+    .match(/"[^"]*/g)
+    .filter((t) => !t.includes('weight'))
+    .map((t) => t.slice(1))
+    .reduce((acc, e) => acc + e, '');
+   const searchableText = textPrompts
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase()
+    .replace(/[\s\W]+/g, '');
 
-      // at this point we have the searchable text.
-      // Time to check it for matches against ALL THE TERMS IN THE WHOLE DAMN LIST!
+   // at this point we have the searchable text.
+   // Time to check it for matches against ALL THE TERMS IN THE WHOLE DAMN LIST!
 
       searchTerms.filter((searchTerm) => searchableText.includes(searchTerm))
         .forEach((searchTerm) => {
@@ -75,9 +79,10 @@ wojciechsiudmak yahwehby yosemiteby zdzislawbeksinski zukoby`.split(/\s/g);
           console.log(JSON.stringify(results));
         });
     });
-  };
+  });
+ };
 
-  const mo = new MutationObserver(findCreations);
+ const mo = new MutationObserver(findCreations);
 
-  mo.observe(document.querySelector('#__next > div'), { subtree: true, childList: true });
+ mo.observe(document.querySelector('#__next > div'), { subtree: true, childList: true });
 }());

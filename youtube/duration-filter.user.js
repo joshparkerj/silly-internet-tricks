@@ -13,28 +13,28 @@
 // ==/UserScript==
 
 (function userScript() {
-  const parseDuration = function parseDuration(duration) {
-    const durationMatch = duration.match(/(((?<hours>\d+):)?(?<minutes>\d+):)?(?<seconds>\d+)/);
-    if (durationMatch) {
-      const { hours, minutes, seconds } = durationMatch.groups;
-      return +seconds + (minutes || 0) * 60 + (hours || 0) * 3600;
-    }
+ const parseDuration = function parseDuration(duration) {
+  const durationMatch = duration.match(/(((?<hours>\d+):)?(?<minutes>\d+):)?(?<seconds>\d+)/);
+  if (durationMatch) {
+   const { hours, minutes, seconds } = durationMatch.groups;
+   return +seconds + (minutes || 0) * 60 + (hours || 0) * 3600;
+  }
 
-    return null;
-  };
+  return null;
+ };
 
-  const ygvrDuration = function ygvrDurationMapper(ygvr) {
-    const durationElement = ygvr.querySelector('span.ytd-thumbnail-overlay-time-status-renderer');
-    if (durationElement) {
-      const text = durationElement.innerText;
-      return parseDuration(text);
-    }
+ const ygvrDuration = function ygvrDurationMapper(ygvr) {
+  const durationElement = ygvr.querySelector('span.ytd-thumbnail-overlay-time-status-renderer');
+  if (durationElement) {
+   const text = durationElement.innerText;
+   return parseDuration(text);
+  }
 
-    return null;
-  };
+  return null;
+ };
 
-  const durationFilterForm = document.createElement('form');
-  durationFilterForm.innerHTML = `
+ const durationFilterForm = document.createElement('form');
+ durationFilterForm.innerHTML = `
   <h2>duration filter</h2>
   <h3>format hh:mm:ss</h3>
   <label for="duration-filter-min">min</label>
@@ -44,21 +44,23 @@
   <button>filter</button>
   `;
 
-  durationFilterForm.id = 'duration-filter';
-  durationFilterForm.onsubmit = function filterDurations(event) {
-    event.preventDefault();
-    const min = parseDuration(document.querySelector('input#duration-filter-min').value);
-    const max = parseDuration(document.querySelector('input#duration-filter-max').value);
-    const ygvrNodeList = document.querySelectorAll('ytd-rich-grid-row #contents ytd-rich-item-renderer');
-    ygvrNodeList.forEach((node) => {
-      const duration = ygvrDuration(node);
-      if (!duration || (duration > max || duration < min)) {
-        node.parentNode.removeChild(node);
-      }
-    });
-  };
+ durationFilterForm.id = 'duration-filter';
+ durationFilterForm.onsubmit = function filterDurations(event) {
+  event.preventDefault();
+  const min = parseDuration(document.querySelector('input#duration-filter-min').value);
+  const max = parseDuration(document.querySelector('input#duration-filter-max').value);
+  const ygvrNodeList = document.querySelectorAll(
+   'ytd-rich-grid-row #contents ytd-rich-item-renderer',
+  );
+  ygvrNodeList.forEach((node) => {
+   const duration = ygvrDuration(node);
+   if (!duration || duration > max || duration < min) {
+    node.parentNode.removeChild(node);
+   }
+  });
+ };
 
-  const styleCss = `
+ const styleCss = `
 form#duration-filter {
   position: fixed;
   bottom: 0;
@@ -67,8 +69,8 @@ form#duration-filter {
 }
   `;
 
-  const style = document.createElement('style');
-  style.appendChild(new Text(styleCss));
-  document.body.appendChild(durationFilterForm);
-  document.body.appendChild(style);
+ const style = document.createElement('style');
+ style.appendChild(new Text(styleCss));
+ document.body.appendChild(durationFilterForm);
+ document.body.appendChild(style);
 }());

@@ -12,7 +12,9 @@
   },
   "rules": {
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-    "no-console": 0
+    "no-console": 0,
+    "max-statements-per-line": "error",
+    "indent": ["error", 1]
   },
   "plugins": [
     "jest"
