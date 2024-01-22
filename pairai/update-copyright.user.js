@@ -6,7 +6,11 @@
 // @match        https://pairai.com/
 // ==/UserScript==
 (function updateCopyright() {
- const copyrightElement = document.querySelector('[data-framer-name=links]').parentElement.children[0].querySelector('p');
- const updatedText = copyrightElement.textContent.replace('2023', '2024');
- copyrightElement.textContent = updatedText;
+ const mutationObserver = new MutationObserver(() => {
+  const copyrightElement = document.querySelector('[data-framer-name=links]').parentElement.children[0].querySelector('p');
+  const updatedText = copyrightElement.textContent.replace('2023', '2024');
+  copyrightElement.textContent = updatedText;
+ });
+
+ mutationObserver.observe(document.querySelector('#main'), { childList: true, subtree: true });
 }());
