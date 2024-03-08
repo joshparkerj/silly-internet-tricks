@@ -1,3 +1,34 @@
+const pointValues = {
+ a: 1,
+ b: 3,
+ c: 3,
+ d: 2,
+ e: 1,
+ f: 4,
+ g: 2,
+ h: 4,
+ i: 1,
+ j: 1,
+ k: 5,
+ l: 1,
+ m: 3,
+ n: 1,
+ o: 1,
+ p: 3,
+ q: 1,
+ r: 1,
+ s: 1,
+ t: 1,
+ u: 1,
+ v: 4,
+ w: 4,
+ x: 8,
+ y: 4,
+ z: 10,
+};
+
+const score = (w) => [...w].reduce((acc, c) => acc + pointValues[c], 0);
+
 const dict = [];
 
 const getDict = (t, p) => {
@@ -72,4 +103,13 @@ const solveMissing = (a, l) => {
  return JSON.stringify([...abc].map((c) => solveFake(a + c, l, preDict)));
 };
 
-export default { solve, solveFake, solveMissing };
+const display = (solutions) => (
+ JSON.stringify(solutions.map((w) => (
+  `${w} ${score(w)}`
+ )).sort((a, b) => (
+  Number(b.match(/\d+/)) - Number(a.match(/\d+/))
+ ))));
+
+export default {
+ solve, solveFake, solveMissing, display,
+};
