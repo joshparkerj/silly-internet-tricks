@@ -15,7 +15,7 @@ const pointValues = {
  n: 1,
  o: 1,
  p: 3,
- q: 1,
+ q: 10,
  r: 1,
  s: 1,
  t: 1,
@@ -145,7 +145,7 @@ const solveFake = (scramble, length, prefixTreeRoot = dictTrees[length]) => {
 
 const preSolve = makeSolve(1);
 
-const solveHidden = (scramble, length) => {
+const solveHidden = (scramble, length = scramble.length) => {
  const preDict = makePrefixTree(preSolve(scramble, length));
  return [...abc].map((c) => solveFake(scramble + c, length, preDict));
 };
@@ -161,8 +161,27 @@ const solveAndFilterHidden = (scramble, length, targetCount) => {
   return !seen;
  }));
 
- // sort in ascending order of number of words
- return dedupedSolutions.sort((a, b) => a.length - b.length);
+ return dedupedSolutions;
+};
+
+const solveAndDisplayHidden = (scramble, length, targetCount, otherTargets) => {
+ const dedupedSolutions = solveAndFilterHidden(scramble, length, targetCount);
+ const fullSolutions = dedupedSolutions.map((solution) => (
+  otherTargets.map((target) => (
+   solve(solution[0], target[0])
+  )).concat(solution)
+ )).filter((solution) => (
+  solution.every((otherSolution, i) => (
+   (i >= otherTargets.length)
+   || (otherSolution.length >= otherTargets[i][1])
+  ))
+ ));
+
+ const displaySolutions = fullSolutions.map((solution) => (
+  solution.flat().map((word) => `${word} ${score(word)}`).join(' ')
+ ));
+
+ return displaySolutions.sort((a, b) => a.length - b.length);
 };
 
 // Next: Solve for two fake and one hidden.
@@ -174,6 +193,18 @@ const display = (solutions) => (
   Number(b.match(/\d+/)) - Number(a.match(/\d+/))
  ))));
 
+const solveHiddenFakeX2 = (scramble, length = scramble.length - 1) => {
+ const preDict = makePrefixTree(preSolve(scramble, length));
+ const doubleFakes = new Set(fake(scramble).map((faked) => fake(faked)).flat());
+ return [...doubleFakes].map((e) => [...abc].map((c) => solve(e + c, length, preDict)));
+};
+
 export default {
- solve, solveFake, solveHidden, display, solveAndFilterHidden,
+ solve,
+ solveFake,
+ solveHidden,
+ display,
+ solveAndFilterHidden,
+ solveAndDisplayHidden,
+ solveHiddenFakeX2,
 };
