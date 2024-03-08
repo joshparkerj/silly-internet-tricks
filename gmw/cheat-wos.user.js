@@ -8,7 +8,7 @@ const pointValues = {
  g: 2,
  h: 4,
  i: 1,
- j: 1,
+ j: 8,
  k: 5,
  l: 1,
  m: 3,
@@ -29,25 +29,58 @@ const pointValues = {
 
 const score = (w) => [...w].reduce((acc, c) => acc + pointValues[c], 0);
 
-const dict = [];
+const getDict = (prefixTreeRoot) => {
+ const dict = [];
+ const getDictHelper = (prefixTreeNode, prefix) => {
+  if (prefixTreeNode === '') return;
 
-const getDict = (t, p) => {
- if (t === '') return;
+  if ('' in prefixTreeNode) {
+   dict.push(prefix);
+  }
 
- if ('' in t) {
-  dict.push(p);
- }
+  Object.keys(prefixTreeNode).forEach((letter) => {
+   getDictHelper(prefixTreeNode[letter], prefix + letter);
+  });
+ };
 
- Object.keys(t).forEach((c) => getDict(t[c], p + c));
+ getDictHelper(prefixTreeRoot, '');
+ return dict;
 };
 
 const abc = 'abcdefghijklmnopqrstuvwxyz';
 
 // eslint-disable-next-line no-undef
-getDict(validWordTrie, '');
+const dict = getDict(validWordTrie);
 
 // prefilter the dict by word length so that this filtered list won't have to be computed again
 const dicts = new Array(16).fill().map((_, i) => dict.filter((w) => w.length === i));
+
+const makePrefixTree = (dictArray) => {
+ const tree = {};
+
+ const addChild = (node, c) => {
+  if (!(c in node)) {
+   // eslint-disable-next-line no-param-reassign
+   node[c] = {};
+  }
+
+  return node[c];
+ };
+
+ dictArray.forEach((w) => {
+  let node = tree;
+  [...w].forEach((c) => {
+   node = addChild(node, c);
+  });
+
+  // an empty string child signals the end of a valid word
+  addChild(node, '');
+ });
+
+ return tree;
+};
+
+const dictTrees = dicts.map(makePrefixTree);
 
 const abcObj = {};
 
@@ -66,42 +99,73 @@ const getEm = (scramble) => {
  return abcTemp;
 };
 
-const worksHelper = (scramble, min) => {
- const abcObjMem = JSON.stringify(getEm(scramble));
+const makeSolve = (wildCards) => (scramble, length, prefixTreeRoot = dictTrees[length]) => {
+ const abcObjMem = getEm(scramble);
 
- return (w) => {
-  const abcTemp = JSON.parse(abcObjMem);
-  return [...w].every((c) => {
-   const valid = abcTemp[c] > min;
-   abcTemp[c] -= 1;
-   return valid;
+ const solutions = [];
+
+ const solveHelper = (prefixTreeNode, prefix = '') => {
+  if (prefixTreeNode === '') return;
+
+  if ('' in prefixTreeNode) solutions.push(prefix);
+
+  Object.keys(prefixTreeNode).forEach((letter) => {
+   if (abcObjMem[letter] > 0) {
+    abcObjMem[letter] -= 1;
+
+    solveHelper(prefixTreeNode[letter], prefix + letter);
+
+    abcObjMem[letter] += 1;
+   } else if (wildCards > 0) {
+    // eslint-disable-next-line no-param-reassign
+    wildCards -= 1;
+
+    solveHelper(prefixTreeNode[letter], prefix + letter);
+
+    // eslint-disable-next-line no-param-reassign
+    wildCards += 1;
+   }
   });
  };
+
+ solveHelper(prefixTreeRoot);
+ return solutions;
 };
 
-const works = (scramble) => worksHelper(scramble, 0);
-const preWorks = (scramble) => worksHelper(scramble, -1);
-
-const makeSolve = (filterFunction) => (
- (a, l, d = dicts[l]) => d.filter(filterFunction(a))
-);
-
-const solve = makeSolve(works);
-const preSolve = makeSolve(preWorks);
+const solve = makeSolve(0);
 
 const fake = (scramble) => (
  [...scramble].map((_, i) => [...scramble].slice(0, i).concat([...scramble].slice(i + 1)))
 );
 
-const solveFake = (a, l, d = dicts[l]) => {
- const preDict = solve(a, l, d);
- return fake(a).map((e) => solve(e, l, preDict));
+const solveFake = (scramble, length, prefixTreeRoot = dictTrees[length]) => {
+ const preDict = makePrefixTree(solve(scramble, length, prefixTreeRoot));
+ return fake(scramble).map((e) => solve(e, length, preDict));
 };
 
-const solveMissing = (a, l) => {
- const preDict = preSolve(a, l);
- return JSON.stringify([...abc].map((c) => solveFake(a + c, l, preDict)));
+const preSolve = makeSolve(1);
+
+const solveHidden = (scramble, length) => {
+ const preDict = makePrefixTree(preSolve(scramble, length));
+ return [...abc].map((c) => solveFake(scramble + c, length, preDict));
 };
+
+const solveAndFilterHidden = (scramble, length, targetCount) => {
+ const solutions = solveHidden(scramble, length);
+ const sufficientSolutions = solutions.flat().filter((solution) => solution.length >= targetCount);
+ const dupes = new Set();
+
+ const dedupedSolutions = sufficientSolutions.filter((solution) => solution.every((word) => {
+  const seen = dupes.has(word);
+  dupes.add(word);
+  return !seen;
+ }));
+
+ // sort in ascending order of number of words
+ return dedupedSolutions.sort((a, b) => a.length - b.length);
+};
+
+// Next: Solve for two fake and one hidden.
 
 const display = (solutions) => (
  JSON.stringify(solutions.map((w) => (
@@ -111,5 +175,5 @@ const display = (solutions) => (
  ))));
 
 export default {
- solve, solveFake, solveMissing, display,
+ solve, solveFake, solveHidden, display, solveAndFilterHidden,
 };
