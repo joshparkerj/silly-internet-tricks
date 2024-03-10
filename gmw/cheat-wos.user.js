@@ -1,210 +1,256 @@
-const pointValues = {
- a: 1,
- b: 3,
- c: 3,
- d: 2,
- e: 1,
- f: 4,
- g: 2,
- h: 4,
- i: 1,
- j: 8,
- k: 5,
- l: 1,
- m: 3,
- n: 1,
- o: 1,
- p: 3,
- q: 10,
- r: 1,
- s: 1,
- t: 1,
- u: 1,
- v: 4,
- w: 4,
- x: 8,
- y: 4,
- z: 10,
-};
+// ==UserScript==
+// @name         Cheat on Words on Stream
+// @namespace    http://tampermonkey.net/
+// @version      2024-03-10
+// @description  Pop out instant anagram solutions
+// @author       Josh Parker
+// @match        https://hryanjones.com/guess-my-word/
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=hryanjones.com
+// @grant        none
+// ==/UserScript==
 
-const score = (w) => [...w].reduce((acc, c) => acc + pointValues[c], 0);
+(function cheatWos() {
+ console.log('about to cheat');
+ const fakeWords = new Set(JSON.parse(localStorage.getItem('wos-fake-words')));
 
-const getDict = (prefixTreeRoot) => {
- const dict = [];
- const getDictHelper = (prefixTreeNode, prefix) => {
-  if (prefixTreeNode === '') return;
-
-  if ('' in prefixTreeNode) {
-   dict.push(prefix);
-  }
-
-  Object.keys(prefixTreeNode).forEach((letter) => {
-   getDictHelper(prefixTreeNode[letter], prefix + letter);
-  });
+ const abc = 'abcdefghijklmnopqrstuvwxyz';
+ const pointValues = {
+  a: 1,
+  b: 3,
+  c: 3,
+  d: 2,
+  e: 1,
+  f: 4,
+  g: 2,
+  h: 4,
+  i: 1,
+  j: 8,
+  k: 5,
+  l: 1,
+  m: 3,
+  n: 1,
+  o: 1,
+  p: 3,
+  q: 10,
+  r: 1,
+  s: 1,
+  t: 1,
+  u: 1,
+  v: 4,
+  w: 4,
+  x: 8,
+  y: 4,
+  z: 10,
  };
 
- getDictHelper(prefixTreeRoot, '');
- return dict;
-};
+ const score = (w) => [...w].reduce((acc, c) => acc + pointValues[c], 0);
 
-const abc = 'abcdefghijklmnopqrstuvwxyz';
+ /* const makePrefixTree = (dictArray) => {
+  const tree = {};
 
-// eslint-disable-next-line no-undef
-const dict = getDict(validWordTrie);
-
-// prefilter the dict by word length so that this filtered list won't have to be computed again
-const dicts = new Array(16).fill().map((_, i) => dict.filter((w) => w.length === i));
-
-const makePrefixTree = (dictArray) => {
- const tree = {};
-
- const addChild = (node, c) => {
-  if (!(c in node)) {
-   // eslint-disable-next-line no-param-reassign
-   node[c] = {};
-  }
-
-  return node[c];
- };
-
- dictArray.forEach((w) => {
-  let node = tree;
-  [...w].forEach((c) => {
-   node = addChild(node, c);
-  });
-
-  // an empty string child signals the end of a valid word
-  addChild(node, '');
- });
-
- return tree;
-};
-
-const dictTrees = dicts.map(makePrefixTree);
-
-const abcObj = {};
-
-[...abc].forEach((c) => {
- abcObj[c] = 0;
-});
-
-const abcO = JSON.stringify(abcObj);
-
-const getEm = (scramble) => {
- const abcTemp = JSON.parse(abcO);
- [...scramble].forEach((c) => {
-  abcTemp[c] += 1;
- });
-
- return abcTemp;
-};
-
-const makeSolve = (wildCards) => (scramble, length, prefixTreeRoot = dictTrees[length]) => {
- const abcObjMem = getEm(scramble);
-
- const solutions = [];
-
- const solveHelper = (prefixTreeNode, prefix = '') => {
-  if (prefixTreeNode === '') return;
-
-  if ('' in prefixTreeNode) solutions.push(prefix);
-
-  Object.keys(prefixTreeNode).forEach((letter) => {
-   if (abcObjMem[letter] > 0) {
-    abcObjMem[letter] -= 1;
-
-    solveHelper(prefixTreeNode[letter], prefix + letter);
-
-    abcObjMem[letter] += 1;
-   } else if (wildCards > 0) {
+  const addChild = (node, c) => {
+   if (!(c in node)) {
     // eslint-disable-next-line no-param-reassign
-    wildCards -= 1;
-
-    solveHelper(prefixTreeNode[letter], prefix + letter);
-
-    // eslint-disable-next-line no-param-reassign
-    wildCards += 1;
+    node[c] = {};
    }
+
+   return node[c];
+  };
+
+  dictArray.forEach((w) => {
+   let node = tree;
+   [...w].forEach((c) => {
+    node = addChild(node, c);
+   });
+
+   // an empty string child signals the end of a valid word
+   addChild(node, '');
   });
+
+  return tree;
+ };
+*/
+ const abcObj = {};
+
+ [...abc].forEach((c) => {
+  abcObj[c] = 0;
+ });
+
+ const abcO = JSON.stringify(abcObj);
+
+ const getEm = (scramble) => {
+  const abcTemp = JSON.parse(abcO);
+  [...scramble].forEach((c) => {
+   abcTemp[c] += 1;
+  });
+
+  return abcTemp;
+ };
+ // eslint-disable-next-line no-undef
+ const solve = (scramble, prefixTreeRoot = validWordTrie) => {
+  const abcObjMem = getEm(scramble);
+
+  const solutions = [];
+
+  const solveHelper = (prefixTreeNode, prefix = '') => {
+   if (prefixTreeNode === '') return;
+
+   if ('' in prefixTreeNode) solutions.push(prefix);
+
+   Object.keys(prefixTreeNode).forEach((letter) => {
+    if (abcObjMem[letter] > 0) {
+     abcObjMem[letter] -= 1;
+
+     solveHelper(prefixTreeNode[letter], prefix + letter);
+
+     abcObjMem[letter] += 1;
+    }
+   });
+  };
+
+  solveHelper(prefixTreeRoot);
+  return solutions;
+ };
+ /*
+ const fake = (scramble) => (
+  [...scramble].map((_, i) => [...scramble].slice(0, i).concat([...scramble].slice(i + 1)))
+ );
+
+ // eslint-disable-next-line no-undef
+ const solveFake = (scramble, prefixTreeRoot = validWordTrie) => {
+  const preDict = makePrefixTree(solve(scramble, prefixTreeRoot));
+  return fake(scramble).map((e) => (
+   solve(e, preDict).sort((a, b) => score(b) - score(a))
+  )).filter((solution) => solution[0]?.length === scramble.length - 1);
  };
 
- solveHelper(prefixTreeRoot);
- return solutions;
-};
+ const solveHidden = (scramble) => (
+  [...abc].map((c) => solveFake(scramble + c))
+ );
 
-const solve = makeSolve(0);
+ const solveAndFilterHidden = (scramble, targetCount) => {
+  const solutions = solveHidden(scramble);
+  const sufficientSolutions = solutions.flat().filter((solution) => solution.length >= targetCount);
+  const dupes = new Set();
 
-const fake = (scramble) => (
- [...scramble].map((_, i) => [...scramble].slice(0, i).concat([...scramble].slice(i + 1)))
-);
+  const dedupedSolutions = sufficientSolutions.filter((solution) => solution.every((word) => {
+   const seen = dupes.has(word);
+   dupes.add(word);
+   return !seen;
+  }));
 
-const solveFake = (scramble, length, prefixTreeRoot = dictTrees[length]) => {
- const preDict = makePrefixTree(solve(scramble, length, prefixTreeRoot));
- return fake(scramble).map((e) => solve(e, length, preDict));
-};
+  return dedupedSolutions;
+ };
 
-const preSolve = makeSolve(1);
+ const solveAndDisplayHidden = (scramble, targetCount, otherTargets) => {
+  const dedupedSolutions = solveAndFilterHidden(scramble, targetCount);
+  const fullSolutions = dedupedSolutions.map((solution) => (
+   otherTargets.map((target) => (
+    solve(solution[0], target[0])
+   )).concat(solution)
+  )).filter((solution) => (
+   solution.every((otherSolution, i) => (
+    (i >= otherTargets.length)
+    || (otherSolution.length >= otherTargets[i][1])
+   ))
+  ));
 
-const solveHidden = (scramble, length = scramble.length) => {
- const preDict = makePrefixTree(preSolve(scramble, length));
- return [...abc].map((c) => solveFake(scramble + c, length, preDict));
-};
+  const displaySolutions = fullSolutions.map((solution) => (
+   solution.flat().map((word) => `${word} ${score(word)}`).join(' ')
+  ));
 
-const solveAndFilterHidden = (scramble, length, targetCount) => {
- const solutions = solveHidden(scramble, length);
- const sufficientSolutions = solutions.flat().filter((solution) => solution.length >= targetCount);
- const dupes = new Set();
+  return displaySolutions.sort((a, b) => a.length - b.length);
+ };
 
- const dedupedSolutions = sufficientSolutions.filter((solution) => solution.every((word) => {
-  const seen = dupes.has(word);
-  dupes.add(word);
-  return !seen;
- }));
+ const display = (solutions) => (
+  JSON.stringify(solutions.filter((w) => w.length > 3).map((w) => (
+   `${w} ${score(w)}`
+  )).sort((a, b) => (
+   Number(b.match(/\d+/)) - Number(a.match(/\d+/))
+  ))));
 
- return dedupedSolutions;
-};
+ const solveHiddenFakeX2 = (scramble) => {
+  const doubleFakes = new Set(fake(scramble).map((faked) => fake(faked)).flat());
+  return [...doubleFakes].map((e) => [...abc].map((c) => solve(e + c)));
+ };
+*/
+ // create the UI
 
-const solveAndDisplayHidden = (scramble, length, targetCount, otherTargets) => {
- const dedupedSolutions = solveAndFilterHidden(scramble, length, targetCount);
- const fullSolutions = dedupedSolutions.map((solution) => (
-  otherTargets.map((target) => (
-   solve(solution[0], target[0])
-  )).concat(solution)
- )).filter((solution) => (
-  solution.every((otherSolution, i) => (
-   (i >= otherTargets.length)
-   || (otherSolution.length >= otherTargets[i][1])
-  ))
- ));
+ let minimumWordLength = 4;
+ const minimumWordLengthHTML = `
+<legend>Minimum word length:</legend>
+<input type="radio" id="minimum-word-length-4" name="minimum-word-length" value="4" checked />
+<label for="minimum-word-length-4">4</label>
+<input type="radio" id="minimum-word-length-5" name="minimum-word-length" value="5" />
+<label for="minimum-word-length-5">5</label>
+`;
 
- const displaySolutions = fullSolutions.map((solution) => (
-  solution.flat().map((word) => `${word} ${score(word)}`).join(' ')
- ));
+ const wosForm = document.createElement('div');
+ wosForm.id = 'wos';
 
- return displaySolutions.sort((a, b) => a.length - b.length);
-};
+ const minimumWordLengthFieldset = document.createElement('fieldset');
+ minimumWordLengthFieldset.id = 'minimum-word-length';
+ minimumWordLengthFieldset.addEventListener('change', ({ target: { value: minWordLength } }) => {
+  minimumWordLength = minWordLength;
+ });
 
-// Next: Solve for two fake and one hidden.
+ wosForm.innerHTML = minimumWordLengthHTML;
 
-const display = (solutions) => (
- JSON.stringify(solutions.map((w) => (
-  `${w} ${score(w)}`
- )).sort((a, b) => (
-  Number(b.match(/\d+/)) - Number(a.match(/\d+/))
- ))));
+ const solutions = document.createElement('div');
+ solutions.id = 'wos-solutions';
+ const scrambleInput = document.createElement('input');
+ scrambleInput.addEventListener('change', ({ target: { value: scramble } }) => {
+  console.log(`got scramble: ${scramble}`);
+  solutions.innerHTML = '';
+  solve(scramble)
+   .filter((w) => w.length >= minimumWordLength)
+   .filter((w) => !fakeWords.has(w))
+   .sort((a, b) => a.length - b.length)
+   .forEach((word) => {
+    const solution = document.createElement('div');
+    solution.appendChild(new Text(`${word} ${score(word)}`));
 
-const solveHiddenFakeX2 = (scramble, length = scramble.length - 1) => {
- const preDict = makePrefixTree(preSolve(scramble, length));
- const doubleFakes = new Set(fake(scramble).map((faked) => fake(faked)).flat());
- return [...doubleFakes].map((e) => [...abc].map((c) => solve(e + c, length, preDict)));
-};
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.name = 'not-in-dictionary';
+    checkbox.value = word;
+    solution.appendChild(checkbox);
 
-export default {
- solve,
- solveFake,
- solveHidden,
- display,
- solveAndFilterHidden,
- solveAndDisplayHidden,
- solveHiddenFakeX2,
-};
+    solutions.appendChild(solution);
+   });
+ });
+
+ wosForm.appendChild(scrambleInput);
+ document.body.appendChild(wosForm);
+ document.body.appendChild(solutions);
+
+ const style = document.createElement('style');
+ style.appendChild(new Text(`
+div#wos-solutions {
+ display: flex;
+ flex-direction: column;
+ flex-wrap: wrap;
+ height: 400px;
+}
+
+div#wos-solutions > div {
+ border: solid black 1px;
+ margin:  2px;
+ padding: 4px;
+ border-radius: 6px;
+} 
+ `));
+
+ document.body.appendChild(style);
+
+ const fakeWordButton = document.createElement('button');
+ fakeWordButton.id = 'fake-word';
+ fakeWordButton.appendChild(new Text('update dictionary'));
+ fakeWordButton.addEventListener('click', () => {
+  const words = [...document.querySelectorAll('input[type=checkbox')].filter((e) => e.checked).map((e) => e.value);
+  words.forEach((word) => fakeWords.add(word));
+  localStorage.setItem('wos-fake-words', JSON.stringify([...fakeWords]));
+ });
+
+ document.body.appendChild(fakeWordButton);
+}());
