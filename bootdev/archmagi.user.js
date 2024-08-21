@@ -12,7 +12,7 @@
 const sleeper = (ms, f) => (
  new Promise((solve, ject) => {
   setTimeout(() => {
-   f().then((r) => solve(r)).catch((e) => ject(e));
+   f().then(solve).catch(ject);
   }, ms);
  })
 );
@@ -20,40 +20,48 @@ const sleeper = (ms, f) => (
 (function leaderboardArchmagiDeets() {
  const parser = new DOMParser();
  const wizardZone = document.querySelector('.items-center + .px-4 > div[class="lg:gap-2 xl:columns-2 2xl:columns-3"]');
+
+ const getGithubCheckbox = document.createElement('input');
+ getGithubCheckbox.setAttribute('type', 'checkbox');
+ getGithubCheckbox.setAttribute('name', 'get-github');
+ getGithubCheckbox.setAttribute('id', 'get-github');
+ const getGithubCheckboxLabel = document.createElement('label');
+ getGithubCheckboxLabel.setAttribute('for', 'get-github');
+ getGithubCheckboxLabel.textContent = 'check here to get deets from github (much slower)';
+
  const consoleLogDeetsButton = document.createElement('button');
  consoleLogDeetsButton.textContent = 'console log deets';
  consoleLogDeetsButton.addEventListener('click', () => {
   const archmagi = Promise.all([...wizardZone.querySelectorAll('a')].map(async (e, i) => {
    const end = new Date(e.querySelector('.justify-end').textContent);
-   const {
-    start, name, level, lessonsSolved, github,
-   } = await fetch(e.href)
+   const deets = await fetch(e.href)
     .then((r) => r.text()).then((t) => {
      const dom = parser.parseFromString(t, 'text/html');
-     const deets = {};
-     deets.start = new Date(dom.querySelector('.break-words + div .text-center + div + div span + span.font-bold.text-lg').textContent);
-     deets.name = `${dom.querySelector('h2.font-bold').textContent} (${dom.querySelector('h2.font-bold + span').textContent})`;
-     deets.level = Number(dom.querySelector('.glassmorph .text-2xl span.font-bold.text-white').textContent);
-     deets.lessonsSolved = Number(dom.querySelector('.break-words + .glassmorph span.text-2xl.font-bold.text-white').textContent);
-     deets.githubLinks = dom.querySelectorAll('a[href*=github]');
-     if (deets.githubLinks.length === 0) {
-      deets.github = null;
+     const deetsResult = {};
+     deetsResult.start = new Date(dom.querySelector('.break-words + div .text-center + div + div span + span.font-bold.text-lg').textContent);
+     deetsResult.name = `${dom.querySelector('h2.font-bold').textContent} (${dom.querySelector('h2.font-bold + span').textContent})`;
+     deetsResult.level = Number(dom.querySelector('.glassmorph .text-2xl span.font-bold.text-white').textContent);
+     deetsResult.lessonsSolved = Number(dom.querySelector('.break-words + .glassmorph span.text-2xl.font-bold.text-white').textContent);
+     deetsResult.certificates = [...dom.querySelectorAll('a[href^="/certificate/"] h3')].map((cert) => cert.textContent);
+     deetsResult.githubLinks = dom.querySelectorAll('a[href*=github]');
+     if (deetsResult.githubLinks.length === 0) {
+      deetsResult.github = null;
      } else {
-      const hrefMatch = deets.githubLinks[0].href.match(/https:\/\/github.com\/[^/]*/);
+      const hrefMatch = deetsResult.githubLinks[0].href.match(/https:\/\/github.com\/[^/]*/);
       if (hrefMatch) {
-       [deets.github] = hrefMatch;
+       [deetsResult.github] = hrefMatch;
       } else {
        console.warn('link pattern not as expected!');
-       console.warn(deets.github);
-       deets.github = null;
+       console.warn(deetsResult.github);
+       deetsResult.github = null;
       }
      }
 
-     return deets;
+     return deetsResult;
     });
    let githubFollowers = 0;
-   if (github) {
-    githubFollowers = await sleeper(2000 * i, () => (GM.xmlHttpRequest({ url: github })
+   if (deets.github && getGithubCheckbox.checked) {
+    githubFollowers = await sleeper(2000 * i, () => (GM.xmlHttpRequest({ url: deets.github })
      .then((r) => r.responseText).then((t) => {
       const dom = parser.parseFromString(t, 'text/html');
       const followersLink = dom.querySelector('a[href$=followers] span');
@@ -66,11 +74,11 @@ const sleeper = (ms, f) => (
    }
 
    const milliPerDay = 24 * 60 * 60 * 1000;
-   const time = Math.round((end - start) / milliPerDay);
-   const age = Math.round((Date.now() - start) / milliPerDay);
-   const lessonsSolvedPerDay = lessonsSolved / age;
+   const time = Math.round((end - deets.start) / milliPerDay);
+   const age = Math.round((Date.now() - deets.start) / milliPerDay);
+   const lessonsSolvedPerDay = deets.lessonsSolved / age;
    const completedDeets = {
-    end, start, time, name, level, lessonsSolved, age, lessonsSolvedPerDay, github, githubFollowers,
+    ...deets, end, time, age, lessonsSolvedPerDay, githubFollowers,
    };
 
    console.log(completedDeets);
@@ -79,7 +87,11 @@ const sleeper = (ms, f) => (
   console.log(archmagi);
  });
 
- consoleLogDeetsButton.style.setProperty('padding', '1rem');
- consoleLogDeetsButton.style.setProperty('color', 'chartreuse');
- document.body.appendChild(consoleLogDeetsButton);
+ const userscriptZone = document.createElement('div');
+ userscriptZone.style.setProperty('padding', '1rem');
+ userscriptZone.style.setProperty('color', 'chartreuse');
+ userscriptZone.appendChild(consoleLogDeetsButton);
+ userscriptZone.appendChild(getGithubCheckbox);
+ userscriptZone.appendChild(getGithubCheckboxLabel);
+ document.body.appendChild(userscriptZone);
 }());
