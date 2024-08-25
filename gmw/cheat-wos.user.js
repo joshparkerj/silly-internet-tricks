@@ -45,7 +45,7 @@
 
  const score = (w) => [...w].reduce((acc, c) => acc + pointValues[c], 0);
 
- /* const makePrefixTree = (dictArray) => {
+ const makePrefixTree = (dictArray) => {
   const tree = {};
 
   const addChild = (node, c) => {
@@ -69,7 +69,7 @@
 
   return tree;
  };
-*/
+
  const abcObj = {};
 
  [...abc].forEach((c) => {
@@ -111,7 +111,7 @@
   solveHelper(prefixTreeRoot);
   return solutions;
  };
- /*
+
  const fake = (scramble) => (
   [...scramble].map((_, i) => [...scramble].slice(0, i).concat([...scramble].slice(i + 1)))
  );
@@ -124,7 +124,7 @@
   )).filter((solution) => solution[0]?.length === scramble.length - 1);
  };
 
- const solveHidden = (scramble) => (
+ /* const solveHidden = (scramble) => (
   [...abc].map((c) => solveFake(scramble + c))
  );
 
@@ -175,6 +175,24 @@
  };
 */
  // create the UI
+ const wosMain = document.createElement('main');
+ wosMain.id = 'wos';
+ document.body.appendChild(wosMain);
+
+ let gameModeGlobal = 'no-fake-no-hidden';
+ const gameModeHTML = `
+<legend>Game Mode:</legend>
+<input type="radio" id="game-mode-no-fake-no-hidden" name="game-mode" value="no-fake-no-hidden" checked />
+<label for="game-mode-no-fake-no-hidden">No fake letters; no hidden letters</label>
+<input type="radio" id="game-mode-one-fake-no-hidden" name="game-mode" value="one-fake-no-hidden" />
+<label for="game-mode-one-fake-no-hidden">One fake letter; no hidden letters</label>
+`;
+
+ const gameModeFieldset = document.createElement('fieldset');
+ gameModeFieldset.id = 'wos-game-mode';
+ gameModeFieldset.addEventListener('change', ({ target: { value: gameMode } }) => {
+  gameModeGlobal = gameMode;
+ });
 
  let minimumWordLength = 4;
  const minimumWordLengthHTML = `
@@ -189,59 +207,87 @@
  wosForm.id = 'wos';
 
  const minimumWordLengthFieldset = document.createElement('fieldset');
- minimumWordLengthFieldset.id = 'minimum-word-length';
+ minimumWordLengthFieldset.id = 'wos-minimum-word-length';
  minimumWordLengthFieldset.addEventListener('change', ({ target: { value: minWordLength } }) => {
+  console.log(`set min word length to: ${minWordLength}`);
   minimumWordLength = minWordLength;
  });
 
- wosForm.innerHTML = minimumWordLengthHTML;
+ gameModeFieldset.innerHTML = gameModeHTML;
+ wosForm.appendChild(gameModeFieldset);
 
- const solutions = document.createElement('div');
- solutions.id = 'wos-solutions';
+ minimumWordLengthFieldset.innerHTML = minimumWordLengthHTML;
+ wosForm.appendChild(minimumWordLengthFieldset);
+
+ const solutionsSection = document.createElement('section');
+ solutionsSection.id = 'wos-solutions-section';
+
+ const displayWord = (parentElement) => (word) => {
+  const solutionDiv = document.createElement('div');
+  solutionDiv.appendChild(new Text(`${word} ${score(word)}`));
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.name = 'not-in-dictionary';
+  checkbox.value = word;
+  checkbox.id = `${checkbox.name}-${checkbox.value}`;
+  solutionDiv.appendChild(checkbox);
+  const checkboxLabel = document.createElement('label');
+  checkboxLabel.for = checkbox.id;
+  checkboxLabel.appendChild(new Text('not in dictionary'));
+  solutionDiv.appendChild(checkboxLabel);
+  parentElement.appendChild(solutionDiv);
+ };
+
  const scrambleInput = document.createElement('input');
  scrambleInput.addEventListener('change', ({ target: { value: scramble } }) => {
   console.log(`got scramble: ${scramble}`);
-  solutions.innerHTML = '';
-  solve(scramble)
-   .filter((w) => w.length >= minimumWordLength)
-   .filter((w) => !fakeWords.has(w))
-   .sort((a, b) => a.length - b.length)
-   .forEach((word) => {
-    const solution = document.createElement('div');
-    solution.appendChild(new Text(`${word} ${score(word)}`));
+  solutionsSection.innerHTML = '';
 
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.name = 'not-in-dictionary';
-    checkbox.value = word;
-    solution.appendChild(checkbox);
-
-    solutions.appendChild(solution);
+  if (gameModeGlobal === 'no-fake-no-hidden') {
+   const solutions = document.createElement('div');
+   solutions.classList.add('wos-solutions');
+   solutionsSection.appendChild(solutions);
+   solve(scramble)
+    .filter((w) => w.length >= minimumWordLength)
+    .filter((w) => !fakeWords.has(w))
+    .sort((a, b) => a.length - b.length)
+    .forEach(displayWord(solutions));
+  } else if (gameModeGlobal === 'one-fake-no-hidden') {
+   solveFake(scramble).forEach((solutionSet) => {
+    const solutions = document.createElement('div');
+    solutions.classList.add('wos-solutions');
+    solutionsSection.appendChild(solutions);
+    solutionSet.filter((w) => w.length >= minimumWordLength)
+     .filter((w) => !fakeWords.has(w))
+     .sort()
+     .sort((a, b) => a.length - b.length)
+     .forEach(displayWord(solutions));
    });
+  }
  });
 
  wosForm.appendChild(scrambleInput);
- document.body.appendChild(wosForm);
- document.body.appendChild(solutions);
+ wosMain.appendChild(wosForm);
+ wosMain.appendChild(solutionsSection);
 
  const style = document.createElement('style');
  style.appendChild(new Text(`
-div#wos-solutions {
+div.wos-solutions {
  display: flex;
  flex-direction: column;
  flex-wrap: wrap;
  height: 400px;
 }
 
-div#wos-solutions > div {
+div.wos-solutions > div {
  border: solid black 1px;
  margin:  2px;
  padding: 4px;
  border-radius: 6px;
-} 
+}
  `));
 
- document.body.appendChild(style);
+ wosMain.appendChild(style);
 
  const fakeWordButton = document.createElement('button');
  fakeWordButton.id = 'fake-word';
@@ -252,5 +298,5 @@ div#wos-solutions > div {
   localStorage.setItem('wos-fake-words', JSON.stringify([...fakeWords]));
  });
 
- document.body.appendChild(fakeWordButton);
+ wosMain.appendChild(fakeWordButton);
 }());

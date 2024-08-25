@@ -59,17 +59,35 @@ const sleeper = (ms, f) => (
 
      return deetsResult;
     });
-   let githubFollowers = 0;
+   let githubDeets = { followers: 0, yearlyContributions: 0 };
    if (deets.github && getGithubCheckbox.checked) {
-    githubFollowers = await sleeper(2000 * i, () => (GM.xmlHttpRequest({ url: deets.github })
-     .then((r) => r.responseText).then((t) => {
+    githubDeets = await sleeper(2000 * i, () => (GM.xmlHttpRequest({ url: deets.github })
+     .then((r) => r.responseText).then(async (t) => {
       const dom = parser.parseFromString(t, 'text/html');
       const followersLink = dom.querySelector('a[href$=followers] span');
       if (!followersLink) {
-       return 0;
+       return { followers: 0, yearlyContributions: 0 };
       }
 
-      return Number(followersLink.textContent);
+      const followers = Number(followersLink.textContent);
+      const contribUrl = `https://github.com${dom.querySelector('include-fragment[src]').getAttribute('src')}`;
+      const yearlyContributions = await GM.xmlHttpRequest({ url: contribUrl, headers: { 'x-requested-with': 'XMLHttpRequest' } })
+       .then((r) => r.responseText).then((contribText) => {
+        const contribDom = parser.parseFromString(contribText, 'text/html');
+        const yearlyContributionsHeading = contribDom.querySelector('.js-yearly-contributions h2');
+        if (!yearlyContributionsHeading) {
+         return { followers, yearlyContributions: 0 };
+        }
+
+        const yearlyContributionsText = yearlyContributionsHeading.textContent;
+        console.log(yearlyContributionsText);
+        const yearlyContributionsTextSplit = yearlyContributionsText.split(/\s+/)[1];
+        console.log(yearlyContributionsTextSplit);
+        const result = Number(yearlyContributionsTextSplit.replace(/\D+/g, ''));
+        console.log(result);
+        return result;
+       });
+      return { followers, yearlyContributions };
      })));
    }
 
@@ -78,7 +96,7 @@ const sleeper = (ms, f) => (
    const age = Math.round((Date.now() - deets.start) / milliPerDay);
    const lessonsSolvedPerDay = deets.lessonsSolved / age;
    const completedDeets = {
-    ...deets, end, time, age, lessonsSolvedPerDay, githubFollowers,
+    ...deets, end, time, age, lessonsSolvedPerDay, githubFollowers: githubDeets,
    };
 
    console.log(completedDeets);
