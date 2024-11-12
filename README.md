@@ -53,3 +53,8 @@
 Run them with tampermonkey on chrome. Installation instructions are at https://www.tampermonkey.net/faq.php#Q102
 
 TODO: add a more detailed table of contents
+
+## Contributing
+
+If you'd like to contribute, please fork the repository and open a pull request to the `main` branch. Any userscript is welcome! (I use them with the tampermonkey extension for chrome)
+
